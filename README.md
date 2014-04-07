@@ -1,4 +1,4 @@
 SHUMP
 =====
 
-Procedurally Generated Shmup - Philadelphia Game Lab
+Procedurally Generated Shmup - Philadelphia Game Lab 
