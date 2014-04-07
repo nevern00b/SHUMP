@@ -1,0 +1,107 @@
+#version 330 core
+#extension GL_ARB_shading_language_420pack : enable
+
+//-------------------------------------
+//      Global constants
+//-------------------------------------
+
+// Max values
+#define MAX_DIR_LIGHTS                  8
+#define MAX_POINT_LIGHTS                8
+#define MAX_BONES                       50
+
+// Texture binding points                                
+#define DIFFUSE_TEXTURE                 0
+#define NORMAL_TEXTURE                  1
+#define SPECULAR_TEXTURE                2
+#define REFLECT_TEXTURE                 3
+#define SKYBOX_TEXTURE                  4
+#define COLOR_FBO_TEXTURE_BINDING       5
+#define NON_USED_TEXTURE_BINDING        6
+
+// Vertex attribute indexes                                     
+#define POSITION_ATTR                   0
+#define NORMAL_ATTR                     1
+#define UV_ATTR                         2
+#define BONE_WEIGHTS_ATTR               3
+#define BONE_IDS_ATTR                   4
+
+// FBO binding points                                            
+#define DEFAULT_FRAMEBUFFER             0
+#define COLOR_FBO_BINDING               0
+#define NORMAL_FBO_BINDING              1
+#define MOTION_BLUR_FBO_BINDING         2
+#define NUM_FBO_BINDINGS                3
+
+// Uniform buffer binding points                        
+#define PER_FRAME_UBO                   0
+#define LIGHTING_UBO                    1
+#define MATERIAL_UBO                    2
+#define TRANSFORM_UBO                   3
+
+struct PerFrameGL
+{
+    mat4 viewProjection;
+    mat4 skyboxMVP;
+    vec3 cameraPos;
+};
+
+struct MaterialGL
+{
+    vec4 diffuseColor;
+    float diffuseBlend;
+    float reflectBlend;
+    float specIntensity;
+    float specPower;
+    float specBlend;
+    float normalIntensity;
+};
+
+struct TransformGL
+{
+    mat4 modelMatrix;
+};
+
+struct DirLightGL
+{
+    vec3 color;
+    vec3 direction;
+};
+
+struct PointLightGL
+{
+    vec3 color;
+    vec4 position; //position.w contains attenuation factor
+};
+
+struct LightingGL
+{
+    PointLightGL pointLights[MAX_POINT_LIGHTS];
+    DirLightGL dirLights[MAX_DIR_LIGHTS];
+    int numPointLights;
+    int numDirLights;
+};
+
+//-------------------------------------
+//      UBOs
+//-------------------------------------
+
+layout(std140, binding = PER_FRAME_UBO) uniform PerFrameUBO
+{
+    PerFrameGL uPerFrameData;
+};
+
+layout(std140, binding = TRANSFORM_UBO) uniform TransformUBO
+{
+    TransformGL uTransform;
+};
+
+layout(std140, binding = MATERIAL_UBO) uniform MaterialUBO
+{
+    MaterialGL uMaterial;
+};
+
+layout(std140, binding = LIGHTING_UBO) uniform LightingUBO
+{
+    LightingGL uLighting;
+};

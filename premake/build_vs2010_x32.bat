@@ -1,0 +1,1 @@
+"premake4.exe" --platform=x32 vs2010
