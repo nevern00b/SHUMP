@@ -15,9 +15,8 @@
 #define NORMAL_TEXTURE                  1
 #define SPECULAR_TEXTURE                2
 #define REFLECT_TEXTURE                 3
-#define SKYBOX_TEXTURE                  4
-#define COLOR_FBO_TEXTURE_BINDING       5
-#define NON_USED_TEXTURE_BINDING        6
+#define COLOR_FBO_TEXTURE_BINDING       4
+#define NON_USED_TEXTURE_BINDING        5
 
 // Vertex attribute indexes                                     
 #define POSITION_ATTR                   0
@@ -42,7 +41,6 @@
 struct PerFrameGL
 {
     mat4 viewProjection;
-    mat4 skyboxMVP;
     vec3 cameraPos;
 };
 

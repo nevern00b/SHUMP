@@ -77,7 +77,7 @@ RenderManager* Globals::m_renderManager;
 UIManager* Globals::m_uiManager;
 DataManager* Globals::m_dataManager;
 GameManager* Globals::m_gameManager;
-//PhysicsManager* Globals::m_physicsManager;
+PhysicsManager* Globals::m_physicsManager;
 
 void Globals::init()
 {
@@ -87,7 +87,7 @@ void Globals::init()
     glm::uvec2 openGLVersion(3, 3);
     glm::uvec4 colorBits(8, 8, 8, 0); // We only use alpha on custom FBOs (default value is 8 bits)
     glm::uvec2 depthStencilBits(24, 0);
-    bool vsync = false;
+    bool vsync = true;
     bool showDebugOutput = false;
     bool resizable = true;
     //srand((uint)time(NULL));
@@ -144,7 +144,7 @@ void Globals::init()
     m_uiManager->m_screenWidth = windowSize.x;
     m_uiManager->m_screenHeight = windowSize.y;
     m_dataManager = new DataManager();
-    //m_physicsManager = new PhysicsManager();
+    m_physicsManager = new PhysicsManager();
     m_renderManager = new RenderManager();
     m_gameManager = new GameManager();
     m_gameManager->init();
@@ -162,7 +162,7 @@ void Globals::init()
         m_uiManager->update();
         glfwPollEvents();
         m_renderManager->render(); // Goes first because it lets the GPU start working early.
-        //m_physicsManager->update();
+        m_physicsManager->update();
         m_gameManager->update();
         glfwSwapBuffers(window);
     }

@@ -29,7 +29,6 @@ public:
     void setTextureParams(GLenum target, GLenum wrapMode, GLenum minFilter, GLenum magFilter, uint numLevels);
     void setSamplerParams(GLuint sampler, GLenum wrapMode, GLenum minFilter, GLenum magFilter);
 
-    GLuint m_skyboxTexture;
     GLuint m_nearestSampler;
     GLuint m_linearSampler;
 

@@ -103,7 +103,7 @@ void Camera::applyZoom(float amount)
 {
     glm::vec3 zoomVector = m_transform->getForwardVector();
     zoomVector *= amount;
-    m_transform->applyTranslation(zoomVector);
+    m_transform->translate(zoomVector);
 }
 
 void Camera::setPan(float x, float y)
@@ -123,7 +123,7 @@ void Camera::applyPan(float x, float y)
     glm::vec3 upVector = m_transform->getUpVector();
     upVector *= y;
     glm::vec3 panVector = rightVector + upVector;
-    m_transform->applyTranslation(panVector);
+    m_transform->translate(panVector);
 }
 
 void Camera::setRotation(float x, float y)

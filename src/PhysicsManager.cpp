@@ -1,168 +1,123 @@
 #include "PhysicsManager.h"
 
 
-//#include <Box2D/Dynamics/b2World.h>
-//#include <Box2D/Common/b2Math.h>
-//#include <glm/gtc/type_ptr.hpp>
-//#include "Globals.h"
-//#include "UIManager.h"
-//#include "Common.h"
-//#include "Entity.h"
-//#include "PhysicsComponent.h"
-//
-//PhysicsManager::PhysicsManager()
-//{
-//   // Create world
-//    m_world = new b2World(b2Vec2(0.0f, 10.0f));
-//    b2ContactListener* contactListener = new ContactListener();
-//    world.setContactListener(contactListener);
-//}
-//
-//PhysicsManager::~PhysicsManager()
-//{
-//    delete m_world;
-//}
-//
-//void PhysicsManager::update()
-//{
-//    float frameTime = Globals::m_uiManager->m_frameTime;
-//    float desiredFrameTime = Globals::m_uiManager->m_desiredFrameTime;
-//    uint maxSubsteps = 100; // some arbitrary large number
-//
-//    m_world->stepSimulation(frameTime, maxSubsteps, desiredFrameTime);
-//}
-//
-//void PhysicsManager::addConstraint(PhysicsComponent* source, PhysicsComponent* target, ConstraintData* data)
-//{
-//    // Get the constraint position in the target's frame of reference
-//    glm::vec3 targetPos = data->m_position;
-//    if (target)
-//    {
-//        glm::mat4 sourceTransform = source->getMatrix();
-//        glm::mat4 targetTransform = target->getMatrix();
-//        targetPos = glm::vec3(glm::inverse(targetTransform) * sourceTransform * glm::vec4(targetPos, 1.0));
-//    }
-//
-//    btVector3 constraintPosSource = Utils::convertGLMVectorToBullet(data->m_position);
-//    btVector3 constraintPosTarget = Utils::convertGLMVectorToBullet(targetPos);
-//
-//    if (data->m_type == ConstraintType::HINGE)
-//    {
-//        btVector3 constraintAxis = Utils::convertGLMVectorToBullet(data->m_axis);
-//
-//        if (target)
-//        {
-//            btHingeConstraint* hinge = new btHingeConstraint(*source->m_rigidBody, *target->m_rigidBody, constraintPosSource, constraintPosTarget, constraintAxis, constraintAxis);
-//            hinge->setLimit(data->m_angleMin, data->m_angleMax);
-//            m_world->addConstraint(hinge);
-//        }
-//        else
-//        {
-//            btHingeConstraint* hinge = new btHingeConstraint(*source->m_rigidBody, constraintPosSource, constraintAxis);
-//            hinge->setLimit(data->m_angleMin, data->m_angleMax);
-//            m_world->addConstraint(hinge);
-//        }
-//    }
-//    else if (data->m_type == ConstraintType::POINT2POINT)
-//    {
-//        if (target)
-//        {
-//            btPoint2PointConstraint* ball = new btPoint2PointConstraint(*source->m_rigidBody, *target->m_rigidBody, constraintPosSource, constraintPosTarget);
-//            m_world->addConstraint(ball);
-//        }
-//        else
-//        {
-//            btPoint2PointConstraint* ball = new btPoint2PointConstraint(*source->m_rigidBody, constraintPosSource);
-//            m_world->addConstraint(ball);
-//        }
-//    }
-//}
-//
-//namespace Utils
-//{
-//    glm::mat4 convertBulletTransformToGLM(const btTransform& transform)
-//    {
-//        float data[16];
-//        transform.getOpenGLMatrix(data);
-//        return glm::make_mat4(data);
-//    }
-//    btTransform convertGLMTransformToBullet(const glm::mat4& transform)
-//    {
-//        btTransform bulletTransform;
-//        bulletTransform.setFromOpenGLMatrix(glm::value_ptr(transform));
-//        return bulletTransform;
-//    }
-//    glm::quat convertBulletQuaternionToGLM(const btQuaternion& quaternion)
-//    {
-//        return glm::quat(quaternion.getW(), quaternion.getX(), quaternion.getY(), quaternion.getZ());
-//    }
-//
-//    btQuaternion convertGLMQuaternionToBullet(const glm::quat& quaternion)
-//    {
-//        return btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
-//    }
-//
-//    glm::vec3 convertBulletVectorToGLM(const btVector3& vector)
-//    {
-//        return glm::vec3(vector.getX(), vector.getY(), vector.getZ());
-//    }
-//
-//    btVector3 convertGLMVectorToBullet(const glm::vec3& vector)
-//    {
-//        return btVector3(vector.x, vector.y, vector.z);
-//    }
-//
-//    btBoxShape* createBoxShape(const glm::vec3& dimensions)
-//    {
-//        return createBoxShape(dimensions.x, dimensions.y, dimensions.z);
-//    }
-//    btBoxShape* createBoxShape(float width, float height, float depth)
-//    {
-//        return new btBoxShape(btVector3(width, height, depth));
-//    }
-//
-//    btSphereShape* createSphereShape(float radius)
-//    {
-//        return new btSphereShape(radius);
-//    }
-//
-//    btCylinderShape* createCylinderShape(float height, float radiusWidth, float radiusDepth)
-//    {
-//        return new btCylinderShape(btVector3(radiusWidth, height, radiusDepth));
-//    }
-//
-//    btCapsuleShape* createCapsuleShape(float radius, float height)
-//    {
-//        return new btCapsuleShape(radius, height);
-//    }
-//
-//    btConeShape* createConeShape(float radius, float height)
-//    {
-//        return new btConeShape(radius, height);
-//    }
-//
-//    btConvexHullShape* createConvexHullShape(const std::vector<glm::vec3>& vertices)
-//    {
-//        return new btConvexHullShape(&vertices[0][0], vertices.size(), sizeof(glm::vec3));
-//    }
-//
-//    btCompoundShape* createCompoundShape(const std::vector<btCollisionShape*>& shapes, const std::vector<glm::mat4>& localTransforms)
-//    {
-//        btCompoundShape* compoundShape = new btCompoundShape();
-//        for (uint i = 0; i < shapes.size(); i++)
-//        {
-//            compoundShape->addChildShape(Utils::convertGLMTransformToBullet(localTransforms.at(i)), shapes.at(i));
-//        }
-//        return compoundShape;
-//    }
-//
-//    void getCollisionShapeAABB(btCollisionShape* collisionShape, glm::vec3& min, glm::vec3& max)
-//    {
-//        btVector3 minAABBBullet, maxAABBBullet;
-//        collisionShape->getAabb(btTransform::getIdentity(), minAABBBullet, maxAABBBullet);
-//        min = Utils::convertBulletVectorToGLM(minAABBBullet);
-//        max = Utils::convertBulletVectorToGLM(maxAABBBullet);
-//    }
-//
-//}
-//
+#include <Box2D/Box2D.h>
+#include <glm/gtc/type_ptr.hpp>
+#include "Globals.h"
+#include "UIManager.h"
+#include "Common.h"
+#include "Entity.h"
+#include "PhysicsComponent.h"
+#include "GameManager.h"
+
+const float PhysicsManager::PHYSICS_SCALE = 1.0f / 100.0f;
+const float PhysicsManager::PHYSICS_TIMESTEP = 1.0f / 60.0f;
+const int PhysicsManager::POSITION_ITERATIONS = 3;
+const int PhysicsManager::VELOCITY_ITERATIONS = 8;
+const float PhysicsManager::GRAVITY = -10.0f;
+const uint PhysicsManager::MASK_DEFAULT = 0xFFFF;
+const uint PhysicsManager::COLLISION_NONE = 0x00;
+const uint PhysicsManager::COLLISION_DEFAULT = 0x01;
+
+PhysicsManager::PhysicsManager()
+{
+   // Create world
+    m_world = new b2World(b2Vec2(0.0f, GRAVITY));
+    b2ContactListener* contactListener = new ContactListener();
+    m_world->SetContactListener(contactListener);
+}
+
+PhysicsManager::~PhysicsManager()
+{
+    delete m_world;
+}
+
+void PhysicsManager::update()
+{
+    m_world->Step(PHYSICS_TIMESTEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+    m_world->ClearForces();
+
+    // Destroy the bodies that were marked for destruction during the timestep
+    destroyMarkedBodies();
+}
+
+void PhysicsManager::destroyPhysicsComponent(PhysicsComponent* physicsComponent)
+{
+    b2Body* body = physicsComponent->m_body;
+    body->SetUserData(0);
+    m_bodiesToDestroy.push_back(body);
+    // Body is fully destroyed after the time step
+}
+
+
+void PhysicsManager::destroyMarkedBodies()
+{
+    for (auto& body : m_bodiesToDestroy)
+    {
+        m_world->DestroyBody(body);
+    }
+
+    m_bodiesToDestroy.clear();
+}
+
+ContactListener::ContactListener() : b2ContactListener()
+{
+
+}
+
+void ContactListener::BeginContact(b2Contact* contact)
+{
+    Entity* obj1 = (Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
+    Entity* obj2 = (Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
+    
+    if (obj1 != 0 && obj2 != 0)
+    {
+        obj1->onCollisionEnter(obj2);
+        obj2->onCollisionEnter(obj1);
+    }
+}
+
+void ContactListener::EndContact(b2Contact* contact)
+{
+    Entity* obj1 = (Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
+    Entity* obj2 = (Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+    if (obj1 != 0 && obj2 != 0)
+    {
+        obj1->onCollisionLeave(obj2);
+        obj2->onCollisionEnter(obj1);
+    }
+}
+
+void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+{
+
+}
+
+namespace Utils
+{
+    b2PolygonShape* createBoxShape(float width, float height)
+    {
+        b2PolygonShape* shape = new b2PolygonShape();
+        shape->SetAsBox(width / 2, height / 2);
+        return shape;
+    }
+
+    b2CircleShape* createCircleShape(float radius)
+    {
+        b2CircleShape* shape = new b2CircleShape();
+        shape->m_radius = radius;
+        return shape;
+    }
+
+    b2PolygonShape* createPolyShape(const std::vector<b2Vec2>& points)
+    {
+        // Only creates convex hull shapes for now. Concave shapes require triangulation.
+        b2PolygonShape* shape = new b2PolygonShape();
+        shape->Set(&points[0], points.size());
+        return shape;
+    }
+
+
+
+}

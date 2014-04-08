@@ -17,6 +17,6 @@ public:
     static UIManager* m_uiManager;
     static DataManager* m_dataManager;
     static GameManager* m_gameManager;
-    //static PhysicsManager* m_physicsManager;
+    static PhysicsManager* m_physicsManager;
 
 };

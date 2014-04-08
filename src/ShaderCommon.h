@@ -15,9 +15,8 @@ namespace ShaderCommon
     const uint NORMAL_TEXTURE                       = 1;
     const uint SPECULAR_TEXTURE                     = 2;
     const uint REFLECT_TEXTURE                      = 3;
-    const uint SKYBOX_TEXTURE                       = 4;
-    const uint COLOR_FBO_TEXTURE_BINDING            = 5;
-    const uint NON_USED_TEXTURE_BINDING             = 6; // Used for modifying textures that shouldn't be bound to a binding point
+    const uint COLOR_FBO_TEXTURE_BINDING            = 4;
+    const uint NON_USED_TEXTURE_BINDING             = 5; // Used for modifying textures that shouldn't be bound to a binding point
 
     // Vertex attribute indexes                                     
     const uint POSITION_ATTR                        = 0;
@@ -42,7 +41,6 @@ namespace ShaderCommon
     struct PerFrameGL
     {
         glm::mat4 viewProjection;
-        glm::mat4 skyboxMVP;
         glm::vec3 cameraPos;
     };
 

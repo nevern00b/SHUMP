@@ -28,7 +28,6 @@ public:
     void removeEntity(Entity* entity);
     void removeDirLight(DirLight* dirLight);
     void removePointLight(PointLight* pointLight);
-    void setSkybox(const std::string& filename);
 
     Entity* m_rootEntity;
     Camera* m_camera;

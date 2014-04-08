@@ -33,16 +33,35 @@ void GameManager::init()
     m_rootEntity = new Entity(0, 0, Transform());
     m_rootEntity->m_name = "Root";
 
+    // Create cube
     Material* cubeMaterial = new Material();
     cubeMaterial->m_diffuseColor = glm::vec4(1, 0, 0, 1);
+    b2Shape* cubeShape = Utils::createBoxShape(1.0f, 1.0f);
+    PhysicsData* cubePhysics = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
+    
     EntityData cubeData;
     cubeData.m_mesh = Globals::m_dataManager->getMesh("cube");
     cubeData.m_materials.push_back(cubeMaterial);
-    Entity* cube = new Entity(0, &cubeData, Transform());
+    cubeData.m_physics = cubePhysics;
 
+    Entity* cube = new Entity(0, &cubeData, Transform(glm::vec3(0,5,0)));
+
+    // Create floor
+    PhysicsData* floorPhysics = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
+    floorPhysics->m_bodyType = b2_staticBody;
+
+    EntityData floorData;
+    floorData.m_mesh = Globals::m_dataManager->getMesh("cube");
+    floorData.m_materials.push_back(cubeMaterial);
+    floorData.m_physics = floorPhysics;
+
+    Entity* floor = new Entity(0, &floorData, Transform(glm::vec3(0, 0, 0)));
+
+
+    // Create lights
     PointLight* light = new PointLight(0, new LightData(glm::vec3(1, 1, 1), 40), Transform(glm::vec3(5, 10, 0)));
     DirLight* dirlight = new DirLight(0, new LightData(glm::vec3(1, 1, 1), 0), Transform());
-    dirlight->m_transform->applyRotation(90, glm::vec3(1, 0, 0));
+    dirlight->m_transform->rotate(90, glm::vec3(1, 0, 0));
 
     CameraData cameraData(45.0f);
     Camera* camera = new Camera(0, &cameraData, Transform());

@@ -1,140 +1,99 @@
 #include "PhysicsComponent.h"
 
-//#include <btBulletCollisionCommon.h>
-//#include <btBulletDynamicsCommon.h>
-//#include <BulletCollision/CollisionShapes/btMaterial.h>
-//#include "Utils.h"
-//#include "Globals.h"
-//#include "PhysicsManager.h"
-//#include "Mesh.h"
-//
-//
-//PhysicsComponent::PhysicsComponent(Entity* entity, PhysicsData* physicsData, const Transform& transform) : Transform(transform),
-//    m_collisionShape(physicsData->m_collisionShape)
-//{
-//    btVector3 localInertia(0, 0, 0);
-//    float mass = physicsData->m_mass;
-//    if (mass > 0.0f)
-//    {
-//        m_collisionShape->calculateLocalInertia(mass, localInertia);
-//    }
-//
-//    glm::mat4 matrix = transform.getMatrix();
-//    btTransform initTransform = Utils::convertGLMTransformToBullet(matrix);
-//    btDefaultMotionState* motionState = new btDefaultMotionState(initTransform);
-//
-//    btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, m_collisionShape, localInertia);
-//    m_rigidBody = new btRigidBody(rbInfo);
-//    m_rigidBody->setUserPointer(entity);
-//
-//    if (physicsData->m_physicsMaterialOverride) // Multimaterial tri-mesh need to do this 
-//    {
-//        m_rigidBody->setCollisionFlags(m_rigidBody->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-//    } 
-//    else
-//    {
-//        m_rigidBody->setFriction(physicsData->m_friction);
-//        m_rigidBody->setRestitution(physicsData->m_restitution);
-//    }
-//
-//
-//
-//    Globals::m_physicsManager->m_world->addRigidBody(m_rigidBody);
-//}
-//
-//PhysicsComponent::~PhysicsComponent()
-//{
-//    btDiscreteDynamicsWorld* world = Globals::m_physicsManager->m_world;
-//
-//    // Delete constraints
-//    while (m_rigidBody->getNumConstraintRefs())
-//    {
-//        btTypedConstraint* constraint = m_rigidBody->getConstraintRef(0);
-//        Globals::m_physicsManager->m_world->removeConstraint(constraint);
-//        delete constraint;
-//    }
-//
-//    world->removeRigidBody(m_rigidBody);
-//    delete m_rigidBody->getMotionState();
-//    delete m_rigidBody;
-//    // Collision shape is destroyed in PhysicsData
-//}
-//
-//void PhysicsComponent::setRotation(const glm::quat& quat)
-//{
-//    btTransform worldTransform = m_rigidBody->getWorldTransform();
-//    worldTransform.setRotation(Utils::convertGLMQuaternionToBullet(quat));
-//    m_rigidBody->setWorldTransform(worldTransform);
-//}
-//
-//void PhysicsComponent::setTranslation(const glm::vec3& translation)
-//{
-//    btTransform worldTransform = m_rigidBody->getWorldTransform();
-//    worldTransform.setOrigin(Utils::convertGLMVectorToBullet(translation));
-//    m_rigidBody->setWorldTransform(worldTransform);
-//}
-//
-//void PhysicsComponent::setScale(const glm::vec3& scale)
-//{
-//    // TO-DO: copy the collision shape when this happens because we don't want other objects to be scaled
-//    m_rigidBody->getCollisionShape()->setLocalScaling(Utils::convertGLMVectorToBullet(scale));
-//}
-//
-//glm::mat4 PhysicsComponent::getMatrix() const
-//{
-//    return Utils::convertBulletTransformToGLM(m_rigidBody->getWorldTransform());
-//}
-//
-//PhysicsMesh::PhysicsMesh(btTriangleIndexVertexArray* triangleMeshData, float* vertices, ushort* indices, uchar* triangleMaterials, btMaterial* materials) :
-//    m_triangleMeshData(triangleMeshData),
-//    m_vertices(vertices),
-//    m_indices(indices),
-//    m_triangleMaterials(triangleMaterials),
-//    m_materials(materials)
-//{
-//
-//}
-//
-//PhysicsMesh::~PhysicsMesh()
-//{
-//    delete m_triangleMeshData;
-//    delete[] m_vertices;
-//    delete[] m_indices;
-//    delete[] m_triangleMaterials;
-//    delete[] m_materials;
-//}
-//
-//PhysicsData::PhysicsData() :
-//    m_physicsMaterialOverride(false),
-//    m_physicsMesh(0)
-//{
-//
-//}
-//
-//PhysicsData::PhysicsData(float mass, float friction, float restitution, btCollisionShape* collisionShape) :
-//    m_collisionShape(collisionShape),
-//    m_mass(mass),
-//    m_friction(friction),
-//    m_restitution(restitution),
-//    m_physicsMaterialOverride(false),
-//    m_physicsMesh(0)
-//{
-//
-//}
-//
-//PhysicsData::~PhysicsData()
-//{
-//    // Delete any collision shapes that make up the compound shape
-//    if (m_collisionShape->isCompound())
-//    {
-//        btCompoundShape* m_compoundShape = (btCompoundShape*)m_collisionShape;
-//        for (int i = 0; i < m_compoundShape->getNumChildShapes(); i++)
-//        {
-//            delete m_compoundShape->getChildShape(i);
-//        }
-//    }
-//
-//    // Delete the collision shape (either compound shape or not)
-//    delete m_collisionShape;
-//    delete m_physicsMesh;
-//}
+#include <Box2D/Box2D.h>
+#include "Utils.h"
+#include "Globals.h"
+#include "PhysicsManager.h"
+#include "Mesh.h"
+#include "Entity.h"
+
+
+PhysicsComponent::PhysicsComponent(Entity* entity, PhysicsData* physicsData, const Transform& transform) : Transform(transform)
+{
+    // Create the b2body
+    b2BodyDef bodyDef;
+    bodyDef.position = b2Vec2(m_translation.x, m_translation.y);
+    bodyDef.linearVelocity = b2Vec2(physicsData->m_vx, physicsData->m_vy);
+    bodyDef.type = physicsData->m_bodyType;
+    bodyDef.userData = entity;
+    bodyDef.fixedRotation = true;
+
+    m_body = Globals::m_physicsManager->m_world->CreateBody(&bodyDef);
+
+    // Create fixture and add to body
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = physicsData->m_shape;
+    fixtureDef.density = physicsData->m_density;
+    fixtureDef.friction = physicsData->m_friction;
+    fixtureDef.restitution = physicsData->m_restitution;
+    fixtureDef.isSensor = physicsData->m_isSensor;
+    fixtureDef.filter.categoryBits = physicsData->m_categoryBits;
+    fixtureDef.filter.maskBits = physicsData->m_maskBits;
+    fixtureDef.filter.groupIndex = physicsData->m_groupIndex;
+    fixtureDef.userData = 0;
+
+    m_body->CreateFixture(&fixtureDef);
+
+    //m_body->SetAwake(true);
+}
+
+PhysicsComponent::~PhysicsComponent()
+{
+    Globals::m_physicsManager->destroyPhysicsComponent(this);
+}
+
+void PhysicsComponent::update()
+{
+    // Translate in the XY plane, use Z for depth ordering of objects
+    float z = m_translation.z;
+    b2Vec2 pos = m_body->GetPosition();
+    glm::vec3 translation(pos.x, pos.y, z);
+
+    // Rotate about the z-axis
+    float angle = m_body->GetAngle();
+    glm::mat4 matrix = glm::mat4_cast(glm::angleAxis(angle, glm::vec3(0, 0, 1)));
+    matrix[3] = glm::vec4(translation, 1.0f);
+
+    m_matrix = matrix;
+    m_rotation = glm::angleAxis(angle, glm::vec3(0, 0, 1));
+    m_translation = translation;
+}
+
+void PhysicsComponent::setRotation(const glm::quat& quat)
+{
+    // TO-DO: is this safe to do, or should we apply torque instead
+    float angle = 2 * glm::acos(quat.w);
+    m_body->SetTransform(m_body->GetPosition(), glm::radians(angle));
+}
+
+void PhysicsComponent::setTranslation(const glm::vec3& translation)
+{
+    // TO-DO: is this safe to do, or should we apply temporary linear velocity instead
+    m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
+}
+
+void PhysicsComponent::setScale(const glm::vec3& scale)
+{
+    // Nothing
+}
+
+PhysicsData::PhysicsData(b2Shape* shape, float density, float friction, float restitution) :
+    m_shape(shape),
+    m_density(density),
+    m_friction(friction),
+    m_restitution(restitution),
+    m_bodyType(b2_dynamicBody),
+    m_isSensor(false),
+    m_categoryBits(PhysicsManager::COLLISION_DEFAULT),
+    m_maskBits(PhysicsManager::MASK_DEFAULT),
+    m_groupIndex(0),
+    m_vx(0.0f),
+    m_vy(0.0f)
+{
+
+}
+
+PhysicsData::~PhysicsData()
+{
+    // TO-DO: Delete physics shape somewhere, maybe here
+}

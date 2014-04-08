@@ -12,7 +12,6 @@
 #include "Light.h"
 
 RenderManager::RenderManager() :
-    m_skyboxTexture(0),
     m_lightBufferDirty(false)
 {
     // Init GL state
@@ -60,15 +59,10 @@ void RenderManager::render()
     m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
     glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
 
-    glm::mat4 skyboxModelMatrix;
-    skyboxModelMatrix[3] = glm::vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1.0f);
-    glm::mat4 skyboxMVP = viewProjectionMatrix * skyboxModelMatrix;
-
     // Update the per frame buffer
     ShaderCommon::PerFrameGL perFrame;
     perFrame.cameraPos = cameraPos;
     perFrame.viewProjection = viewProjectionMatrix;
-    perFrame.skyboxMVP = skyboxMVP;
     m_perFrameBuffer->updateAll(&perFrame);
 
     // Update lighting buffer

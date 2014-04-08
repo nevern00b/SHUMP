@@ -9,6 +9,7 @@ class PhysicsComponent;
 struct EntityData;
 class Mesh;
 class Material;
+struct PhysicsData;
 
 class Entity
 {
@@ -20,6 +21,9 @@ public:
     virtual void update();
     void render();
     glm::vec3 getPosition();
+
+    void onCollisionEnter(Entity* collider);
+    void onCollisionLeave(Entity* collider);
 
     Entity* m_parent;
     std::list<Entity*> m_children;
@@ -41,4 +45,5 @@ struct EntityData
     EntityData();
     Mesh* m_mesh;
     std::vector<Material*> m_materials;
+    PhysicsData* m_physics;
 };

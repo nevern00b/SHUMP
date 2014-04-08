@@ -7,7 +7,7 @@
 #include "RenderManager.h"
 #include "ShaderCommon.h"
 #include "Mesh.h"
-//#include "PhysicsComponent.h"
+#include "PhysicsComponent.h"
 
 Entity::Entity(Entity* parent, EntityData* data, const Transform& transform)
 {
@@ -17,10 +17,11 @@ Entity::Entity(Entity* parent, EntityData* data, const Transform& transform)
 
     m_mesh = data == 0 ? 0 : data->m_mesh;
     if (data != 0) m_materials = data->m_materials;
-    //m_physics = physicsData == 0 ? 0 : new PhysicsComponent(this, physicsData, transform);
-    //m_transform = m_physics == 0 ? new Transform(transform) : m_physics;
-    
-    m_transform = new Transform(transform);
+
+
+    PhysicsData* physicsData = data == 0 ? 0 : data->m_physics;
+    m_physics = physicsData == 0 ? 0 : new PhysicsComponent(this, physicsData, transform);
+    m_transform = m_physics == 0 ? new Transform(transform) : m_physics;    
 
     Globals::m_gameManager->addEntity(this);
 }
@@ -41,7 +42,8 @@ Entity::~Entity()
 void Entity::update()
 {
     // Concat parent's matrix to get render matrix
-    m_renderMatrix = m_transform->getMatrix();
+    m_transform->update();
+    m_renderMatrix = m_transform->m_matrix;
     if (m_parent != 0)
     {
         m_renderMatrix = m_parent->m_renderMatrix * m_renderMatrix;
@@ -70,9 +72,19 @@ glm::vec3 Entity::getPosition()
     return glm::vec3(m_renderMatrix[3]);
 }
 
+void Entity::onCollisionEnter(Entity* collider)
+{
+    //printf("collision enter");
+}
+
+void Entity::onCollisionLeave(Entity* collider)
+{
+    //printf("collision leave");
+}
 
 EntityData::EntityData() : 
-    m_mesh(0)
+    m_mesh(0),
+    m_physics(0)
 {
 
 }
