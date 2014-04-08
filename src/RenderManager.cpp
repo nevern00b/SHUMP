@@ -56,7 +56,9 @@ void RenderManager::render()
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
-    m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+    //m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+    float orthoSize = 10.0f;
+    m_projMatrix = glm::ortho(-orthoSize*aspectRatio, orthoSize*aspectRatio, -orthoSize, orthoSize, 0.1f, 1000.0f);
     glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
 
     // Update the per frame buffer

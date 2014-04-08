@@ -13,7 +13,8 @@ Camera::Camera(Entity* parent, CameraData* data, const Transform& transform) : E
     m_rotationOldAverageY(0.0f),
     m_panOldAverageX(0.0f),
     m_panOldAverageY(0.0f),
-    m_zoomOldAverage(0.0f)
+    m_zoomOldAverage(0.0f),
+    m_disabled(true)
 {
     // Convert transformation matrix to euler angles
     glm::mat4 rotation = glm::mat4_cast(m_transform->m_rotation);
@@ -31,6 +32,12 @@ Camera::~Camera()
 
 void Camera::update()
 {
+    if (m_disabled)
+    {
+        Entity::update();
+        return;
+    }
+
     float adjust = Globals::m_uiManager->getFramerateAdjust();
     float newRotationX = 0.0f;
     float newRotationY = 0.0f;

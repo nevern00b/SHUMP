@@ -41,6 +41,8 @@ private:
     float m_panOldAverageY;
     float m_zoomOldAverage;
 
+    bool m_disabled;
+
 };
 
 struct CameraData : public EntityData

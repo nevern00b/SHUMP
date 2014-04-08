@@ -8,6 +8,7 @@
 #include "DataManager.h"
 #include "GameManager.h"
 #include "PhysicsManager.h"
+#include "ShmupGame.h"
 
 void glfwErrorCallback(int error, const char* description)
 {
@@ -146,7 +147,7 @@ void Globals::init()
     m_dataManager = new DataManager();
     m_physicsManager = new PhysicsManager();
     m_renderManager = new RenderManager();
-    m_gameManager = new GameManager();
+    m_gameManager = new ShmupGame();
     m_gameManager->init();
     
     // Set glfw window callbacks to UIManager

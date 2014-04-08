@@ -16,9 +16,9 @@ public:
 
     GameManager();
     ~GameManager();
-    void init();
+    virtual void init();
 
-    void update();
+    virtual void update();
 
     Entity* getEntity(const std::string& name);
     void addEntity(Entity* entity);
