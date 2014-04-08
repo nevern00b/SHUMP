@@ -5,8 +5,8 @@
 #include "UIManager.h"
 #include "DataManager.h"
 
-Camera::Camera(Entity* parent, CameraData* data, const Transform& transform) : Entity(parent, data, transform),
-    m_fov(data->m_fov),
+Camera::Camera(Entity* parent, float fov) : Entity(parent),
+    m_fov(m_fov),
     m_angleHorizontal(0.0f),
     m_angleVertical(0.0f),
     m_rotationOldAverageX(0.0f),
@@ -155,15 +155,4 @@ glm::mat4 Camera::getViewMatrix()
     glm::mat4 viewMatrix = m_renderMatrix;
     viewMatrix = glm::inverse(viewMatrix);
     return viewMatrix;
-}
-
-CameraData::CameraData(float fov) : EntityData(),
-    m_fov(fov)
-{
-
-}
-
-CameraData::~CameraData()
-{
-
 }

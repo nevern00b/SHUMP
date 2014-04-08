@@ -9,7 +9,7 @@ class Camera : public Entity
 
 public:
 
-    Camera(Entity* parent, CameraData* data, const Transform& transform);
+    Camera(Entity* parent, float fov);
     virtual ~Camera();
     virtual void update();
 
@@ -43,11 +43,4 @@ private:
 
     bool m_disabled;
 
-};
-
-struct CameraData : public EntityData
-{
-    CameraData(float fov);
-    virtual ~CameraData();
-    float m_fov;
 };

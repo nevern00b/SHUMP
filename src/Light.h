@@ -8,7 +8,7 @@ struct LightData;
 class Light : public Entity
 {
 public:
-    Light(Entity* parent, LightData* lightData, const Transform& transform);
+    Light(Entity* parent, const glm::vec3& color);
     virtual ~Light();
 
     glm::vec3 m_color;
@@ -17,7 +17,7 @@ public:
 class DirLight : public Light
 {
 public:
-    DirLight(Entity* parent, LightData* data, const Transform& transform);
+    DirLight(Entity* parent, const glm::vec3& color);
     virtual ~DirLight();
     glm::vec3 getDirection();
 };
@@ -25,16 +25,8 @@ public:
 class PointLight : public Light
 {
 public:
-    PointLight(Entity* parent, LightData* data, const Transform& transform);
+    PointLight(Entity* parent, const glm::vec3& color, float radius);
     virtual ~PointLight();
 
-    float m_radius;
-};
-
-struct LightData : public EntityData
-{
-    LightData(const glm::vec3& color, float radius);
-    virtual ~LightData();
-    glm::vec3 m_color;
     float m_radius;
 };

@@ -6,14 +6,19 @@
 #include "PhysicsManager.h"
 #include "Mesh.h"
 #include "Entity.h"
+#include "Transform.h"
 
 
-PhysicsComponent::PhysicsComponent(Entity* entity, PhysicsData* physicsData, const Transform& transform) : Transform(transform)
+PhysicsComponent::PhysicsComponent(Entity* entity, PhysicsData* physicsData) : Transform(entity)
 {
+    delete entity->m_transform;
+    entity->m_physics = this;
+    entity->m_transform = this;
+
     // Create the b2body
     b2BodyDef bodyDef;
-    bodyDef.position = b2Vec2(m_translation.x, m_translation.y);
-    bodyDef.linearVelocity = b2Vec2(physicsData->m_vx, physicsData->m_vy);
+    //bodyDef.position = b2Vec2(m_translation.x, m_translation.y);
+    //bodyDef.linearVelocity = b2Vec2(physicsData->m_vx, physicsData->m_vy);
     bodyDef.type = physicsData->m_bodyType;
     bodyDef.userData = entity;
     bodyDef.fixedRotation = true;
@@ -33,8 +38,6 @@ PhysicsComponent::PhysicsComponent(Entity* entity, PhysicsData* physicsData, con
     fixtureDef.userData = 0;
 
     m_body->CreateFixture(&fixtureDef);
-
-    //m_body->SetAwake(true);
 }
 
 PhysicsComponent::~PhysicsComponent()

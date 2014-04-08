@@ -6,16 +6,17 @@
 #include "Transform.h"
 
 class PhysicsComponent;
-struct EntityData;
 class Mesh;
 class Material;
 struct PhysicsData;
+class Component;
+class RenderComponent;
 
 class Entity
 {
 public:
 
-    Entity(Entity* parent, EntityData* data, const Transform& transform);
+    Entity(Entity* parent);
     virtual ~Entity();
 
     virtual void update();
@@ -31,19 +32,10 @@ public:
     
     glm::mat4 m_renderMatrix;
 
-    Mesh* m_mesh;
-    std::vector<Material*> m_materials;
+    RenderComponent* m_render;
     Transform* m_transform; // Equals m_physics if entity has physics
     PhysicsComponent* m_physics;
 
-private:
+    std::list<Component*> m_components;
     
-};
-
-struct EntityData
-{
-    EntityData();
-    Mesh* m_mesh;
-    std::vector<Material*> m_materials;
-    PhysicsData* m_physics;
 };

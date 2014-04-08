@@ -8,20 +8,16 @@
 #include "ShaderCommon.h"
 #include "Mesh.h"
 #include "PhysicsComponent.h"
+#include "RenderComponent.h"
 
-Entity::Entity(Entity* parent, EntityData* data, const Transform& transform)
+Entity::Entity(Entity* parent) :
+    m_render(0),
+    m_physics(0)
 {
     m_parent = parent == 0 ? Globals::m_gameManager->m_rootEntity : parent;
     if (m_parent != 0) m_parent->m_children.push_back(this);
 
-
-    m_mesh = data == 0 ? 0 : data->m_mesh;
-    if (data != 0) m_materials = data->m_materials;
-
-
-    PhysicsData* physicsData = data == 0 ? 0 : data->m_physics;
-    m_physics = physicsData == 0 ? 0 : new PhysicsComponent(this, physicsData, transform);
-    m_transform = m_physics == 0 ? new Transform(transform) : m_physics;    
+    m_transform = new Transform(this);
 
     Globals::m_gameManager->addEntity(this);
 }
@@ -58,13 +54,13 @@ void Entity::update()
 
 void Entity::render()
 {
-    if (m_mesh == 0) return; // Don't render if there isn't a mesh
+    if (!m_render) return;
 
     ShaderCommon::TransformGL transform;
     transform.modelMatrix = m_renderMatrix;
     Globals::m_renderManager->renderTransform(transform);
 
-    m_mesh->render(m_materials);
+    m_render->render();
 }
 
 glm::vec3 Entity::getPosition()
@@ -80,11 +76,4 @@ void Entity::onCollisionEnter(Entity* collider)
 void Entity::onCollisionLeave(Entity* collider)
 {
     //printf("collision leave");
-}
-
-EntityData::EntityData() : 
-    m_mesh(0),
-    m_physics(0)
-{
-
 }

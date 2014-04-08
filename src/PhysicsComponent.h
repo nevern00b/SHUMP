@@ -11,8 +11,8 @@ struct PhysicsData;
 class PhysicsComponent : public Transform
 {
 public:
-    PhysicsComponent(Entity* entity, PhysicsData* physicsData, const Transform& transform);
-    ~PhysicsComponent();
+    PhysicsComponent(Entity* entity, PhysicsData* physicsData);
+    virtual ~PhysicsComponent();
 
     virtual void update();
     virtual void setRotation(const glm::quat& quat);

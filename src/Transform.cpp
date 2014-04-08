@@ -1,12 +1,20 @@
 #include "Transform.h"
 
-Transform::Transform() :
+
+
+Transform::Transform(Entity* entity) : Component(entity),
     m_scale(1, 1, 1)
 {
 
 }
 
-Transform::Transform(const glm::vec3& translation, const glm::vec3& scale, const glm::quat& rotation) :
+Transform::Transform() : Component(),
+    m_scale(1, 1, 1)
+{
+
+}
+
+Transform::Transform(const glm::vec3& translation, const glm::vec3& scale, const glm::quat& rotation) : Component(),
     m_translation(translation),
     m_scale(scale),
     m_rotation(rotation)
@@ -14,7 +22,7 @@ Transform::Transform(const glm::vec3& translation, const glm::vec3& scale, const
 
 }
 
-Transform::Transform(const glm::vec3& translation) :
+Transform::Transform(const glm::vec3& translation) : Component(),
     m_translation(translation),
     m_scale(1, 1, 1)
 {

@@ -5,8 +5,8 @@
 #include "DataManager.h"
 #include "Material.h"
 
-Light::Light(Entity* parent, LightData* data, const Transform& transform) : Entity(parent, data, transform),
-    m_color(data->m_color)
+Light::Light(Entity* parent, const glm::vec3& color) : Entity(parent),
+    m_color(color)
 {
     
 }
@@ -18,7 +18,7 @@ Light::~Light()
 
 
 
-DirLight::DirLight(Entity* parent, LightData* data, const Transform& transform) : Light(parent, data, transform)
+DirLight::DirLight(Entity* parent, const glm::vec3& color) : Light(parent, color)
 {
     Globals::m_gameManager->addDirLight(this);
 }
@@ -33,8 +33,8 @@ glm::vec3 DirLight::getDirection()
     return m_transform->getForwardVector();
 }
 
-PointLight::PointLight(Entity* parent, LightData* data, const Transform& transform) : Light(parent, data, transform),
-    m_radius(data->m_radius)
+PointLight::PointLight(Entity* parent, const glm::vec3& color, float radius) : Light(parent, color),
+    m_radius(radius)
 {
     Globals::m_gameManager->addPointLight(this);
 }
@@ -42,16 +42,4 @@ PointLight::PointLight(Entity* parent, LightData* data, const Transform& transfo
 PointLight::~PointLight()
 {
     Globals::m_gameManager->removePointLight(this);
-}
-
-LightData::LightData(const glm::vec3& color, float radius) : EntityData(),
-    m_color(color),
-    m_radius(radius)
-{
-
-}
-
-LightData::~LightData()
-{
-
 }

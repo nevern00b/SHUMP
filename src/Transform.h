@@ -1,17 +1,21 @@
 #pragma once
 
+#include "Component.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-class Transform
+
+class Transform : public Component
 {
 public:
     // All rotations are in degrees
 
     Transform();
+    Transform(Entity* entity);
     Transform(const glm::vec3& translation, const glm::vec3& scale, const glm::quat& rotation);
     Transform(const glm::vec3& translation);
-    ~Transform();
+    virtual ~Transform();
     
     virtual void update();
 
@@ -42,9 +46,4 @@ public:
     glm::quat m_rotation;
     glm::vec3 m_translation;
     glm::vec3 m_scale;
-
-protected:
-
-    
-
 };

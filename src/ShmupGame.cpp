@@ -14,6 +14,7 @@
 #include "PhysicsComponent.h"
 #include "Entity.h"
 #include "PhysicsManager.h"
+#include "RenderComponent.h"
 
 ShmupGame::ShmupGame() : GameManager()
 {
@@ -35,37 +36,41 @@ void ShmupGame::init()
     Material* greenMaterial = new Material();
     greenMaterial->m_diffuseColor = glm::vec4(0, 1, 0, 1);
 
-    // Create player
-    
-    
     b2Shape* cubeShape = Utils::createBoxShape(1.0f, 1.0f);
-    PhysicsData* cubePhysics = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
+    Mesh* cubeMesh = Globals::m_dataManager->getMesh("cube");
 
-    EntityData cubeData;
-    cubeData.m_mesh = Globals::m_dataManager->getMesh("cube");
-    cubeData.m_materials.push_back(greenMaterial);
-    cubeData.m_physics = cubePhysics;
+    // Create player
+    m_player = new Entity(0);
 
-    m_player = new Entity(0, &cubeData, Transform(glm::vec3(0, 5, 0)));
+    PhysicsData* playerPhysicsData = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
+    PhysicsComponent* playerPhysics = new PhysicsComponent(m_player, playerPhysicsData);
+
+    std::vector<Material*> playerMaterials = {greenMaterial};
+    RenderComponent* playerRender = new RenderComponent(m_player, cubeMesh, playerMaterials);
+
+    m_player->m_transform->setTranslation(0, 5);
+
 
     // Create floor
-    PhysicsData* floorPhysics = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
-    floorPhysics->m_bodyType = b2_staticBody;
 
-    EntityData floorData;
-    floorData.m_mesh = Globals::m_dataManager->getMesh("cube");
-    floorData.m_materials.push_back(redMaterial);
-    floorData.m_physics = floorPhysics;
+    Entity* floor = new Entity(0);
 
-    Entity* floor = new Entity(0, &floorData, Transform(glm::vec3(0, 0, 0)));
+    PhysicsData* floorPhysicsData = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
+    floorPhysicsData->m_bodyType = b2_staticBody;
+    PhysicsComponent* floorPhysics = new PhysicsComponent(floor, floorPhysicsData);
+
+    std::vector<Material*> floorMaterials = { redMaterial };
+    RenderComponent* floorRender = new RenderComponent(floor, cubeMesh, floorMaterials);
+    
 
     // Create lights
-    PointLight* light = new PointLight(0, new LightData(glm::vec3(1, 1, 1), 40), Transform(glm::vec3(5, 10, 0)));
-    DirLight* dirlight = new DirLight(0, new LightData(glm::vec3(1, 1, 1), 0), Transform());
+    PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
+    light->m_transform->setTranslation(glm::vec3(5, 10, 0));
+
+    DirLight* dirlight = new DirLight(0, glm::vec3(1, 1, 1));
     dirlight->m_transform->rotate(90, glm::vec3(1, 0, 0));
 
-    CameraData cameraData(45.0f);
-    Camera* camera = new Camera(0, &cameraData, Transform());
+    Camera* camera = new Camera(0, 45.0f);
     camera->setZoom(20);
 }
 

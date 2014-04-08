@@ -30,7 +30,7 @@ GameManager::~GameManager()
 
 void GameManager::init()
 {
-    m_rootEntity = new Entity(0, 0, Transform());
+    m_rootEntity = new Entity(0);
     m_rootEntity->m_name = "Root";
 }
 
@@ -56,12 +56,6 @@ Entity* GameManager::getEntity(const std::string& name)
 void GameManager::addEntity(Entity* entity)
 {
     m_entities.push_back(entity);
-
-    // If the entity is renderable, send it to the render manager
-    if (entity->m_mesh != 0)
-    {
-        Globals::m_renderManager->addEntity(entity);
-    }
 }
 
 void GameManager::addDirLight(DirLight* dirLight)
@@ -84,12 +78,6 @@ void GameManager::setCamera(Camera* camera)
 void GameManager::removeEntity(Entity* entity)
 {
     m_entities.remove(entity);
-
-    // If the entity is renderable, send it to the render manager
-    if (entity->m_mesh != 0)
-    {
-        Globals::m_renderManager->removeEntity(entity);
-    }
 }
 
 void GameManager::removeDirLight(DirLight* dirLight)
