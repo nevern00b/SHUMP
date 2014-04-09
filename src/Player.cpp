@@ -52,8 +52,18 @@ void Player::update()
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
         desiredVel.y -= speed;
 
+    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
+    {
+        shoot();
+    }
+
 
     b2Vec2 velChange = desiredVel - vel;
     b2Vec2 impulse = body->GetMass() * velChange;
     body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
+}
+
+void Player::shoot()
+{
+
 }

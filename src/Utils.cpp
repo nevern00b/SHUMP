@@ -9,6 +9,9 @@
 #include "GameManager.h"
 #include "RenderManager.h"
 #include "Camera.h"
+#include "GLFW/glfw3.h"
+#include "Globals.h"
+#include "UIManager.h"
 
 namespace Utils
 {
@@ -23,4 +26,33 @@ namespace Utils
         return std::string(std::istreambuf_iterator<char>(stream),
             std::istreambuf_iterator<char>());
     }
+}
+
+
+
+Timer::Timer() :
+	m_timeElapsed(0.0f)
+{
+
+}
+
+Timer::~Timer()
+{
+
+}
+
+void Timer::start()
+{
+	m_startTime = (float)glfwGetTime();
+}
+
+void Timer::stop()
+{
+	float currTime = (float)glfwGetTime();
+	m_timeElapsed = currTime - m_startTime;
+}
+
+float Timer::getTimeElapsed()
+{
+	return m_timeElapsed;
 }

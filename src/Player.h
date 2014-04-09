@@ -9,4 +9,7 @@ public:
     virtual ~Player();
 
     virtual void update();
+
+private:
+    void shoot();
 };

@@ -14,7 +14,6 @@ const float PhysicsManager::PHYSICS_SCALE = 1.0f / 100.0f;
 const float PhysicsManager::PHYSICS_TIMESTEP = 1.0f / 60.0f;
 const int PhysicsManager::POSITION_ITERATIONS = 3;
 const int PhysicsManager::VELOCITY_ITERATIONS = 8;
-const float PhysicsManager::GRAVITY = 0.0f;
 const uint PhysicsManager::MASK_DEFAULT = 0xFFFF;
 const uint PhysicsManager::COLLISION_NONE = 0x00;
 const uint PhysicsManager::COLLISION_DEFAULT = 0x01;
@@ -22,7 +21,8 @@ const uint PhysicsManager::COLLISION_DEFAULT = 0x01;
 PhysicsManager::PhysicsManager()
 {
    // Create world
-    m_world = new b2World(b2Vec2(0.0f, GRAVITY));
+    m_world = new b2World(b2Vec2(0.0f, 0.0f));
+    m_world->SetAllowSleeping(false);
     b2ContactListener* contactListener = new ContactListener();
     m_world->SetContactListener(contactListener);
 }

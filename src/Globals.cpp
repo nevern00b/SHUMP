@@ -1,6 +1,7 @@
 #include "Globals.h"
 
 #include <string>
+#include <sstream>
 #include <glm/glm.hpp>
 #include "Common.h"
 #include "UIManager.h"
@@ -156,6 +157,11 @@ void Globals::init()
     glfwSetCursorPosCallback(window, glfwMouseMove);
     glfwSetWindowSizeCallback(window, glfwResizeWindow);
 
+	
+	const uint fpsDelay = 20; // Spit out fps every 20 frames
+	uint fpsFrames = 0;
+	float fpsAvg = 0;
+
     // Game loop
     while (!glfwWindowShouldClose(window))
     {
@@ -166,9 +172,25 @@ void Globals::init()
         m_physicsManager->update();
         m_gameManager->update();
         glfwSwapBuffers(window);
+
+		// FPS
+		float fps = 1.0f / m_uiManager->m_frameTime;
+		fpsFrames++;
+		fpsAvg += fps;
+		if (fpsFrames == fpsDelay)
+		{
+			fpsFrames = 0;
+			fpsAvg /= fpsDelay;
+			fpsAvg = glm::round(fpsAvg);
+			std::stringstream iss;
+			iss << fpsAvg;
+			std::string fpsString = iss.str();
+			std::string windowTitle = "FPS: " + fpsString;
+			glfwSetWindowTitle(window, windowTitle.c_str());
+			fpsAvg = 0.0f;
+		}
     }
 
     glfwDestroyWindow(window);
     glfwTerminate();
-
 }

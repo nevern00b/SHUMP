@@ -86,7 +86,7 @@ PhysicsData::PhysicsData(b2Shape* shape, float density, float friction, float re
     m_friction(friction),
     m_restitution(restitution),
     m_bodyType(b2_dynamicBody),
-    m_isSensor(false),
+    m_isSensor(true),
     m_categoryBits(PhysicsManager::COLLISION_DEFAULT),
     m_maskBits(PhysicsManager::MASK_DEFAULT),
     m_groupIndex(0),
