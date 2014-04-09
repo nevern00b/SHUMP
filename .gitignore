@@ -8,3 +8,4 @@ desktop.ini
 build/
 run/
 *~*
+!premake/premake4.exe
