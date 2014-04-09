@@ -89,7 +89,7 @@ void Globals::init()
     glm::uvec2 openGLVersion(3, 3);
     glm::uvec4 colorBits(8, 8, 8, 0); // We only use alpha on custom FBOs (default value is 8 bits)
     glm::uvec2 depthStencilBits(24, 0);
-    bool vsync = true;
+    bool vsync = false;
     bool showDebugOutput = false;
     bool resizable = true;
     //srand((uint)time(NULL));

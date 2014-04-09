@@ -38,7 +38,7 @@ void Camera::update()
         return;
     }
 
-    float adjust = Globals::m_uiManager->getFramerateAdjust();
+	UIManager* ui = Globals::m_uiManager;
     float newRotationX = 0.0f;
     float newRotationY = 0.0f;
     float newPanX = 0.0f;
@@ -88,12 +88,12 @@ void Camera::update()
     {
         float speedX = -m_panSpeed * m_panOldAverageX;
         float speedY = -m_panSpeed * m_panOldAverageY;
-        applyPan(speedX * adjust, speedY * adjust);
+        applyPan(ui->getFramerateAdjust(speedX), ui->getFramerateAdjust(speedY));
     }
     if (glm::abs(m_zoomOldAverage) > minAmount)
     {
         float speed = -m_zoomSpeed * m_zoomOldAverage;
-        applyZoom(speed * adjust);
+        applyZoom(ui->getFramerateAdjust(speed));
     }
 
     Entity::update();

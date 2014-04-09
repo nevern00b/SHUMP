@@ -35,7 +35,7 @@ public:
 
     // Time
     float getTimeSinceBeginning();
-    float getFramerateAdjust();
+    float getFramerateAdjust(float value);
 
     int m_mouseX;
     int m_mouseY;

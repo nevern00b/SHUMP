@@ -130,7 +130,7 @@ float UIManager::getTimeSinceBeginning()
     return (float)glfwGetTime();
 }
 
-float UIManager::getFramerateAdjust()
+float UIManager::getFramerateAdjust(float value)
 {
-    return m_frameTime / m_desiredFrameTime;
+    return value * (m_frameTime / m_desiredFrameTime);
 }

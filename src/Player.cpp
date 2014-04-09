@@ -36,7 +36,7 @@ void Player::update()
 {
     Entity::update();
 
-    float speed = 10.0f;
+	float speed = Globals::m_uiManager->getFramerateAdjust(10.0f);
     b2Body* body = m_physics->m_body;
 
     b2Vec2 vel = body->GetLinearVelocity();
