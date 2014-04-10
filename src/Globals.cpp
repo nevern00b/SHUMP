@@ -86,7 +86,7 @@ void Globals::init()
     // Set variables
     std::string applicationName("SHUMP");
     glm::uvec2 windowSize(1280, 720);
-    glm::uvec2 openGLVersion(3, 3);
+    glm::uvec2 openGLVersion(3, 1);
     glm::uvec4 colorBits(8, 8, 8, 0); // We only use alpha on custom FBOs (default value is 8 bits)
     glm::uvec2 depthStencilBits(24, 0);
     bool vsync = false;
@@ -118,7 +118,7 @@ void Globals::init()
     glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_NO_ROBUSTNESS); // Has to do with making OpenGL calls safe. We disable this.
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Removes deprecated OpenGL features
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, showDebugOutput ? GL_TRUE : GL_FALSE); // Allow debug output
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Set window properties
     GLFWwindow* window = glfwCreateWindow(windowSize.x, windowSize.y, applicationName.c_str(), NULL, NULL);

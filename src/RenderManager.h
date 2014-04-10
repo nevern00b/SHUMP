@@ -7,6 +7,7 @@
 #include "ShaderCommon.h"
 
 class Entity;
+class Shader;
 
 class RenderManager
 {
@@ -36,12 +37,12 @@ public:
     glm::mat4 m_projMatrix;
     glm::mat4 m_viewMatrix;
 
-
     bool m_lightBufferDirty; // Update buffer when lighting changes
+	Shader* m_activeShader;
 
 private:
 
-    GLuint m_basicShader;
+    Shader* m_basicShader;
 
     std::list<Entity*> m_entities;
     Buffer<ShaderCommon::MaterialGL>* m_materialBuffer;

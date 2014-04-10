@@ -1,16 +1,13 @@
-layout (location = 0) out vec4 fragColor;
+out vec4 fragColor;
 
-in block
-{
-    vec3 position;
-    vec3 normal;
-    vec2 uv;
-} vertexData;
+in vec3 vPosition;
+in vec3 vNormal;
+in vec2 vUV;
 
-layout(binding = DIFFUSE_TEXTURE) uniform sampler2D tDiffuse;
-layout(binding = NORMAL_TEXTURE) uniform sampler2D tNormal;
-layout(binding = SPECULAR_TEXTURE) uniform sampler2D tSpecular;
-layout(binding = REFLECT_TEXTURE) uniform samplerCube tReflect;
+uniform sampler2D tDiffuse;
+uniform sampler2D tNormal;
+uniform sampler2D tSpecular;
+uniform samplerCube tReflect;
 
 #define AMBIENT_TERM 0.2
 
@@ -48,31 +45,31 @@ void main()
     vec4 diffuse = uMaterial.diffuseColor;
     if(uMaterial.diffuseBlend > 0.0)
     {
-        vec4 diffuseTexture = texture(tDiffuse, vertexData.uv);
+        vec4 diffuseTexture = texture(tDiffuse, vUV);
         diffuse = mix(diffuse, diffuseTexture, uMaterial.diffuseBlend); 
     }
     
     if(diffuse.a < 0.1) discard; // For alpha cutout
     
-    vec3 viewDir = normalize(vertexData.position - uPerFrameData.cameraPos);
+    vec3 viewDir = normalize(vPosition - uPerFrameData.cameraPos);
     
     float specIntensity = uMaterial.specIntensity;
     if(uMaterial.specBlend > 0.0)
     {    
-        float specIntensityTexture = texture(tSpecular, vertexData.uv).a;
+        float specIntensityTexture = texture(tSpecular, vUV).a;
         specIntensity = mix(specIntensity, specIntensityTexture, uMaterial.specBlend);
     }
     
     float normalDirection = float(gl_FrontFacing) * 2.0 - 1.0; // If back facing, the normal will be negated (useful for alpha cutout)
-    vec3 normal = normalize(vertexData.normal) * normalDirection;
+    vec3 normal = normalize(vNormal) * normalDirection;
     
     if(uMaterial.normalIntensity > 0.0)
     {
-        vec3 mapNormal = texture(tNormal, vertexData.uv).rgb;
+        vec3 mapNormal = texture(tNormal, vUV).rgb;
         mapNormal = mapNormal * 255./127. - 128./127.; // Unsigned to Signed: 0.5 can't be represented in unsigned texture format, so do this to compensate
         mapNormal.y = -mapNormal.y; // Do this if normal map is green up
         mapNormal = mix(vec3(0, 0, 1), mapNormal, uMaterial.normalIntensity);
-        mat3 tangentMatrix = getTangentMatrix(normal, viewDir, vertexData.uv);
+        mat3 tangentMatrix = getTangentMatrix(normal, viewDir, vUV);
         normal = normalize(tangentMatrix * mapNormal);
     }
         
@@ -100,7 +97,7 @@ void main()
         PointLightGL pointLight = uLighting.pointLights[i];
         
         vec3 lightColor = pointLight.color;        
-        vec3 lightDifference =  pointLight.position.rgb - vertexData.position;
+        vec3 lightDifference =  pointLight.position.rgb - vPosition;
         float lightDistanceSqr = dot(lightDifference, lightDifference);
         vec3 lightDir = lightDifference * inversesqrt(lightDistanceSqr);
         

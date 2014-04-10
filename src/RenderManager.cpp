@@ -11,6 +11,7 @@
 #include "Mesh.h"
 #include "Light.h"
 #include "ShmupGame.h"
+#include "Shader.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false)
@@ -36,14 +37,15 @@ RenderManager::RenderManager() :
     setSamplerParams(m_linearSampler, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
 
     // Load shaders
-    m_basicShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/basic.frag");
+    m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 }
 
 RenderManager::~RenderManager()
 {
 	glDeleteSamplers(1, &m_nearestSampler);
 	glDeleteSamplers(1, &m_linearSampler);
-	glDeleteProgram(m_basicShader);
+
+	delete m_basicShader;
 
     delete m_materialBuffer;
     delete m_transformBuffer;
@@ -107,6 +109,11 @@ void RenderManager::render()
     }
 
 
+	// Bind textures to the shader (TO-DO: remember to do this for each shader)
+	glUniform1i(m_basicShader->m_diffuseTextureBinding, ShaderCommon::DIFFUSE_TEXTURE);
+	glUniform1i(m_basicShader->m_normalTextureBinding, ShaderCommon::NORMAL_TEXTURE);
+	glUniform1i(m_basicShader->m_specularTextureBinding, ShaderCommon::SPECULAR_TEXTURE);
+	glUniform1i(m_basicShader->m_reflectTextureBinding, ShaderCommon::REFLECT_TEXTURE);
 
     // Clear the framebuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is default framebuffer
@@ -117,7 +124,7 @@ void RenderManager::render()
 
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
-    glUseProgram(m_basicShader);
+	m_basicShader->render();
 
     for (auto& entity : m_entities)
     {
