@@ -55,6 +55,8 @@ RenderManager::~RenderManager()
 
 void RenderManager::render()
 {
+	m_basicShader->render();
+
     uint screenWidth = Globals::m_uiManager->m_screenWidth;
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
     float aspectRatio = (float)screenWidth / screenHeight;
@@ -106,6 +108,8 @@ void RenderManager::render()
             lighting.pointLights[i].position = glm::vec4(position, attenuation);
         }
         m_lightingBuffer->updateAll(&lighting);
+
+		m_lightBufferDirty = false;
     }
 
 
@@ -124,7 +128,7 @@ void RenderManager::render()
 
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
-	m_basicShader->render();
+	
 
     for (auto& entity : m_entities)
     {

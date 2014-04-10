@@ -32,6 +32,7 @@ private:
     bool bufferHasBindings(GLenum bufferType);
 
     GLenum m_bufferType;
+	GLenum m_bufferBinding;
     uint m_maxCount;
     GLenum m_usage;
 

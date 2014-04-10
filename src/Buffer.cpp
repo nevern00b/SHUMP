@@ -6,6 +6,7 @@
 template <class DataType>
 Buffer<DataType>::Buffer(GLenum bufferType, GLenum usage, uint bufferBinding, uint maxCount, const DataType* initData) :
     m_bufferType(bufferType),
+	m_bufferBinding(bufferBinding),
     m_maxCount(maxCount),
     m_usage(usage)
 {
@@ -13,10 +14,7 @@ Buffer<DataType>::Buffer(GLenum bufferType, GLenum usage, uint bufferBinding, ui
 
     glGenBuffers(1, &m_bufferObject);
     glBindBuffer(m_bufferType, m_bufferObject);
-
     glBufferData(m_bufferType, size, (void*)initData, usage);
-    if (bufferHasBindings(bufferType))
-        glBindBufferBase(m_bufferType, bufferBinding, m_bufferObject);
     glBindBuffer(m_bufferType, 0);
 }
 
@@ -49,10 +47,10 @@ bool Buffer<DataType>::bufferHasBindings(GLenum bufferType)
 template <class DataType>
 void Buffer<DataType>::bindToOtherTarget(GLenum bufferType, uint bufferBinding)
 {
-    glBindBuffer(bufferType, m_bufferObject);
-    if (bufferHasBindings(bufferType))
-        glBindBufferBase(bufferType, bufferBinding, m_bufferObject);
-    glBindBuffer(bufferType, 0);
+    //glBindBuffer(bufferType, m_bufferObject);
+    //if (bufferHasBindings(bufferType))
+    //    glBindBufferBase(bufferType, bufferBinding, m_bufferObject);
+    //glBindBuffer(bufferType, 0);
 }
 
 template <class DataType>
@@ -70,7 +68,15 @@ void Buffer<DataType>::updateRange(uint index, uint count, const DataType* data,
     //    glInvalidateBufferSubData(m_bufferObject, offset, length);
     //}
 
-    glBindBuffer(m_bufferType, m_bufferObject);
+	if (bufferHasBindings(m_bufferType))
+	{
+		glBindBufferBase(m_bufferType, m_bufferBinding, m_bufferObject);
+	}
+	else
+	{
+		glBindBuffer(m_bufferType, m_bufferObject);
+	}
+		
     glBufferSubData(m_bufferType, offset, length, data);
     glBindBuffer(m_bufferType, 0);
 }
