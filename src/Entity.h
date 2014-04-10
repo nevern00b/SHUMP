@@ -18,6 +18,7 @@ public:
 
     Entity(Entity* parent);
     virtual ~Entity();
+	void destroy();
 
     virtual void update();
     void render();
@@ -37,5 +38,7 @@ public:
     PhysicsComponent* m_physics;
 
     std::list<Component*> m_components;
+
+	bool m_dead;
     
 };

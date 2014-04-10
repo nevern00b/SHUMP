@@ -10,6 +10,7 @@
 #include "DataManager.h"
 #include "Mesh.h"
 #include "Light.h"
+#include "ShmupGame.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false)
@@ -40,6 +41,10 @@ RenderManager::RenderManager() :
 
 RenderManager::~RenderManager()
 {
+	glDeleteSamplers(1, &m_nearestSampler);
+	glDeleteSamplers(1, &m_linearSampler);
+	glDeleteProgram(m_basicShader);
+
     delete m_materialBuffer;
     delete m_transformBuffer;
     delete m_perFrameBuffer;
@@ -57,8 +62,9 @@ void RenderManager::render()
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
     //m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
-    float orthoSize = 10.0f;
-    m_projMatrix = glm::ortho(-orthoSize*aspectRatio, orthoSize*aspectRatio, -orthoSize, orthoSize, 0.1f, 1000.0f);
+	float orthoSizeX = ShmupGame::WORLD_BOUND_X;
+	float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
+	m_projMatrix = glm::ortho(-orthoSizeX*aspectRatio, orthoSizeX*aspectRatio, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
     glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
 
     // Update the per frame buffer

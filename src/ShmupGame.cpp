@@ -17,6 +17,9 @@
 #include "RenderComponent.h"
 #include "Player.h"
 
+const float ShmupGame::WORLD_BOUND_X = 10.0f;
+const float ShmupGame::WORLD_BOUND_Y = 10.0f;
+
 ShmupGame::ShmupGame() : GameManager()
 {
     
@@ -24,7 +27,7 @@ ShmupGame::ShmupGame() : GameManager()
 
 ShmupGame::~ShmupGame()
 {
-
+	// TO-DO: delete player here?
 }
 
 void ShmupGame::init()
@@ -34,21 +37,14 @@ void ShmupGame::init()
     Player* player = new Player();
 
     // Create floor
-    Material* redMaterial = new Material();
-    redMaterial->m_diffuseColor = glm::vec4(1, 0, 0, 1);
 
-    b2Shape* cubeShape = Utils::createBoxShape(1.0f, 1.0f);
-    Mesh* cubeMesh = Globals::m_dataManager->getMesh("cube");
-
-    Entity* floor = new Entity(0);
-
-    PhysicsData* floorPhysicsData = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
-    floorPhysicsData->m_bodyType = b2_staticBody;
-    PhysicsComponent* floorPhysics = new PhysicsComponent(floor, floorPhysicsData);
-
-    std::vector<Material*> floorMaterials = { redMaterial };
-    RenderComponent* floorRender = new RenderComponent(floor, cubeMesh, floorMaterials);
-    
+	Material* material = Globals::m_dataManager->getMaterial("red");
+	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
+	b2Shape* shape = Globals::m_physicsManager->m_squareBig;
+	PhysicsData physicsData(shape, 0, 0);
+	Entity* wall = new Entity(0);
+	PhysicsComponent* physics = new PhysicsComponent(wall, physicsData);
+	RenderComponent* render = new RenderComponent(wall, mesh, { material });
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);

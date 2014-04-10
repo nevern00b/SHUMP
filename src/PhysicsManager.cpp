@@ -10,10 +10,6 @@
 #include "PhysicsComponent.h"
 #include "GameManager.h"
 
-const float PhysicsManager::PHYSICS_SCALE = 1.0f / 100.0f;
-const float PhysicsManager::PHYSICS_TIMESTEP = 1.0f / 60.0f;
-const int PhysicsManager::POSITION_ITERATIONS = 3;
-const int PhysicsManager::VELOCITY_ITERATIONS = 8;
 const uint PhysicsManager::MASK_DEFAULT = 0xFFFF;
 const uint PhysicsManager::COLLISION_NONE = 0x00;
 const uint PhysicsManager::COLLISION_DEFAULT = 0x01;
@@ -23,18 +19,28 @@ PhysicsManager::PhysicsManager()
    // Create world
     m_world = new b2World(b2Vec2(0.0f, 0.0f));
     m_world->SetAllowSleeping(false);
-    b2ContactListener* contactListener = new ContactListener();
-    m_world->SetContactListener(contactListener);
+    m_contactListener = new ContactListener();
+	m_world->SetContactListener(m_contactListener);
+
+	m_squareBig = Utils::createBoxShape(1.0f, 1.0f);
+	m_squareSmall = Utils::createBoxShape(0.1f, 0.1f);
 }
 
 PhysicsManager::~PhysicsManager()
 {
+	destroyMarkedBodies();
     delete m_world;
+	delete m_contactListener;
+	delete m_squareBig;
+	delete m_squareSmall;
 }
 
 void PhysicsManager::update()
 {
-    m_world->Step(PHYSICS_TIMESTEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+	float timeStep = 1.0f / 60.0f;
+	int velocityIt = 8;
+	int positionIt = 3;
+	m_world->Step(timeStep, velocityIt, positionIt);
     m_world->ClearForces();
 
     // Destroy the bodies that were marked for destruction during the timestep

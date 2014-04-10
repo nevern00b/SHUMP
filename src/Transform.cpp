@@ -91,12 +91,6 @@ void Transform::setTranslation(float x, float y)
     setTranslation(glm::vec3(x, y, m_translation.z));
 }
 
-void Transform::setDepth(float z)
-{
-    // TO-DO: need to get translation instead of using this var in case its physics and has changed
-    setTranslation(glm::vec3(m_translation.x, m_translation.y, z));
-}
-
 void Transform::translate(const glm::vec3& translation)
 {
     setTranslation(m_translation + translation);
@@ -112,9 +106,19 @@ void Transform::setScale(const glm::vec3& scale)
     m_scale = scale;
 }
 
-void Transform::scale(const glm::vec3& scale)
+void Transform::setScale(float scale)
 {
-    setScale(m_scale * scale);
+	setScale(glm::vec3(scale));
+}
+
+void Transform::scale(const glm::vec3& scaleAmount)
+{
+	setScale(m_scale * scaleAmount);
+}
+
+void Transform::scale(float scaleAmount)
+{
+	scale(glm::vec3(scaleAmount));
 }
 
 glm::vec3 Transform::getRightVector()

@@ -12,7 +12,8 @@
 
 Entity::Entity(Entity* parent) :
     m_render(0),
-    m_physics(0)
+    m_physics(0),
+	m_dead(false)
 {
     m_parent = parent == 0 ? Globals::m_gameManager->m_rootEntity : parent;
     if (m_parent != 0) m_parent->m_children.push_back(this);
@@ -24,14 +25,26 @@ Entity::Entity(Entity* parent) :
 
 Entity::~Entity()
 {
-    if (m_parent != 0) m_parent->m_children.remove(this); // Remove from parent's list
-    Globals::m_gameManager->removeEntity(this);
+	
+}
 
-    //TO-DO: does this actually work?
-    for (auto& child : m_children)
-    {
-        delete child;
-    }
+void Entity::destroy()
+{
+	// Object removed and marked for deletion. Deletion happens inside GameManager update loop.
+	m_dead = true;
+	if (m_parent != 0) m_parent->m_children.remove(this); // Remove from parent's list
+	Globals::m_gameManager->removeEntity(this);
+
+	// Delete components
+	while (m_components.size() > 0)
+	{
+		delete m_components.front();
+	}
+
+	for (auto& child : m_children)
+	{
+		destroy();
+	}
 
 }
 
@@ -43,12 +56,6 @@ void Entity::update()
     if (m_parent != 0)
     {
         m_renderMatrix = m_parent->m_renderMatrix * m_renderMatrix;
-    }
-
-    // Update children
-    for (auto& child : m_children)
-    {
-        child->update();
     }
 } 
 

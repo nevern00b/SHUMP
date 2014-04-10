@@ -29,12 +29,13 @@ public:
  
     virtual void setTranslation(const glm::vec3& translation);
     void setTranslation(float x, float y);
-    void setDepth(float z);
     void translate(const glm::vec3& translation);
     void translate(float x, float y);
 
-    virtual void setScale(const glm::vec3& scale);
-    void scale(const glm::vec3& scale);
+    void setScale(const glm::vec3& scale);
+	void setScale(float scale);
+    void scale(const glm::vec3& scaleAmount);
+	void scale(float scaleAmount);
     
     void applyTransform(const Transform& transform);
 

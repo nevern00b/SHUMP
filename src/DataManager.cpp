@@ -5,6 +5,7 @@
 #include "ShaderCommon.h"
 #include "Globals.h"
 #include "RenderManager.h"
+#include "Material.h"
 
 DataManager::DataManager()
 {
@@ -14,12 +15,44 @@ DataManager::DataManager()
     Mesh* cubeMesh = new Mesh(vertices, indices, 24, 36, { 0 });
     m_meshes["cube"] = cubeMesh;
 
+	Material* greenMaterial = new Material();
+	greenMaterial->m_diffuseColor = glm::vec4(0, 1, 0, 1);
+	m_materials["green"] = greenMaterial;
+
+	Material* redMaterial = new Material();
+	redMaterial->m_diffuseColor = glm::vec4(1, 0, 0, 1);
+	m_materials["red"] = redMaterial;
+
+	Material* blueMaterial = new Material();
+	blueMaterial->m_diffuseColor = glm::vec4(0, 0, 1, 1);
+	m_materials["blue"] = blueMaterial;
+
+
     m_shaderHeader = Utils::loadFile("data/shaders/globals");
 }
 
 DataManager::~DataManager()
 {
+	for (auto& texture : m_textures)
+	{
+		glDeleteTextures(1, &texture.second);
+	}
 
+	m_meshes.clear();
+
+	for (auto& material : m_materials)
+	{
+		delete material.second;
+	}
+
+	m_materials.clear();
+
+	for (auto& mesh : m_meshes)
+	{
+		delete mesh.second;
+	}
+
+	m_meshes.clear();
 }
 
 GLuint DataManager::loadTexture(void* data, const glm::uvec2& dimensions, const std::string& name)

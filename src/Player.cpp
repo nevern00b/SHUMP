@@ -9,22 +9,16 @@
 #include "PhysicsManager.h"
 #include "DataManager.h"
 #include "UIManager.h"
+#include "Bullet.h"
 
 Player::Player() : Entity(0)
 {
-    Material* greenMaterial = new Material();
-    greenMaterial->m_diffuseColor = glm::vec4(0, 1, 0, 1);
-
-    b2Shape* cubeShape = Utils::createBoxShape(1.0f, 1.0f);
-    Mesh* cubeMesh = Globals::m_dataManager->getMesh("cube");
-
-    PhysicsData* playerPhysicsData = new PhysicsData(cubeShape, 1.0f, 0.2f, 0.5f);
-    PhysicsComponent* playerPhysics = new PhysicsComponent(this, playerPhysicsData);
-
-    std::vector<Material*> playerMaterials = { greenMaterial };
-    RenderComponent* playerRender = new RenderComponent(this, cubeMesh, playerMaterials);
-
-    m_transform->setTranslation(0, 5);
+	Material* material = Globals::m_dataManager->getMaterial("green");
+    Mesh* mesh = Globals::m_dataManager->getMesh("cube");
+	b2Shape* shape = Globals::m_physicsManager->m_squareBig;
+    PhysicsData physicsData(shape, 0, -5);
+	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
+	RenderComponent* render = new RenderComponent(this, mesh, { material });
 }
 
 Player::~Player()
@@ -65,5 +59,5 @@ void Player::update()
 
 void Player::shoot()
 {
-
+	Bullet* bullet = new Bullet(this);
 }

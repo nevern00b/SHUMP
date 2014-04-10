@@ -6,7 +6,7 @@
 #include "DataManager.h"
 
 Camera::Camera(Entity* parent, float fov) : Entity(parent),
-    m_fov(m_fov),
+    m_fov(fov),
     m_angleHorizontal(0.0f),
     m_angleVertical(0.0f),
     m_rotationOldAverageX(0.0f),

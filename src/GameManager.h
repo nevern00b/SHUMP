@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string>
 #include <list>
 #include "Common.h"
@@ -37,5 +38,5 @@ public:
 private:
 
     std::list<Entity*> m_entities;
-    std::list<Camera*> m_cameras;
+	std::vector<Entity*> m_entitiesToRemove;
 };

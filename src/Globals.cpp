@@ -194,3 +194,12 @@ void Globals::init()
     glfwDestroyWindow(window);
     glfwTerminate();
 }
+
+void Globals::destroy()
+{
+	delete m_renderManager;
+	delete m_uiManager;
+	delete m_dataManager;
+	delete m_gameManager;
+	delete m_physicsManager;
+}

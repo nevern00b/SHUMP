@@ -12,6 +12,7 @@ class Globals
 public:
 
     static void init();
+	static void destroy();
 
     static RenderManager* m_renderManager;
     static UIManager* m_uiManager;

@@ -9,33 +9,30 @@
 #include "Transform.h"
 
 
-PhysicsComponent::PhysicsComponent(Entity* entity, PhysicsData* physicsData) : Transform(entity)
+PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsData) : Transform(entity)
 {
+	// Replace the default Transform
     delete entity->m_transform;
     entity->m_physics = this;
     entity->m_transform = this;
 
     // Create the b2body
-    b2BodyDef bodyDef;
-    //bodyDef.position = b2Vec2(m_translation.x, m_translation.y);
-    //bodyDef.linearVelocity = b2Vec2(physicsData->m_vx, physicsData->m_vy);
-    bodyDef.type = physicsData->m_bodyType;
+    b2BodyDef& bodyDef = Globals::m_physicsManager->m_sharedBodyDef;
+	bodyDef.position = b2Vec2(physicsData.m_x, physicsData.m_y);
+    bodyDef.linearVelocity = b2Vec2(physicsData.m_vx, physicsData.m_vy);
+    bodyDef.type = physicsData.m_bodyType;
     bodyDef.userData = entity;
     bodyDef.fixedRotation = true;
 
     m_body = Globals::m_physicsManager->m_world->CreateBody(&bodyDef);
 
     // Create fixture and add to body
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = physicsData->m_shape;
-    fixtureDef.density = physicsData->m_density;
-    fixtureDef.friction = physicsData->m_friction;
-    fixtureDef.restitution = physicsData->m_restitution;
-    fixtureDef.isSensor = physicsData->m_isSensor;
-    fixtureDef.filter.categoryBits = physicsData->m_categoryBits;
-    fixtureDef.filter.maskBits = physicsData->m_maskBits;
-    fixtureDef.filter.groupIndex = physicsData->m_groupIndex;
-    fixtureDef.userData = 0;
+    b2FixtureDef& fixtureDef = Globals::m_physicsManager->m_sharedFixtureDef;
+    fixtureDef.shape = physicsData.m_shape;
+    fixtureDef.isSensor = true;
+    fixtureDef.filter.categoryBits = physicsData.m_categoryBits;
+    fixtureDef.filter.maskBits = physicsData.m_maskBits;
+    fixtureDef.filter.groupIndex = physicsData.m_groupIndex;
 
     m_body->CreateFixture(&fixtureDef);
 }
@@ -56,6 +53,9 @@ void PhysicsComponent::update()
     float angle = m_body->GetAngle();
     glm::mat4 matrix = glm::mat4_cast(glm::angleAxis(angle, glm::vec3(0, 0, 1)));
     matrix[3] = glm::vec4(translation, 1.0f);
+	matrix[0][0] *= m_scale.x;
+	matrix[1][1] *= m_scale.y;
+	matrix[2][2] *= m_scale.z;
 
     m_matrix = matrix;
     m_rotation = glm::angleAxis(angle, glm::vec3(0, 0, 1));
@@ -75,28 +75,16 @@ void PhysicsComponent::setTranslation(const glm::vec3& translation)
     m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
 }
 
-void PhysicsComponent::setScale(const glm::vec3& scale)
-{
-    // Nothing
-}
-
-PhysicsData::PhysicsData(b2Shape* shape, float density, float friction, float restitution) :
+PhysicsData::PhysicsData(b2Shape* shape, float x, float y) :
     m_shape(shape),
-    m_density(density),
-    m_friction(friction),
-    m_restitution(restitution),
     m_bodyType(b2_dynamicBody),
-    m_isSensor(true),
     m_categoryBits(PhysicsManager::COLLISION_DEFAULT),
     m_maskBits(PhysicsManager::MASK_DEFAULT),
     m_groupIndex(0),
     m_vx(0.0f),
-    m_vy(0.0f)
+    m_vy(0.0f),
+	m_x(x),
+	m_y(y)
 {
 
-}
-
-PhysicsData::~PhysicsData()
-{
-    // TO-DO: Delete physics shape somewhere, maybe here
 }

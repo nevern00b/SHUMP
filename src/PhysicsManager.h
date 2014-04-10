@@ -7,6 +7,7 @@
 
 class b2World;
 class PhysicsComponent;
+class ContactListener;
 
 class PhysicsManager
 {
@@ -16,22 +17,25 @@ public:
     void update();
     void destroyPhysicsComponent(PhysicsComponent* physicsComponent);
 
-
-    static const float PHYSICS_SCALE;
-    static const float PHYSICS_TIMESTEP;
-    static const int POSITION_ITERATIONS;
-    static const int VELOCITY_ITERATIONS;
-    static const float GRAVITY;
     static const uint MASK_DEFAULT;
     static const uint COLLISION_NONE;
     static const uint COLLISION_DEFAULT;
 
     b2World* m_world;
 
+	// Share these defs when creating objects
+	b2BodyDef m_sharedBodyDef;
+	b2FixtureDef m_sharedFixtureDef;
+	b2Shape* m_squareBig;
+	b2Shape* m_squareSmall;
+
 private:    
 
     void destroyMarkedBodies();
+
     std::vector<b2Body*> m_bodiesToDestroy;
+	ContactListener* m_contactListener;
+
 
 };
 
