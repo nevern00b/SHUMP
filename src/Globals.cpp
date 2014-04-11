@@ -10,6 +10,7 @@
 #include "GameManager.h"
 #include "PhysicsManager.h"
 #include "ShmupGame.h"
+#include "StateMachine.h"
 
 void glfwErrorCallback(int error, const char* description)
 {
@@ -80,6 +81,7 @@ UIManager* Globals::m_uiManager;
 DataManager* Globals::m_dataManager;
 GameManager* Globals::m_gameManager;
 PhysicsManager* Globals::m_physicsManager;
+StateMachine* Globals::m_stateMachine;
 
 void Globals::init()
 {
@@ -150,6 +152,7 @@ void Globals::init()
     m_renderManager = new RenderManager();
     m_gameManager = new ShmupGame();
     m_gameManager->init();
+	m_stateMachine = new StateMachine();
     
     // Set glfw window callbacks to UIManager
     glfwSetKeyCallback(window, glfwKeyEvent);
@@ -205,4 +208,5 @@ void Globals::destroy()
 	delete m_gameManager;
 	delete m_renderManager;
 	delete m_physicsManager;
+	delete m_stateMachine;
 }
