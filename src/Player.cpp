@@ -10,6 +10,7 @@
 #include "DataManager.h"
 #include "UIManager.h"
 #include "Bullet.h"
+#include "StateMachine.h"
 
 Player::Player() : Entity(0)
 {
@@ -45,6 +46,16 @@ void Player::update()
         desiredVel.y += speed;
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
         desiredVel.y -= speed;
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))
+		Globals::m_stateMachine->changeBState(1);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_I))
+		Globals::m_stateMachine->changeBState(2);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_O))
+		Globals::m_stateMachine->changeBState(3);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_P))
+		Globals::m_stateMachine->changeBState(4);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_Y))
+		Globals::m_stateMachine->checkStates();
 
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
     {
