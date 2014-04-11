@@ -11,6 +11,8 @@ class StateMachine{
 	int bulletST = RED_ST;
 	int immunST = STATIC_ST;
 public:
+	int getBState();
+	int getIState();
 	void checkStates();
 	void changeBState(int input);
 	void changeIState(int input);

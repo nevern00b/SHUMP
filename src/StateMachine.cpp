@@ -11,6 +11,14 @@ void StateMachine::checkStates(){
 	printf("The Immunity State is: %d \n", immunST);
 }
 
+int StateMachine::getBState(){
+	return bulletST;
+}
+
+int StateMachine::getIState(){
+	return immunST;
+}
+
 void StateMachine::changeBState(int input){
 	switch (input){
 	case 1:
