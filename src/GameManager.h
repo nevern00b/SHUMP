@@ -37,6 +37,8 @@ public:
 
 private:
 
+	void destroyMarkedEntities();
+
     std::list<Entity*> m_entities;
 	std::vector<Entity*> m_entitiesToRemove;
 };

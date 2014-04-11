@@ -26,7 +26,8 @@ GameManager::GameManager() :
 GameManager::~GameManager()
 {
 	// Will delete the whole scene graph
-	delete m_rootEntity;
+	m_rootEntity->destroy();
+	destroyMarkedEntities();
 }
 
 void GameManager::init()
@@ -45,6 +46,11 @@ void GameManager::update()
 		entity->update();
 	}
 
+	destroyMarkedEntities();
+}
+
+void GameManager::destroyMarkedEntities()
+{
 	// Delete entities that were destroyed during the update
 	for (auto& entity : m_entitiesToRemove)
 	{

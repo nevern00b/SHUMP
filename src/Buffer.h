@@ -20,6 +20,7 @@ public:
     void updateRange(uint index, uint count, const DataType* data, bool invalidateWholeBuffer);
 
     void bindToOtherTarget(GLenum bufferType, uint bufferBinding);
+	void bindToShader();
 
     // For debug purposes
     std::vector<DataType> getDataSubset(uint index, uint count);

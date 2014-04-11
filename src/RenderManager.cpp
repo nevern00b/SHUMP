@@ -55,8 +55,6 @@ RenderManager::~RenderManager()
 
 void RenderManager::render()
 {
-	m_basicShader->render();
-
     uint screenWidth = Globals::m_uiManager->m_screenWidth;
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
     float aspectRatio = (float)screenWidth / screenHeight;
@@ -112,12 +110,7 @@ void RenderManager::render()
 		m_lightBufferDirty = false;
     }
 
-
-	// Bind textures to the shader (TO-DO: remember to do this for each shader)
-	glUniform1i(m_basicShader->m_diffuseTextureBinding, ShaderCommon::DIFFUSE_TEXTURE);
-	glUniform1i(m_basicShader->m_normalTextureBinding, ShaderCommon::NORMAL_TEXTURE);
-	glUniform1i(m_basicShader->m_specularTextureBinding, ShaderCommon::SPECULAR_TEXTURE);
-	glUniform1i(m_basicShader->m_reflectTextureBinding, ShaderCommon::REFLECT_TEXTURE);
+	m_basicShader->render();
 
     // Clear the framebuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is default framebuffer

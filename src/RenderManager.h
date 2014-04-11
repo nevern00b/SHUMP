@@ -40,17 +40,16 @@ public:
     bool m_lightBufferDirty; // Update buffer when lighting changes
 	Shader* m_activeShader;
 
+	Buffer<ShaderCommon::MaterialGL>* m_materialBuffer;
+	Buffer<ShaderCommon::TransformGL>* m_transformBuffer;
+	Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
+	Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
+
 private:
 
     Shader* m_basicShader;
 
     std::list<Entity*> m_entities;
-    Buffer<ShaderCommon::MaterialGL>* m_materialBuffer;
-    Buffer<ShaderCommon::TransformGL>* m_transformBuffer;
-    Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
-    Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
-
-    
 };
 
 namespace RENDER_STATE

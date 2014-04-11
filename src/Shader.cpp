@@ -43,4 +43,15 @@ void Shader::render()
 	if (Globals::m_renderManager->m_activeShader == this) return; // Don't call if its already active
 	Globals::m_renderManager->m_activeShader = this;
 	glUseProgram(m_program);
+
+	// Bind textures to the shader (TO-DO: remember to do this for each shader)
+	glUniform1i(m_diffuseTextureBinding, ShaderCommon::DIFFUSE_TEXTURE);
+	glUniform1i(m_normalTextureBinding, ShaderCommon::NORMAL_TEXTURE);
+	glUniform1i(m_specularTextureBinding, ShaderCommon::SPECULAR_TEXTURE);
+	glUniform1i(m_reflectTextureBinding, ShaderCommon::REFLECT_TEXTURE);
+
+	Globals::m_renderManager->m_materialBuffer->bindToShader();
+	Globals::m_renderManager->m_transformBuffer->bindToShader();
+	Globals::m_renderManager->m_perFrameBuffer->bindToShader();
+	Globals::m_renderManager->m_lightingBuffer->bindToShader();
 }

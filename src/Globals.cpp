@@ -191,15 +191,18 @@ void Globals::init()
 		}
     }
 
+	Globals::destroy();
+
     glfwDestroyWindow(window);
     glfwTerminate();
+	
 }
 
 void Globals::destroy()
 {
-	delete m_renderManager;
 	delete m_uiManager;
 	delete m_dataManager;
 	delete m_gameManager;
+	delete m_renderManager;
 	delete m_physicsManager;
 }

@@ -54,29 +54,17 @@ void Buffer<DataType>::bindToOtherTarget(GLenum bufferType, uint bufferBinding)
 }
 
 template <class DataType>
+void Buffer<DataType>::bindToShader()
+{
+	glBindBufferBase(m_bufferType, m_bufferBinding, m_bufferObject);
+}
+
+template <class DataType>
 void Buffer<DataType>::updateRange(uint index, uint count, const DataType* data, bool invalidateWholeBuffer)
 {
-    uint offset = sizeof(DataType)*index;
-    uint length = sizeof(DataType)*count;
-
-    //if (invalidateWholeBuffer)
-    //{
-    //    glInvalidateBufferData(m_bufferObject);
-    //}
-    //else
-    //{
-    //    glInvalidateBufferSubData(m_bufferObject, offset, length);
-    //}
-
-	if (bufferHasBindings(m_bufferType))
-	{
-		glBindBufferBase(m_bufferType, m_bufferBinding, m_bufferObject);
-	}
-	else
-	{
-		glBindBuffer(m_bufferType, m_bufferObject);
-	}
-		
+	uint offset = sizeof(DataType)*index;
+	uint length = sizeof(DataType)*count;
+	glBindBuffer(m_bufferType, m_bufferObject);
     glBufferSubData(m_bufferType, offset, length, data);
     glBindBuffer(m_bufferType, 0);
 }

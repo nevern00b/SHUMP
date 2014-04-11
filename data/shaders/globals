@@ -7,7 +7,6 @@
 // Max values
 #define MAX_DIR_LIGHTS                  8
 #define MAX_POINT_LIGHTS                8
-#define MAX_BONES                       50
 
 // Texture binding points                                
 #define DIFFUSE_TEXTURE                 0
@@ -21,8 +20,6 @@
 #define POSITION_ATTR                   0
 #define NORMAL_ATTR                     1
 #define UV_ATTR                         2
-#define BONE_WEIGHTS_ATTR               3
-#define BONE_IDS_ATTR                   4
 
 // FBO binding points                                            
 #define DEFAULT_FRAMEBUFFER             0

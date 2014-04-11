@@ -38,7 +38,7 @@ DataManager::~DataManager()
 		glDeleteTextures(1, &texture.second);
 	}
 
-	m_meshes.clear();
+	m_textures.clear();
 
 	for (auto& material : m_materials)
 	{

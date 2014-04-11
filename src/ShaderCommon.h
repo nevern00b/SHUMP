@@ -8,7 +8,6 @@ namespace ShaderCommon
     // Max values
     const uint MAX_DIR_LIGHTS                       = 8;
     const uint MAX_POINT_LIGHTS                     = 8;
-    const uint MAX_BONES                            = 50;
 
     // Texture binding points                                
     const uint DIFFUSE_TEXTURE                      = 0;
@@ -22,8 +21,6 @@ namespace ShaderCommon
     const uint POSITION_ATTR                        = 0;
     const uint NORMAL_ATTR                          = 1;
     const uint UV_ATTR                              = 2;
-    const uint BONE_WEIGHTS_ATTR                    = 3;
-    const uint BONE_IDS_ATTR                        = 4;
 
     // FBO binding points                                            
     const uint DEFAULT_FRAMEBUFFER                  = 0;

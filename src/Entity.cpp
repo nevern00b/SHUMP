@@ -41,9 +41,9 @@ void Entity::destroy()
 		delete m_components.front();
 	}
 
-	for (auto& child : m_children)
+	while (m_children.size() > 0)
 	{
-		destroy();
+		m_children.front()->destroy();
 	}
 
 }

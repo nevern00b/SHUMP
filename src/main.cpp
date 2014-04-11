@@ -1,5 +1,7 @@
 #include "Globals.h"
 
+#include <vld.h>
+
 int main()
 {
     Globals::init();
