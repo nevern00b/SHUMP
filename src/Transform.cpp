@@ -37,14 +37,11 @@ Transform::~Transform()
 
 void Transform::update()
 {
-    glm::mat4 matrix = glm::mat4_cast(m_rotation);
-    matrix[3] = glm::vec4(m_translation, 1.0f);
-    matrix[0][0] *= m_scale.x;
-    matrix[1][1] *= m_scale.y;
-    matrix[2][2] *= m_scale.z;
-
-    m_matrix = matrix;
-    // rotation, translation, scale are already updated
+    m_matrix = glm::mat4_cast(m_rotation);
+    m_matrix[3] = glm::vec4(m_translation, 1.0f);
+    m_matrix[0][0] *= m_scale.x;
+    m_matrix[1][1] *= m_scale.y;
+    m_matrix[2][2] *= m_scale.z;
 }
 
 void Transform::setRotation(const glm::quat& quat)

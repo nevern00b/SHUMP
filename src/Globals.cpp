@@ -116,7 +116,7 @@ void Globals::init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, openGLVersion.x);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, openGLVersion.y);
     glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, GLFW_NO_ROBUSTNESS); // Has to do with making OpenGL calls safe. We disable this.
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Removes deprecated OpenGL features
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Removes deprecated OpenGL features
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, showDebugOutput ? GL_TRUE : GL_FALSE); // Allow debug output
     //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 

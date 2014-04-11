@@ -53,7 +53,9 @@ void Entity::update()
     // Concat parent's matrix to get render matrix
     m_transform->update();
     m_renderMatrix = m_transform->m_matrix;
-    if (m_parent != 0)
+
+	// Do not concatenate parent matrix if there is no parent or the parent is the root
+    if (m_parent != 0 && m_parent->m_parent != 0)
     {
         m_renderMatrix = m_parent->m_renderMatrix * m_renderMatrix;
     }

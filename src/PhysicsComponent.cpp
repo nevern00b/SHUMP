@@ -33,6 +33,7 @@ PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsDat
     fixtureDef.filter.categoryBits = physicsData.m_categoryBits;
     fixtureDef.filter.maskBits = physicsData.m_maskBits;
     fixtureDef.filter.groupIndex = physicsData.m_groupIndex;
+	fixtureDef.userData = 0;
 
     m_body->CreateFixture(&fixtureDef);
 }
@@ -44,22 +45,15 @@ PhysicsComponent::~PhysicsComponent()
 
 void PhysicsComponent::update()
 {
-    // Translate in the XY plane, use Z for depth ordering of objects
-    float z = m_translation.z;
     b2Vec2 pos = m_body->GetPosition();
-    glm::vec3 translation(pos.x, pos.y, z);
+	float angle = m_body->GetAngle();
+    
+	// Rotate about the z-axis
+	m_rotation = glm::angleAxis(angle, glm::vec3(0, 0, 1));
+	m_translation.x = pos.x;
+	m_translation.y = pos.y;
 
-    // Rotate about the z-axis
-    float angle = m_body->GetAngle();
-    glm::mat4 matrix = glm::mat4_cast(glm::angleAxis(angle, glm::vec3(0, 0, 1)));
-    matrix[3] = glm::vec4(translation, 1.0f);
-	matrix[0][0] *= m_scale.x;
-	matrix[1][1] *= m_scale.y;
-	matrix[2][2] *= m_scale.z;
-
-    m_matrix = matrix;
-    m_rotation = glm::angleAxis(angle, glm::vec3(0, 0, 1));
-    m_translation = translation;
+	Transform::update();
 }
 
 void PhysicsComponent::setRotation(const glm::quat& quat)
