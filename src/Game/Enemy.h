@@ -1,22 +1,17 @@
 #pragma once
 
-#include <string>
+#include "Entity.h"
 
-enum ObjectType
-{
-	DEFAULT,
-	BULLET,
-	ENEMY,
-	PLAYER
-};
-
-class EventObject
+class Enemy : public Entity
 {
 public:
-	EventObject();
-	virtual ~EventObject();
+	Enemy();
+	virtual ~Enemy();
+	virtual void update();
 
 	virtual void onCollisionEnter(EventObject* collider);
 	virtual void onCollisionLeave(EventObject* collider);
-};
 
+private:
+	float m_health;
+};

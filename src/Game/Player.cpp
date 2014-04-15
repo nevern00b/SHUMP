@@ -64,7 +64,6 @@ void Player::update()
 	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	{
 		m_shootFrames = 0;
-		printf("start shoot/n");
 	}
 
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))

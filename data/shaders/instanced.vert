@@ -17,7 +17,7 @@ void main()
 	transform[1][1] = cos(aTransform.w);
 	transform[3].xyz = aTransform.xyz;
 
-    vec4 position = transform * vec4(aPosition, 1.0);    
+    vec4 position = transform * vec4(aPosition*0.5, 1.0);    
     gl_Position = uPerFrameData.viewProjection * position;
     
     vPosition = vec3(position);

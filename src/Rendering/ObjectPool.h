@@ -24,4 +24,3 @@ protected:
 	Buffer<glm::vec4>* m_transformBuffer;
 	std::vector<glm::vec4> m_transformData;
 };
-

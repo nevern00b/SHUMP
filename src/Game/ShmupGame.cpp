@@ -17,9 +17,10 @@
 #include "Rendering/RenderComponent.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
-const float ShmupGame::WORLD_BOUND_X = 10.0f;
-const float ShmupGame::WORLD_BOUND_Y = 10.0f;
+const float ShmupGame::WORLD_BOUND_X = 16.0f;
+const float ShmupGame::WORLD_BOUND_Y = 9.0f;
 
 ShmupGame::ShmupGame() : GameManager()
 {
@@ -43,6 +44,7 @@ void ShmupGame::init()
 	m_playerBulletPool = new BulletPool(100, mesh, material, physicsData);
 
     Player* player = new Player();
+	Enemy* enemy = new Enemy();
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);

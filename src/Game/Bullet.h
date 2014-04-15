@@ -32,11 +32,12 @@ public:
 	~Bullet();
 	
 	bool update();
-	void enable(float x, float y, float vx, float vy);
-	void disable();
+	void create(float x, float y, float vx, float vy);
+	void destroy();
 
 	bool m_disabled;
 	b2Body* m_body;
+	float m_damage;
 
 private:
 	

@@ -5,6 +5,7 @@
 #include "Physics/PhysicsManager.h"
 #include "Physics/PhysicsComponent.h"
 #include "Rendering/Mesh.h"
+#include "ShmupGame.h"
 
 BulletPool::BulletPool(uint size, Mesh* mesh, Material* material, const PhysicsData& physicsData) : ObjectPool(size, mesh, material),
 	m_bullets(size)
@@ -47,7 +48,7 @@ void BulletPool::shoot(float x, float y, float vx, float vy)
 		Bullet* bullet = m_bullets[i];
 		if (bullet->m_disabled)
 		{
-			bullet->enable(x, y, vx, vy);
+			bullet->create(x, y, vx, vy);
 			break;
 		}
 	}
@@ -77,12 +78,14 @@ void BulletPool::render()
 	m_mesh->renderInstanced({ m_material }, count);
 }
 
-Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef) : EventObject()
+Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef) : EventObject(),
+	m_damage(1.0f)
 {	
 	m_body = Globals::m_physicsManager->m_world->CreateBody(&bodyDef);	
 	m_body->CreateFixture(&fixtureDef);
 	m_body->SetUserData(this);
-	disable();
+	m_body->SetActive(false);
+	destroy();
 }
 
 Bullet::~Bullet()
@@ -92,16 +95,22 @@ Bullet::~Bullet()
 
 bool Bullet::update()
 {
-	b2Vec2 pos = m_body->GetPosition();
-	if (pos.y > 5.0)
+	if (m_disabled && m_body->IsActive())
 	{
-		disable();
+		m_body->SetActive(false);
+		return false;
+	}
+
+	b2Vec2 pos = m_body->GetPosition();
+	if (pos.y > ShmupGame::WORLD_BOUND_Y)
+	{
+		destroy();
 		return false;
 	}
 	return true;
 }
 
-void Bullet::enable(float x, float y, float vx, float vy)
+void Bullet::create(float x, float y, float vx, float vy)
 {
 	m_body->SetActive(true);
 	m_disabled = false;
@@ -111,8 +120,8 @@ void Bullet::enable(float x, float y, float vx, float vy)
 	m_body->SetLinearVelocity(b2Vec2(vx, vy));
 }
 
-void Bullet::disable()
+void Bullet::destroy()
 {
-	m_body->SetActive(false);
 	m_disabled = true;
+	// m_body is deactivated later outside of time step
 }

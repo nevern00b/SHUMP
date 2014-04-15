@@ -18,6 +18,7 @@ ObjectPool::ObjectPool(uint size, Mesh* mesh, Material* material) :
 ObjectPool::~ObjectPool()
 {
 	Globals::m_renderManager->removeObjectPool(this);
+	delete m_transformBuffer;
 }
 
 void ObjectPool::render()
