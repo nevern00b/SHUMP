@@ -68,7 +68,7 @@ void PhysicsComponent::setTranslation(const glm::vec3& translation)
     m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
 }
 
-PhysicsData::PhysicsData(b2Shape& shape, float x, float y) :
+PhysicsData::PhysicsData(b2Shape& shape) :
     m_shape(&shape),
     m_bodyType(b2_dynamicBody),
     m_categoryBits(PhysicsManager::COLLISION_DEFAULT),
@@ -76,8 +76,8 @@ PhysicsData::PhysicsData(b2Shape& shape, float x, float y) :
     m_groupIndex(0),
     m_vx(0.0f),
     m_vy(0.0f),
-	m_x(x),
-	m_y(y)
+	m_x(0.0f),
+	m_y(0.0f)
 {
 
 }

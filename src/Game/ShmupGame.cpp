@@ -18,6 +18,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "BulletPool.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
 const float ShmupGame::WORLD_BOUND_Y = 9.0f;
@@ -40,10 +41,17 @@ void ShmupGame::init()
 	Material* material = Globals::m_dataManager->getMaterial("yellow");
 	b2PolygonShape shape;
 	shape.SetAsBox(0.05f, 0.05f);
-	PhysicsData physicsData(shape, 0, 0);
-	m_playerBulletPool = new BulletPool(100, mesh, material, physicsData);
+	PhysicsData physicsData(shape);
+	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
+	m_playerBulletPool = new BulletPool(200, mesh, material, physicsData);
 
-    Player* player = new Player();
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyBulletPool = new BulletPool(30, mesh, material, physicsData);
+
+
+	Player* player = new Player();
+	player->m_transform->setTranslation(-2, -5);
+
 	Enemy* enemy = new Enemy();
 
     // Create lights
@@ -61,4 +69,3 @@ void ShmupGame::update()
 {
     GameManager::update();
 }
-

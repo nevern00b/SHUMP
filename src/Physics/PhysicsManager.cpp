@@ -13,6 +13,10 @@
 const uint PhysicsManager::MASK_DEFAULT = 0xFFFF;
 const uint PhysicsManager::COLLISION_NONE = 0x00;
 const uint PhysicsManager::COLLISION_DEFAULT = 0x01;
+const uint PhysicsManager::COLLISION_RED = 0x02;
+const uint PhysicsManager::COLLISION_GREEN = 0x04;
+const uint PhysicsManager::COLLISION_BLUE = 0x08;
+const uint PhysicsManager::COLLISION_YELLOW = 0x10;
 
 PhysicsManager::PhysicsManager()
 {

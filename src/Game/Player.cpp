@@ -12,6 +12,8 @@
 #include "StateMachine.h"
 #include "Bullet.h"
 #include "ShmupGame.h"
+#include "BulletPool.h"
+#include "ShootComponent.h"
 
 Player::Player() : Entity(0)
 {
@@ -21,9 +23,11 @@ Player::Player() : Entity(0)
 	b2PolygonShape shape;
 	shape.SetAsBox(0.5f, 0.5f);
 
-    PhysicsData physicsData(shape, 0, -5);
+    PhysicsData physicsData(shape);
+	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, { material });
+	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_playerBulletPool);
 }
 
 Player::~Player()
@@ -77,13 +81,29 @@ void Player::update()
     body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
 }
 
+void Player::changeColor()
+{
+
+}
+
+void Player::onCollisionEnter(EventObject* collider)
+{
+	Bullet* bullet = dynamic_cast<Bullet*>(collider);
+	if (bullet != 0)
+	{
+		bullet->destroy();
+		destroy();
+	}
+}
+
 void Player::shoot()
 {
 	if (m_shootFrames % 10 == 0)
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
-		BulletPool* bulletPool = Globals::m_shmupGame->m_playerBulletPool;
-		bulletPool->shoot(pos.x, pos.y, 0.0f, 20.0f);
+		float vx = 0.0f;
+		float vy = 10.0f;
+		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 	}
 
 	m_shootFrames++;

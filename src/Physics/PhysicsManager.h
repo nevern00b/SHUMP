@@ -20,6 +20,11 @@ public:
     static const uint MASK_DEFAULT;
     static const uint COLLISION_NONE;
     static const uint COLLISION_DEFAULT;
+	static const uint COLLISION_RED;
+	static const uint COLLISION_GREEN;
+	static const uint COLLISION_BLUE;
+	static const uint COLLISION_YELLOW;
+
 
     b2World* m_world;
 
