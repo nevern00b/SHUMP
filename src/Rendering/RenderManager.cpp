@@ -10,8 +10,9 @@
 #include "DataManager.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ShmupGame.h"
+#include "Game/ShmupGame.h"
 #include "Shader.h"
+#include "ObjectPool.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false)
@@ -38,6 +39,7 @@ RenderManager::RenderManager() :
 
     // Load shaders
     m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
+	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
 }
 
 RenderManager::~RenderManager()
@@ -59,7 +61,7 @@ void RenderManager::render()
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
     float aspectRatio = (float)screenWidth / screenHeight;
 
-    Camera* camera = Globals::m_gameManager->m_camera;
+    Camera* camera = Globals::m_shmupGame->m_camera;
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
@@ -80,14 +82,14 @@ void RenderManager::render()
     {
         ShaderCommon::LightingGL lighting;
 
-        uint numDirLights = Globals::m_gameManager->m_dirLights.size();
-        uint numPointLights = Globals::m_gameManager->m_pointLights.size();
+        uint numDirLights = Globals::m_shmupGame->m_dirLights.size();
+        uint numPointLights = Globals::m_shmupGame->m_pointLights.size();
         lighting.numDirLights = numDirLights;
         lighting.numPointLights = numPointLights;
 
         // Dir lights
         uint i = 0;
-        for (auto& dirLight : Globals::m_gameManager->m_dirLights)
+        for (auto& dirLight : Globals::m_shmupGame->m_dirLights)
         {
             lighting.dirLights[i].color = dirLight->m_color;
             lighting.dirLights[i].direction = dirLight->getDirection();
@@ -96,7 +98,7 @@ void RenderManager::render()
 
         // Point lights
         i = 0;
-        for (auto& pointLight : Globals::m_gameManager->m_pointLights)
+        for (auto& pointLight : Globals::m_shmupGame->m_pointLights)
         {
             float radius = pointLight->m_radius;
             float attenuation = 1.0f / (radius * radius);
@@ -122,11 +124,17 @@ void RenderManager::render()
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
 	
-
     for (auto& entity : m_entities)
     {
         entity->render();
     }
+
+	m_instancedShader->render();
+
+	for (auto& objectPool : m_objectPools)
+	{
+		objectPool->render();
+	}
 }
 
 void RenderManager::renderMaterial(const ShaderCommon::MaterialGL& material)
@@ -139,6 +147,16 @@ void RenderManager::renderTransform(const ShaderCommon::TransformGL& transform)
     m_transformBuffer->updateAll(&transform);
 }
 
+
+void RenderManager::addObjectPool(ObjectPool* objectPool)
+{
+	m_objectPools.push_back(objectPool);
+}
+
+void RenderManager::removeObjectPool(ObjectPool* objectPool)
+{
+	m_objectPools.remove(objectPool);
+}
 
 void RenderManager::addEntity(Entity* entity)
 {

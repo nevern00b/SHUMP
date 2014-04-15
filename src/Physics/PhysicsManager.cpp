@@ -1,14 +1,14 @@
 #include "PhysicsManager.h"
 
-
 #include <Box2D/Box2D.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "Globals.h"
 #include "UIManager.h"
 #include "Common.h"
 #include "Entity.h"
-#include "PhysicsComponent.h"
 #include "GameManager.h"
+#include "EventObject.h"
+#include "PhysicsComponent.h"
 
 const uint PhysicsManager::MASK_DEFAULT = 0xFFFF;
 const uint PhysicsManager::COLLISION_NONE = 0x00;
@@ -21,9 +21,6 @@ PhysicsManager::PhysicsManager()
     m_world->SetAllowSleeping(false);
     m_contactListener = new ContactListener();
 	m_world->SetContactListener(m_contactListener);
-
-	m_squareBig = Utils::createBoxShape(1.0f, 1.0f);
-	m_squareSmall = Utils::createBoxShape(0.1f, 0.1f);
 }
 
 PhysicsManager::~PhysicsManager()
@@ -31,8 +28,6 @@ PhysicsManager::~PhysicsManager()
 	destroyMarkedBodies();
     delete m_world;
 	delete m_contactListener;
-	delete m_squareBig;
-	delete m_squareSmall;
 }
 
 void PhysicsManager::update()
@@ -47,9 +42,8 @@ void PhysicsManager::update()
     destroyMarkedBodies();
 }
 
-void PhysicsManager::destroyPhysicsComponent(PhysicsComponent* physicsComponent)
+void PhysicsManager::destroyBody(b2Body* body)
 {
-    b2Body* body = physicsComponent->m_body;
     body->SetUserData(0);
     m_bodiesToDestroy.push_back(body);
     // Body is fully destroyed after the time step
@@ -73,8 +67,8 @@ ContactListener::ContactListener() : b2ContactListener()
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
-    Entity* obj1 = (Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
-    Entity* obj2 = (Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
+	EventObject* obj1 = (EventObject*)contact->GetFixtureA()->GetBody()->GetUserData();
+	EventObject* obj2 = (EventObject*)contact->GetFixtureB()->GetBody()->GetUserData();
     
     if (obj1 != 0 && obj2 != 0)
     {
@@ -85,8 +79,8 @@ void ContactListener::BeginContact(b2Contact* contact)
 
 void ContactListener::EndContact(b2Contact* contact)
 {
-    Entity* obj1 = (Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
-    Entity* obj2 = (Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
+	EventObject* obj1 = (EventObject*)contact->GetFixtureA()->GetBody()->GetUserData();
+	EventObject* obj2 = (EventObject*)contact->GetFixtureB()->GetBody()->GetUserData();
 
     if (obj1 != 0 && obj2 != 0)
     {
@@ -97,33 +91,5 @@ void ContactListener::EndContact(b2Contact* contact)
 
 void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
 {
-
-}
-
-namespace Utils
-{
-    b2PolygonShape* createBoxShape(float width, float height)
-    {
-        b2PolygonShape* shape = new b2PolygonShape();
-        shape->SetAsBox(width / 2, height / 2);
-        return shape;
-    }
-
-    b2CircleShape* createCircleShape(float radius)
-    {
-        b2CircleShape* shape = new b2CircleShape();
-        shape->m_radius = radius;
-        return shape;
-    }
-
-    b2PolygonShape* createPolyShape(const std::vector<b2Vec2>& points)
-    {
-        // Only creates convex hull shapes for now. Concave shapes require triangulation.
-        b2PolygonShape* shape = new b2PolygonShape();
-        shape->Set(&points[0], points.size());
-        return shape;
-    }
-
-
 
 }

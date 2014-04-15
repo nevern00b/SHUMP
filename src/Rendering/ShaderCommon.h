@@ -21,6 +21,7 @@ namespace ShaderCommon
     const uint POSITION_ATTR                        = 0;
     const uint NORMAL_ATTR                          = 1;
     const uint UV_ATTR                              = 2;
+	const uint TRANSFORM_ATTR						= 3;
 
     // FBO binding points                                            
     const uint DEFAULT_FRAMEBUFFER                  = 0;

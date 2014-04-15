@@ -7,7 +7,7 @@
 #include "Globals.h"
 #include "UIManager.h"
 #include "GameManager.h"
-#include "RenderManager.h"
+#include "Rendering/RenderManager.h"
 #include "Camera.h"
 #include "GLFW/glfw3.h"
 #include "Globals.h"

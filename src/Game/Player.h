@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Common.h"
 #include "Entity.h"
+class BulletPool;
 
 class Player : public Entity
 {
@@ -11,5 +13,8 @@ public:
     virtual void update();
 
 private:
-    void shoot();
+
+	void shoot();
+
+	uint m_shootFrames;
 };

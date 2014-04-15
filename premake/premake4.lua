@@ -55,16 +55,17 @@ solution ( name )
 project ( name )
     kind ("ConsoleApp")
     language ("C++")
-    defines ( preprocessor_vars )                   --preprocessor hints/ variables
-    links ( additional_libs )                       --include random libs from the OS
-    includedirs ( lib_dirs_include )                --include header files from external libraries
-    files { source_location  .. "**" }              --include all of our source code
-    --files { freetype_gl .. "**" }                   --freetype-gl has some .cpp files that need to be added
-    files { gl3w .. "**" }                          --gl3w has a .c file that needs to be added
-    files { data_location    .. "**" }              --include all of the data files
-    location ( build_location )                     --this is where the project is built
-    targetdir ( build_location )                    --this is where the exe gets built
-    debugdir ( project_location )                   --this is where the debug exe gets built
+    defines ( preprocessor_vars )                   	--preprocessor hints/ variables
+    links ( additional_libs )							--include random libs from the OS
+    table.insert(lib_dirs_include, source_location)		--add source folder to the includes
+    includedirs ( lib_dirs_include )					--include header files from external libraries
+    files { source_location  .. "**" }              	--include all of our source code
+    --files { freetype_gl .. "**" }                   	--freetype-gl has some .cpp files that need to be added
+    files { gl3w .. "**" }                          	--gl3w has a .c file that needs to be added
+    files { data_location    .. "**" }              	--include all of the data files
+    location ( build_location )                     	--this is where the project is built
+    targetdir ( build_location )                    	--this is where the exe gets built
+    debugdir ( project_location )                   	--this is where the debug exe gets built
 
     --Create debug and release modes
     local platform = _OPTIONS["platform"]

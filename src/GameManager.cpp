@@ -3,18 +3,18 @@
 #include <algorithm>
 #include "Globals.h"
 #include "DataManager.h"
-#include "RenderManager.h"
+#include "Rendering/RenderManager.h"
 #include "UIManager.h"
 #include "Common.h"
 #include "Entity.h"
 #include "Light.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "Material.h"
+#include "Rendering/Material.h"
 #include "Utils.h"
-#include "PhysicsComponent.h"
+#include "Physics/PhysicsComponent.h"
 #include "Entity.h"
-#include "PhysicsManager.h"
+#include "Physics/PhysicsManager.h"
 
 GameManager::GameManager() :
     m_camera(0),

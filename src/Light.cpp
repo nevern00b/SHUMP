@@ -1,9 +1,9 @@
 #include "Light.h"
 
 #include "Globals.h"
-#include "GameManager.h"
 #include "DataManager.h"
-#include "Material.h"
+#include "Rendering/Material.h"
+#include "Game/ShmupGame.h"
 
 Light::Light(Entity* parent, const glm::vec3& color) : Entity(parent),
     m_color(color)
@@ -20,12 +20,12 @@ Light::~Light()
 
 DirLight::DirLight(Entity* parent, const glm::vec3& color) : Light(parent, color)
 {
-    Globals::m_gameManager->addDirLight(this);
+    Globals::m_shmupGame->addDirLight(this);
 }
 
 DirLight::~DirLight()
 {
-    Globals::m_gameManager->removeDirLight(this);
+    Globals::m_shmupGame->removeDirLight(this);
 }
 
 glm::vec3 DirLight::getDirection()
@@ -36,10 +36,10 @@ glm::vec3 DirLight::getDirection()
 PointLight::PointLight(Entity* parent, const glm::vec3& color, float radius) : Light(parent, color),
     m_radius(radius)
 {
-    Globals::m_gameManager->addPointLight(this);
+    Globals::m_shmupGame->addPointLight(this);
 }
 
 PointLight::~PointLight()
 {
-    Globals::m_gameManager->removePointLight(this);
+    Globals::m_shmupGame->removePointLight(this);
 }

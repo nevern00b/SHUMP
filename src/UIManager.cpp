@@ -28,11 +28,23 @@ void UIManager::update()
     m_oldMouseX = m_mouseX;
     m_oldMouseY = m_mouseY;
     m_mousePressed = false;
+	m_keyPressed = 0;
 }
 
 void UIManager::keyEvent(int key, int action, int modifiers)
 {
-    // broadcastMessage(MESSAGE_LOCATION::GLOBAL, KeyEventMessage(key, action, modifiers));
+	if (action == GLFW_PRESS)
+	{
+		//if (!isKeyDown(key))
+		//{
+			m_keyPressed = key;
+		//}
+	}
+}
+
+bool UIManager::isKeyPressed(int key) const
+{
+	return m_keyPressed == key;
 }
 
 bool UIManager::isKeyDown(int key) const

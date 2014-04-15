@@ -4,6 +4,7 @@
 #include <list>
 #include <glm/glm.hpp>
 #include "Transform.h"
+#include "EventObject.h"
 
 class PhysicsComponent;
 class Mesh;
@@ -12,7 +13,7 @@ struct PhysicsData;
 class Component;
 class RenderComponent;
 
-class Entity
+class Entity : public EventObject
 {
 public:
 
@@ -24,8 +25,8 @@ public:
     void render();
     glm::vec3 getPosition();
 
-    void onCollisionEnter(Entity* collider);
-    void onCollisionLeave(Entity* collider);
+	virtual void onCollisionEnter(EventObject* collider);
+	virtual void onCollisionLeave(EventObject* collider);
 
     Entity* m_parent;
     std::list<Entity*> m_children;

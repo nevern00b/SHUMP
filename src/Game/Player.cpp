@@ -1,22 +1,26 @@
 #include "Player.h"
 
 #include <Box2D/Box2D.h>
-#include "Material.h"
+#include "Rendering/Material.h"
 #include "Utils.h"
 #include "Globals.h"
-#include "PhysicsComponent.h"
-#include "RenderComponent.h"
-#include "PhysicsManager.h"
+#include "Physics/PhysicsComponent.h"
+#include "Rendering/RenderComponent.h"
+#include "Physics/PhysicsManager.h"
 #include "DataManager.h"
 #include "UIManager.h"
-#include "Bullet.h"
 #include "StateMachine.h"
+#include "Bullet.h"
+#include "ShmupGame.h"
 
 Player::Player() : Entity(0)
 {
 	Material* material = Globals::m_dataManager->getMaterial("green");
     Mesh* mesh = Globals::m_dataManager->getMesh("cube");
-	b2Shape* shape = Globals::m_physicsManager->m_squareBig;
+
+	b2PolygonShape shape;
+	shape.SetAsBox(0.5f, 0.5f);
+
     PhysicsData physicsData(shape, 0, -5);
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, { material });
@@ -57,6 +61,12 @@ void Player::update()
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_Y))
 		Globals::m_stateMachine->checkStates();
 
+	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
+	{
+		m_shootFrames = 0;
+		printf("start shoot/n");
+	}
+
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
     {
         shoot();
@@ -70,5 +80,13 @@ void Player::update()
 
 void Player::shoot()
 {
-	Bullet* bullet = new Bullet(this);
+	if (m_shootFrames % 10 == 0)
+	{
+		b2Vec2 pos = m_physics->m_body->GetPosition();
+		BulletPool* bulletPool = Globals::m_shmupGame->m_playerBulletPool;
+		bulletPool->shoot(pos.x, pos.y, 0.0f, 20.0f);
+	}
+
+	m_shootFrames++;
+	
 }

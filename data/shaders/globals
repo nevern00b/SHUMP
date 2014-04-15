@@ -20,6 +20,7 @@
 #define POSITION_ATTR                   0
 #define NORMAL_ATTR                     1
 #define UV_ATTR                         2
+#define TRANSFORM_ATTR					3
 
 // FBO binding points                                            
 #define DEFAULT_FRAMEBUFFER             0

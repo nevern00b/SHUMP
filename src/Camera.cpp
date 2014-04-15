@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 #include "Globals.h"
-#include "GameManager.h"
+#include "Game/ShmupGame.h"
 #include "UIManager.h"
 #include "DataManager.h"
 
@@ -22,7 +22,7 @@ Camera::Camera(Entity* parent, float fov) : Entity(parent),
     float eulerX = -glm::atan(rotation[2][0], rotation[0][0]);
     setRotation(eulerX, eulerY);
 
-    Globals::m_gameManager->setCamera(this);
+    Globals::m_shmupGame->setCamera(this);
 }
 
 Camera::~Camera()

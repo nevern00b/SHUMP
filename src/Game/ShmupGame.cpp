@@ -2,20 +2,21 @@
 
 #include "Globals.h"
 #include "DataManager.h"
-#include "RenderManager.h"
+#include "Rendering/RenderManager.h"
 #include "UIManager.h"
 #include "Common.h"
 #include "Entity.h"
 #include "Light.h"
 #include "Camera.h"
 #include "Transform.h"
-#include "Material.h"
+#include "Rendering/Material.h"
 #include "Utils.h"
-#include "PhysicsComponent.h"
+#include "Physics/PhysicsComponent.h"
 #include "Entity.h"
-#include "PhysicsManager.h"
-#include "RenderComponent.h"
+#include "Physics/PhysicsManager.h"
+#include "Rendering/RenderComponent.h"
 #include "Player.h"
+#include "Bullet.h"
 
 const float ShmupGame::WORLD_BOUND_X = 10.0f;
 const float ShmupGame::WORLD_BOUND_Y = 10.0f;
@@ -34,17 +35,14 @@ void ShmupGame::init()
 {
     GameManager::init();
 
-    Player* player = new Player();
-
-    // Create floor
-
-	Material* material = Globals::m_dataManager->getMaterial("red");
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
-	b2Shape* shape = Globals::m_physicsManager->m_squareBig;
+	Material* material = Globals::m_dataManager->getMaterial("yellow");
+	b2PolygonShape shape;
+	shape.SetAsBox(0.05f, 0.05f);
 	PhysicsData physicsData(shape, 0, 0);
-	Entity* wall = new Entity(0);
-	PhysicsComponent* physics = new PhysicsComponent(wall, physicsData);
-	RenderComponent* render = new RenderComponent(wall, mesh, { material });
+	m_playerBulletPool = new BulletPool(100, mesh, material, physicsData);
+
+    Player* player = new Player();
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
@@ -61,3 +59,4 @@ void ShmupGame::update()
 {
     GameManager::update();
 }
+

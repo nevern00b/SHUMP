@@ -1,13 +1,12 @@
 #include "PhysicsComponent.h"
 
 #include <Box2D/Box2D.h>
+#include "PhysicsManager.h"
 #include "Utils.h"
 #include "Globals.h"
-#include "PhysicsManager.h"
-#include "Mesh.h"
+#include "Rendering/Mesh.h"
 #include "Entity.h"
 #include "Transform.h"
-
 
 PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsData) : Transform(entity)
 {
@@ -17,7 +16,7 @@ PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsDat
     entity->m_transform = this;
 
     // Create the b2body
-    b2BodyDef& bodyDef = Globals::m_physicsManager->m_sharedBodyDef;
+	b2BodyDef bodyDef;
 	bodyDef.position = b2Vec2(physicsData.m_x, physicsData.m_y);
     bodyDef.linearVelocity = b2Vec2(physicsData.m_vx, physicsData.m_vy);
     bodyDef.type = physicsData.m_bodyType;
@@ -27,7 +26,7 @@ PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsDat
     m_body = Globals::m_physicsManager->m_world->CreateBody(&bodyDef);
 
     // Create fixture and add to body
-    b2FixtureDef& fixtureDef = Globals::m_physicsManager->m_sharedFixtureDef;
+	b2FixtureDef fixtureDef;
     fixtureDef.shape = physicsData.m_shape;
     fixtureDef.isSensor = true;
     fixtureDef.filter.categoryBits = physicsData.m_categoryBits;
@@ -40,7 +39,7 @@ PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsDat
 
 PhysicsComponent::~PhysicsComponent()
 {
-    Globals::m_physicsManager->destroyPhysicsComponent(this);
+    Globals::m_physicsManager->destroyBody(m_body);
 }
 
 void PhysicsComponent::update()
@@ -69,8 +68,8 @@ void PhysicsComponent::setTranslation(const glm::vec3& translation)
     m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
 }
 
-PhysicsData::PhysicsData(b2Shape* shape, float x, float y) :
-    m_shape(shape),
+PhysicsData::PhysicsData(b2Shape& shape, float x, float y) :
+    m_shape(&shape),
     m_bodyType(b2_dynamicBody),
     m_categoryBits(PhysicsManager::COLLISION_DEFAULT),
     m_maskBits(PhysicsManager::MASK_DEFAULT),

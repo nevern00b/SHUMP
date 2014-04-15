@@ -8,6 +8,7 @@
 
 class Entity;
 class Shader;
+class ObjectPool;
 
 class RenderManager
 {
@@ -17,6 +18,8 @@ public:
     ~RenderManager();
 
     void render();
+	void addObjectPool(ObjectPool* objectPool);
+	void removeObjectPool(ObjectPool* objectPool);
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
     void renderMaterial(const ShaderCommon::MaterialGL& material);
@@ -48,8 +51,10 @@ public:
 private:
 
     Shader* m_basicShader;
+	Shader* m_instancedShader;
 
     std::list<Entity*> m_entities;
+	std::list<ObjectPool*> m_objectPools;
 };
 
 namespace RENDER_STATE

@@ -25,10 +25,9 @@ public:
 
 struct PhysicsData
 {
-	PhysicsData(b2Shape* shape, float x, float y);
+	PhysicsData(b2Shape& shape, float x, float y);
 
-    b2Shape* m_shape;
-    
+	b2Shape* m_shape; // Does not store shape
     b2BodyType m_bodyType;
     uint m_categoryBits;
     uint m_maskBits;

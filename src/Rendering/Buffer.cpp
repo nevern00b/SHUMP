@@ -112,5 +112,6 @@ template class Buffer<ShaderCommon::TransformGL>;
 template class Buffer<ShaderCommon::LightingGL>;
 template class Buffer<float>;
 template class Buffer<ushort>;
+template class Buffer<glm::vec4>;
 
 

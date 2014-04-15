@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 class UIManager
 {
 
@@ -13,6 +15,7 @@ public:
     // Keyboard
     void keyEvent(int key, int action, int modifiers);
     bool isKeyDown(int key) const;
+	bool isKeyPressed(int key) const;
     bool isShiftDown() const;
     bool isControlDown() const;
     bool isAltDown() const;
@@ -56,4 +59,5 @@ protected:
     int m_oldMouseX;
     int m_oldMouseY;
 
+	int m_keyPressed;
 };

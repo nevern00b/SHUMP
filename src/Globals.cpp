@@ -5,12 +5,12 @@
 #include <glm/glm.hpp>
 #include "Common.h"
 #include "UIManager.h"
-#include "RenderManager.h"
+#include "Rendering/RenderManager.h"
 #include "DataManager.h"
 #include "GameManager.h"
-#include "PhysicsManager.h"
-#include "ShmupGame.h"
-#include "StateMachine.h"
+#include "Physics/PhysicsManager.h"
+#include "Game/ShmupGame.h"
+#include "Game/StateMachine.h"
 
 void glfwErrorCallback(int error, const char* description)
 {
@@ -79,7 +79,7 @@ void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsiz
 RenderManager* Globals::m_renderManager;
 UIManager* Globals::m_uiManager;
 DataManager* Globals::m_dataManager;
-GameManager* Globals::m_gameManager;
+ShmupGame* Globals::m_shmupGame;
 PhysicsManager* Globals::m_physicsManager;
 StateMachine* Globals::m_stateMachine;
 
@@ -91,7 +91,7 @@ void Globals::init()
     glm::uvec2 openGLVersion(3, 1);
     glm::uvec4 colorBits(8, 8, 8, 0); // We only use alpha on custom FBOs (default value is 8 bits)
     glm::uvec2 depthStencilBits(24, 0);
-    bool vsync = false;
+    bool vsync = true;
     bool showDebugOutput = false;
     bool resizable = true;
     //srand((uint)time(NULL));
@@ -150,8 +150,8 @@ void Globals::init()
     m_dataManager = new DataManager();
     m_physicsManager = new PhysicsManager();
     m_renderManager = new RenderManager();
-    m_gameManager = new ShmupGame();
-    m_gameManager->init();
+    m_shmupGame = new ShmupGame();
+    m_shmupGame->init();
 	m_stateMachine = new StateMachine();
     
     // Set glfw window callbacks to UIManager
@@ -173,7 +173,7 @@ void Globals::init()
         glfwPollEvents();
         m_renderManager->render(); // Goes first because it lets the GPU start working early.
         m_physicsManager->update();
-        m_gameManager->update();
+        m_shmupGame->update();
         glfwSwapBuffers(window);
 
 		// FPS
@@ -205,7 +205,7 @@ void Globals::destroy()
 {
 	delete m_uiManager;
 	delete m_dataManager;
-	delete m_gameManager;
+	delete m_shmupGame;
 	delete m_renderManager;
 	delete m_physicsManager;
 	delete m_stateMachine;

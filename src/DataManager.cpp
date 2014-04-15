@@ -1,11 +1,11 @@
 #include "DataManager.h"
 
 #include "Utils.h"
-#include "Mesh.h"
-#include "ShaderCommon.h"
+#include "Rendering/Mesh.h"
+#include "Rendering/ShaderCommon.h"
 #include "Globals.h"
-#include "RenderManager.h"
-#include "Material.h"
+#include "Rendering/RenderManager.h"
+#include "Rendering/Material.h"
 
 DataManager::DataManager()
 {

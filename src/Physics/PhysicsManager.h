@@ -15,7 +15,7 @@ public:
     PhysicsManager();
     ~PhysicsManager();
     void update();
-    void destroyPhysicsComponent(PhysicsComponent* physicsComponent);
+	void destroyBody(b2Body* body);
 
     static const uint MASK_DEFAULT;
     static const uint COLLISION_NONE;
@@ -23,19 +23,12 @@ public:
 
     b2World* m_world;
 
-	// Share these defs when creating objects
-	b2BodyDef m_sharedBodyDef;
-	b2FixtureDef m_sharedFixtureDef;
-	b2Shape* m_squareBig;
-	b2Shape* m_squareSmall;
-
 private:    
 
     void destroyMarkedBodies();
 
     std::vector<b2Body*> m_bodiesToDestroy;
 	ContactListener* m_contactListener;
-
 
 };
 
@@ -51,10 +44,3 @@ private:
     // Useful for getting the impulse of a collision
     virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 };
-
-namespace Utils
-{
-    b2PolygonShape* createBoxShape(float width, float height);
-    b2CircleShape* createCircleShape(float radius);
-    b2PolygonShape* createPolyShape(const std::vector<b2Vec2>& points); // TO-DO: or except glm::vec2?
-}

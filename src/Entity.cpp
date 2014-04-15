@@ -4,23 +4,24 @@
 #include "Globals.h"
 #include "GameManager.h"
 #include "DataManager.h"
-#include "RenderManager.h"
-#include "ShaderCommon.h"
-#include "Mesh.h"
-#include "PhysicsComponent.h"
-#include "RenderComponent.h"
+#include "Rendering/RenderManager.h"
+#include "Rendering/ShaderCommon.h"
+#include "Rendering/Mesh.h"
+#include "Physics/PhysicsComponent.h"
+#include "Rendering/RenderComponent.h"
+#include "Game/ShmupGame.h"
 
-Entity::Entity(Entity* parent) :
+Entity::Entity(Entity* parent) : EventObject(),
     m_render(0),
     m_physics(0),
 	m_dead(false)
 {
-    m_parent = parent == 0 ? Globals::m_gameManager->m_rootEntity : parent;
+    m_parent = parent == 0 ? Globals::m_shmupGame->m_rootEntity : parent;
     if (m_parent != 0) m_parent->m_children.push_back(this);
 
     m_transform = new Transform(this);
 
-    Globals::m_gameManager->addEntity(this);
+    Globals::m_shmupGame->addEntity(this);
 }
 
 Entity::~Entity()
@@ -33,7 +34,7 @@ void Entity::destroy()
 	// Object removed and marked for deletion. Deletion happens inside GameManager update loop.
 	m_dead = true;
 	if (m_parent != 0) m_parent->m_children.remove(this); // Remove from parent's list
-	Globals::m_gameManager->removeEntity(this);
+	Globals::m_shmupGame->removeEntity(this);
 
 	// Delete components
 	while (m_components.size() > 0)
@@ -77,12 +78,12 @@ glm::vec3 Entity::getPosition()
     return glm::vec3(m_renderMatrix[3]);
 }
 
-void Entity::onCollisionEnter(Entity* collider)
+void Entity::onCollisionEnter(EventObject* collider)
 {
     //printf("collision enter");
 }
 
-void Entity::onCollisionLeave(Entity* collider)
+void Entity::onCollisionLeave(EventObject* collider)
 {
     //printf("collision leave");
 }
