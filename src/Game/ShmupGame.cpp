@@ -46,19 +46,20 @@ void ShmupGame::init()
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 
 	Material* yellowMaterial = Globals::m_dataManager->getMaterial("yellow");
-	m_yellowBulletPool = new BulletPool(50, mesh, yellowMaterial, physicsData);
+	m_yellowBulletPool = new BulletPool(50, mesh, yellowMaterial, physicsData, COLOR::YELLOW);
 
 	Material* redMaterial = Globals::m_dataManager->getMaterial("red");
-	m_redBulletPool = new BulletPool(50, mesh, redMaterial, physicsData);
+	m_redBulletPool = new BulletPool(50, mesh, redMaterial, physicsData, COLOR::RED);
 
 	Material* greenMaterial = Globals::m_dataManager->getMaterial("green");
-	m_greenBulletPool = new BulletPool(50, mesh, greenMaterial, physicsData);
+	m_greenBulletPool = new BulletPool(50, mesh, greenMaterial, physicsData, COLOR::GREEN);
 
 	Material* blueMaterial = Globals::m_dataManager->getMaterial("blue");
-	m_blueBulletPool = new BulletPool(50, mesh, blueMaterial, physicsData);
+	m_blueBulletPool = new BulletPool(50, mesh, blueMaterial, physicsData, COLOR::BLUE);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBulletPool = new BulletPool(50, mesh, redMaterial, physicsData);
+	m_enemyBulletPool = new BulletPool(50, mesh, redMaterial, physicsData, COLOR::RED);
+
 
 	// Create particle system
 	m_particleSystem = new ParticleSystem(100, mesh, yellowMaterial);

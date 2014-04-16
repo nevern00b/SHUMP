@@ -22,8 +22,8 @@ void ParticleSystem::createRadial(float x, float y, uint count)
 	for (uint i = 0; i < count; i++)
 	{
 		float angle = 2 * 3.14f * ((float)i / count);
-		float vx = glm::cos(angle);
-		float vy = glm::sin(angle);
+		float vx = glm::cos(angle)*0.5f;
+		float vy = glm::sin(angle)*0.5f;
 
 		create(x, y, vx, vy);
 	}
