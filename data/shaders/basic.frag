@@ -82,31 +82,31 @@ void main()
         
     vec3 finalColor = diffuse.rgb * AMBIENT_TERM;
     
-    //for(int i = 0; i < uLighting.numDirLights; i++)
-    //{
-    //    DirLightGL dirLight = uLighting.dirLights[i];
-    //    vec3 lightDir = -dirLight.direction;
-    //    vec3 lightColor = dirLight.color;
-    //    float lightAttenuation = 1.0;
-    //    float visibility = 1.0;
-    //    finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
-    //}
-    //
-    //for(int i = 0; i < uLighting.numPointLights; i++)
-    //{
-    //    PointLightGL pointLight = uLighting.pointLights[i];
-    //    
-    //    vec3 lightColor = pointLight.color;        
-    //    vec3 lightDifference =  pointLight.position.rgb - vPosition;
-    //    float lightDistanceSqr = dot(lightDifference, lightDifference);
-    //    vec3 lightDir = lightDifference * inversesqrt(lightDistanceSqr);
-    //    
-    //    float lightAttenuation = max(0.0, 1.0 - lightDistanceSqr*pointLight.position.a);
-    //    lightAttenuation *= lightAttenuation;
-    //    
-    //    float visibility = 1.0;
-    //    finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
-    //}
+    for(int i = 0; i < uLighting.numDirLights; i++)
+    {
+        DirLightGL dirLight = uLighting.dirLights[i];
+        vec3 lightDir = -dirLight.direction;
+        vec3 lightColor = dirLight.color;
+        float lightAttenuation = 1.0;
+        float visibility = 1.0;
+        finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
+    }
+    
+    for(int i = 0; i < uLighting.numPointLights; i++)
+    {
+        PointLightGL pointLight = uLighting.pointLights[i];
+        
+        vec3 lightColor = pointLight.color;        
+        vec3 lightDifference =  pointLight.position.rgb - vPosition;
+        float lightDistanceSqr = dot(lightDifference, lightDifference);
+        vec3 lightDir = lightDifference * inversesqrt(lightDistanceSqr);
+        
+        float lightAttenuation = max(0.0, 1.0 - lightDistanceSqr*pointLight.position.a);
+        lightAttenuation *= lightAttenuation;
+        
+        float visibility = 1.0;
+        finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
+    }
 
     fragColor = vec4(finalColor, diffuse.a);
 }

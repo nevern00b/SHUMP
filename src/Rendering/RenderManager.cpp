@@ -112,8 +112,6 @@ void RenderManager::render()
 		m_lightBufferDirty = false;
     }
 
-	m_basicShader->render();
-
     // Clear the framebuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is default framebuffer
     setViewportSize(screenWidth, screenHeight);
@@ -124,6 +122,8 @@ void RenderManager::render()
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
 	
+	m_basicShader->render();
+
     for (auto& entity : m_entities)
     {
         entity->render();
@@ -135,6 +135,8 @@ void RenderManager::render()
 	{
 		objectPool->render();
 	}
+
+
 }
 
 void RenderManager::renderMaterial(const ShaderCommon::MaterialGL& material)
