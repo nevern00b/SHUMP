@@ -46,7 +46,6 @@ void Entity::destroy()
 	{
 		m_children.front()->destroy();
 	}
-
 }
 
 void Entity::update()

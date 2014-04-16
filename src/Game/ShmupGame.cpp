@@ -19,6 +19,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "BulletPool.h"
+#include "Rendering/ParticleSystem.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
 const float ShmupGame::WORLD_BOUND_Y = 9.0f;
@@ -37,6 +38,7 @@ void ShmupGame::init()
 {
     GameManager::init();
 
+	// Create bullet pools
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
 	b2PolygonShape shape;
 	shape.SetAsBox(0.05f, 0.05f);
@@ -44,20 +46,22 @@ void ShmupGame::init()
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 
 	Material* yellowMaterial = Globals::m_dataManager->getMaterial("yellow");
-	m_yellowBulletPool = new BulletPool(200, mesh, yellowMaterial, physicsData);
+	m_yellowBulletPool = new BulletPool(50, mesh, yellowMaterial, physicsData);
 
 	Material* redMaterial = Globals::m_dataManager->getMaterial("red");
-	m_redBulletPool = new BulletPool(200, mesh, redMaterial, physicsData);
+	m_redBulletPool = new BulletPool(50, mesh, redMaterial, physicsData);
 
 	Material* greenMaterial = Globals::m_dataManager->getMaterial("green");
-	m_greenBulletPool = new BulletPool(200, mesh, greenMaterial, physicsData);
+	m_greenBulletPool = new BulletPool(50, mesh, greenMaterial, physicsData);
 
 	Material* blueMaterial = Globals::m_dataManager->getMaterial("blue");
-	m_blueBulletPool = new BulletPool(200, mesh, blueMaterial, physicsData);
+	m_blueBulletPool = new BulletPool(50, mesh, blueMaterial, physicsData);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBulletPool = new BulletPool(30, mesh, redMaterial, physicsData);
+	m_enemyBulletPool = new BulletPool(50, mesh, redMaterial, physicsData);
 
+	// Create particle system
+	m_particleSystem = new ParticleSystem(100, mesh, yellowMaterial);
 
 	Player* player = new Player();
 	player->m_transform->setTranslation(-2, -5);
@@ -69,10 +73,11 @@ void ShmupGame::init()
     light->m_transform->setTranslation(glm::vec3(5, 10, 0));
 
     DirLight* dirlight = new DirLight(0, glm::vec3(1, 1, 1));
-    dirlight->m_transform->rotate(90, glm::vec3(1, 0, 0));
+    dirlight->m_transform->rotate(30, glm::vec3(1, 0, 0));
 
     Camera* camera = new Camera(0, 45.0f);
     camera->setZoom(20);
+	//camera->applyRotation(0.0f, 0.0f);
 }
 
 void ShmupGame::update()

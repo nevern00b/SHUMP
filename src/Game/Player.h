@@ -21,4 +21,5 @@ private:
 	void shoot();
 
 	ShootComponent* m_shootComponent;
+
 };

@@ -3,6 +3,7 @@
 #include "GameManager.h"
 
 class BulletPool;
+class ParticleSystem;
 
 class ShmupGame : public GameManager
 {
@@ -28,6 +29,7 @@ public:
 	BulletPool* m_blueBulletPool;
 	BulletPool* m_redBulletPool;
 	BulletPool* m_enemyBulletPool;
+	ParticleSystem* m_particleSystem;
 
 private:
 

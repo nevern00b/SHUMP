@@ -6,6 +6,7 @@
 #include "Rendering/Buffer.h"
 class Mesh;
 class Material;
+class PoolObject;
 
 
 class ObjectPool
@@ -13,8 +14,10 @@ class ObjectPool
 public:
 	ObjectPool(uint size, Mesh* mesh, Material* material);
 	virtual ~ObjectPool();
+	
 
-	virtual void render();
+	void create(float x, float y, float vx, float vy);
+	void render();
 
 protected:
 
@@ -23,4 +26,20 @@ protected:
 	Material* m_material;
 	Buffer<glm::vec4>* m_transformBuffer;
 	std::vector<glm::vec4> m_transformData;
+	std::vector<PoolObject*> m_objects;
+};
+
+class PoolObject : public EventObject
+{
+public:
+	PoolObject();
+	virtual ~PoolObject();
+
+	virtual bool update();
+	virtual void create(float x, float y, float vx, float vy);
+	virtual void destroy();
+	virtual glm::vec4 getTransform();
+
+	bool m_disabled;
+
 };

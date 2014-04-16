@@ -16,7 +16,7 @@ ShootComponent::~ShootComponent()
 
 void ShootComponent::shoot(float x, float y, float vx, float vy)
 {
-	m_bulletPool->shoot(x, y, vx, vy);
+	m_bulletPool->create(x, y, vx, vy);
 }
 
 void ShootComponent::shootRadial(float x, float y, float speed, uint count)
@@ -27,6 +27,6 @@ void ShootComponent::shootRadial(float x, float y, float speed, uint count)
 		float vx = glm::cos(angle) * speed;
 		float vy = glm::sin(angle) * speed;
 
-		m_bulletPool->shoot(x, y, vx, vy);
+		m_bulletPool->create(x, y, vx, vy);
 	}
 }

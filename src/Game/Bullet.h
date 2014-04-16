@@ -5,27 +5,23 @@
 #include "Common.h"
 #include "Rendering/ObjectPool.h"
 #include "EventObject.h"
+#include "BulletPool.h"
 class Mesh;
 class Material;
 struct PhysicsData;
 class Bullet;
 
-class Bullet : public EventObject
+class Bullet : public PoolObject
 {
 
 public:
 	Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef);
-	~Bullet();
-	
-	bool update();
-	void create(float x, float y, float vx, float vy);
-	void destroy();
+	virtual ~Bullet();
 
-	bool m_disabled;
+	virtual bool update();
+	virtual void create(float x, float y, float vx, float vy);
+	virtual glm::vec4 getTransform();
+
 	b2Body* m_body;
 	float m_damage;
-
-private:
-	
-
 };

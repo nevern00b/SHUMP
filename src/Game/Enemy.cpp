@@ -1,5 +1,6 @@
 #include "Enemy.h"
 
+#include <Box2D/Box2D.h>
 #include "Bullet.h"
 #include "Globals.h"
 #include "DataManager.h"
@@ -9,9 +10,10 @@
 #include "ShmupGame.h"
 #include "ShootComponent.h"
 #include "UIManager.h"
+#include "Rendering/ParticleSystem.h"
 
 Enemy::Enemy() : Entity(0),
-	m_health(10.0f),
+	m_health(2.0f),
 	m_timer(0.0f)
 {
 	Material* material = Globals::m_dataManager->getMaterial("blue");
@@ -37,17 +39,17 @@ void Enemy::update()
 {
 	Entity::update();
 
-	float currTime = Globals::m_uiManager->getTimeSinceBeginning();
-	if (currTime > m_timer)
-	{
-		//printf("%f\n", (currTime - m_timer));
-		m_timer += 0.3f; // Shoot every 0.3 seconds
-
-		b2Vec2 pos = m_physics->m_body->GetPosition();
-		float vx = 0.0f;
-		float vy = -5.0f;
-		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
-	}
+	//float currTime = Globals::m_uiManager->getTimeSinceBeginning();
+	//if (currTime > m_timer)
+	//{
+	//	//printf("%f\n", (currTime - m_timer));
+	//	m_timer += 0.3f; // Shoot every 0.3 seconds
+	//
+	//	b2Vec2 pos = m_physics->m_body->GetPosition();
+	//	float vx = 0.0f;
+	//	float vy = -5.0f;
+	//	m_shootComponent->shoot(pos.x, pos.y, vx, vy);
+	//}
 }
 
 void Enemy::onCollisionEnter(EventObject* collider)
@@ -59,7 +61,9 @@ void Enemy::onCollisionEnter(EventObject* collider)
 		m_health -= bullet->m_damage;
 		if (m_health <= 0.0f)
 		{
-			destroy();
+			b2Vec2 pos = m_physics->m_body->GetPosition();
+			Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
+			destroy();	
 		}
 	}
 }

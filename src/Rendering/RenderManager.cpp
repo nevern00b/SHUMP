@@ -62,14 +62,13 @@ void RenderManager::render()
     float aspectRatio = (float)screenWidth / screenHeight;
 
 	Camera* camera = Globals::m_shmupGame->m_camera;
-	camera->m_disabled = true;
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
-    //m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
-	float orthoSizeX = ShmupGame::WORLD_BOUND_X;
-	float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
-	m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
+    m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+	//float orthoSizeX = ShmupGame::WORLD_BOUND_X;
+	//float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
+	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
     glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
 
     // Update the per frame buffer

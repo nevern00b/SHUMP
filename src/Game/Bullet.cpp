@@ -8,14 +8,13 @@
 #include "ShmupGame.h"
 #include "UIManager.h"
 
-Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef) : EventObject(),
+Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef) : PoolObject(),
 	m_damage(1.0f)
 {	
 	m_body = Globals::m_physicsManager->m_world->CreateBody(&bodyDef);	
 	m_body->CreateFixture(&fixtureDef);
 	m_body->SetUserData(this);
 	m_body->SetActive(false);
-	destroy();
 }
 
 Bullet::~Bullet()
@@ -25,6 +24,7 @@ Bullet::~Bullet()
 
 bool Bullet::update()
 {
+	// Deactivate body if it was marked as disabled
 	if (m_disabled && m_body->IsActive())
 	{
 		m_body->SetActive(false);
@@ -40,21 +40,25 @@ bool Bullet::update()
 		destroy();
 		return false;
 	}
+
 	return true;
 }
 
 void Bullet::create(float x, float y, float vx, float vy)
 {
+	PoolObject::create(x, y, vx, vy);
+
 	m_body->SetActive(true);
-	m_disabled = false;
 
 	float angle = glm::atan(vy, vx);
 	m_body->SetTransform(b2Vec2(x, y), angle);
 	m_body->SetLinearVelocity(b2Vec2(vx, vy));
 }
 
-void Bullet::destroy()
+glm::vec4 Bullet::getTransform()
 {
-	m_disabled = true;
-	// m_body is deactivated later outside of time step
+	b2Vec2 pos = m_body->GetPosition();
+	float angle = m_body->GetAngle();
+	glm::vec4 transform(pos.x, pos.y, 0.0f, angle);
+	return transform;
 }
