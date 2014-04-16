@@ -12,12 +12,13 @@ public:
 
     RenderComponent(Entity* entity, Mesh* mesh, const std::vector<Material*>& materials);
     virtual ~RenderComponent();
-
     void render();
+
+	std::vector<Material*> m_materials;
 
 private:
 
     Mesh* m_mesh;
-    std::vector<Material*> m_materials;
+    
 
 };

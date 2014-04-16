@@ -17,7 +17,7 @@
 
 Player::Player() : Entity(0)
 {
-	Material* material = Globals::m_dataManager->getMaterial("green");
+	Material* material = Globals::m_dataManager->getMaterial("blue");
     Mesh* mesh = Globals::m_dataManager->getMesh("cube");
 
 	b2PolygonShape shape;
@@ -54,7 +54,7 @@ void Player::update()
         desiredVel.y += speed;
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
         desiredVel.y -= speed;
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))//Keyboard to take bullet change 
 		Globals::m_stateMachine->changeBState(1);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_I))
 		Globals::m_stateMachine->changeBState(2);
@@ -64,6 +64,14 @@ void Player::update()
 		Globals::m_stateMachine->changeBState(4);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_Y))
 		Globals::m_stateMachine->checkStates();
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_H))
+		Globals::m_stateMachine->changeIState(1);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_J))
+		Globals::m_stateMachine->changeIState(2);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_K))
+		Globals::m_stateMachine->changeIState(3);
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_L))
+		Globals::m_stateMachine->changeIState(4);
 
 	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	{
@@ -75,7 +83,7 @@ void Player::update()
 
     }
 
-
+	changeColor();
     b2Vec2 velChange = desiredVel - vel;
     b2Vec2 impulse = body->GetMass() * velChange;
     body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
@@ -83,6 +91,30 @@ void Player::update()
 
 void Player::changeColor()
 {
+	int immunState = Globals::m_stateMachine->getIState();
+	Material* chmaterial = Globals::m_dataManager->getMaterial("blue");
+
+	if (immunState == COLOR::RED)
+	{
+		chmaterial = Globals::m_dataManager->getMaterial("red");
+		m_render->m_materials[0] = chmaterial;
+		
+	}
+	else if (immunState == COLOR::BLUE)
+	{
+		chmaterial = Globals::m_dataManager->getMaterial("blue");
+		m_render->m_materials[0] = chmaterial;
+	}
+	else if (immunState == COLOR::GREEN)
+	{
+		chmaterial = Globals::m_dataManager->getMaterial("green");
+		m_render->m_materials[0] = chmaterial;
+	}
+	else if (immunState == COLOR::YELLOW)
+	{
+		chmaterial = Globals::m_dataManager->getMaterial("yellow");
+		m_render->m_materials[0] = chmaterial;
+	}
 
 }
 
