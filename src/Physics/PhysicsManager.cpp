@@ -18,11 +18,13 @@ const uint PhysicsManager::COLLISION_GREEN = 0x04;
 const uint PhysicsManager::COLLISION_BLUE = 0x08;
 const uint PhysicsManager::COLLISION_YELLOW = 0x10;
 
-PhysicsManager::PhysicsManager()
+PhysicsManager::PhysicsManager() :
+	m_accumulator(0.0f)
 {
    // Create world
     m_world = new b2World(b2Vec2(0.0f, 0.0f));
     m_world->SetAllowSleeping(false);
+	m_world->SetAutoClearForces(false);
     m_contactListener = new ContactListener();
 	m_world->SetContactListener(m_contactListener);
 }
@@ -37,13 +39,35 @@ PhysicsManager::~PhysicsManager()
 void PhysicsManager::update()
 {
 	float timeStep = 1.0f / 60.0f;
-	int velocityIt = 8;
-	int positionIt = 3;
-	m_world->Step(timeStep, velocityIt, positionIt);
-    m_world->ClearForces();
+	float frameTime = Globals::m_uiManager->m_frameTime;
 
+	bool clearForces = false;
+
+	m_accumulator += frameTime;
+
+	while (m_accumulator >= timeStep)
+	{
+		m_accumulator -= timeStep;
+
+		// Use a non-fixed time step for the last step, should not exceed timestep * 2
+		if (m_accumulator < timeStep)
+		{
+			timeStep += m_accumulator;
+			m_accumulator = 0.0f;
+		}
+
+		m_world->Step(timeStep, 8, 3);
+		clearForces = true;
+	}
+	
+	if (clearForces)
+	{
+		m_world->ClearForces();
+	}
+    
     // Destroy the bodies that were marked for destruction during the timestep
     destroyMarkedBodies();
+
 }
 
 void PhysicsManager::destroyBody(b2Body* body)

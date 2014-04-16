@@ -25,6 +25,8 @@ public:
 
     float m_fov; // degrees
 
+	bool m_disabled;
+
 private:
 
     const float m_rotationSpeed = 1.0f;
@@ -41,6 +43,6 @@ private:
     float m_panOldAverageY;
     float m_zoomOldAverage;
 
-    bool m_disabled;
+    
 
 };

@@ -8,10 +8,11 @@
 #include "Rendering/RenderComponent.h"
 #include "ShmupGame.h"
 #include "ShootComponent.h"
+#include "UIManager.h"
 
 Enemy::Enemy() : Entity(0),
 	m_health(10.0f),
-	m_shootFrames(0)
+	m_timer(0.0f)
 {
 	Material* material = Globals::m_dataManager->getMaterial("blue");
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
@@ -36,21 +37,17 @@ void Enemy::update()
 {
 	Entity::update();
 
-	if (m_shootFrames % 20 == 0)
+	float currTime = Globals::m_uiManager->getTimeSinceBeginning();
+	if (currTime > m_timer)
 	{
+		//printf("%f\n", (currTime - m_timer));
+		m_timer += 0.3f; // Shoot every 0.3 seconds
+
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 		float vx = 0.0f;
-		float vy = -10.0f;
+		float vy = -5.0f;
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 	}
-
-	if (m_shootFrames % 100 == 0)
-	{
-		b2Vec2 pos = m_physics->m_body->GetPosition();
-		m_shootComponent->shootRadial(pos.x, pos.y, 3, 10);
-	}
-
-	m_shootFrames++;
 }
 
 void Enemy::onCollisionEnter(EventObject* collider)

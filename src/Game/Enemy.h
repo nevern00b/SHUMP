@@ -17,5 +17,5 @@ public:
 private:
 	float m_health;
 	ShootComponent* m_shootComponent;
-	uint m_shootFrames;
+	float m_timer;
 };

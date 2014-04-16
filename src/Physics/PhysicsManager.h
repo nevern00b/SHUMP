@@ -34,6 +34,7 @@ private:
 
     std::vector<b2Body*> m_bodiesToDestroy;
 	ContactListener* m_contactListener;
+	float m_accumulator; // For timestep
 
 };
 

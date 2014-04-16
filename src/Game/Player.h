@@ -21,5 +21,4 @@ private:
 	void shoot();
 
 	ShootComponent* m_shootComponent;
-	uint m_shootFrames;
 };

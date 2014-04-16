@@ -14,7 +14,7 @@ Camera::Camera(Entity* parent, float fov) : Entity(parent),
     m_panOldAverageX(0.0f),
     m_panOldAverageY(0.0f),
     m_zoomOldAverage(0.0f),
-    m_disabled(true)
+    m_disabled(false)
 {
     // Convert transformation matrix to euler angles
     glm::mat4 rotation = glm::mat4_cast(m_transform->m_rotation);

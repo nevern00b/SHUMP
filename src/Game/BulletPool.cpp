@@ -71,8 +71,6 @@ void BulletPool::render()
 		}
 	}
 
-	//printf("Number of bullets: %u. Total: %u\n", count, m_size);
-
 	if (count == 0) return;
 	m_transformBuffer->updateRange(0, count, &m_transformData[0], true);
 	m_mesh->renderInstanced({ m_material }, count, m_transformBuffer->m_bufferObject);

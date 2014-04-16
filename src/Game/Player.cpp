@@ -39,7 +39,7 @@ void Player::update()
 {
     Entity::update();
 
-	float speed = Globals::m_uiManager->getFramerateAdjust(10.0f);
+	float speed = 10.0f;
     b2Body* body = m_physics->m_body;
 
     b2Vec2 vel = body->GetLinearVelocity();
@@ -67,12 +67,12 @@ void Player::update()
 
 	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	{
-		m_shootFrames = 0;
+
 	}
 
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
     {
-        shoot();
+
     }
 
 
@@ -98,14 +98,8 @@ void Player::onCollisionEnter(EventObject* collider)
 
 void Player::shoot()
 {
-	if (m_shootFrames % 10 == 0)
-	{
-		b2Vec2 pos = m_physics->m_body->GetPosition();
-		float vx = 0.0f;
-		float vy = 10.0f;
-		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
-	}
-
-	m_shootFrames++;
-	
+	//b2Vec2 pos = m_physics->m_body->GetPosition();
+	//float vx = 0.0f;
+	//float vy = 10.0f;
+	//m_shootComponent->shoot(pos.x, pos.y, vx, vy);	
 }

@@ -6,6 +6,7 @@
 #include "Physics/PhysicsComponent.h"
 #include "Rendering/Mesh.h"
 #include "ShmupGame.h"
+#include "UIManager.h"
 
 Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef) : EventObject(),
 	m_damage(1.0f)

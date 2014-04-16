@@ -61,7 +61,8 @@ void RenderManager::render()
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
     float aspectRatio = (float)screenWidth / screenHeight;
 
-    Camera* camera = Globals::m_shmupGame->m_camera;
+	Camera* camera = Globals::m_shmupGame->m_camera;
+	camera->m_disabled = true;
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
