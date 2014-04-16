@@ -38,15 +38,25 @@ void ShmupGame::init()
     GameManager::init();
 
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
-	Material* material = Globals::m_dataManager->getMaterial("yellow");
 	b2PolygonShape shape;
 	shape.SetAsBox(0.05f, 0.05f);
 	PhysicsData physicsData(shape);
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
-	m_playerBulletPool = new BulletPool(200, mesh, material, physicsData);
+
+	Material* yellowMaterial = Globals::m_dataManager->getMaterial("yellow");
+	m_yellowBulletPool = new BulletPool(200, mesh, yellowMaterial, physicsData);
+
+	Material* redMaterial = Globals::m_dataManager->getMaterial("red");
+	m_redBulletPool = new BulletPool(200, mesh, redMaterial, physicsData);
+
+	Material* greenMaterial = Globals::m_dataManager->getMaterial("green");
+	m_greenBulletPool = new BulletPool(200, mesh, greenMaterial, physicsData);
+
+	Material* blueMaterial = Globals::m_dataManager->getMaterial("blue");
+	m_blueBulletPool = new BulletPool(200, mesh, blueMaterial, physicsData);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBulletPool = new BulletPool(30, mesh, material, physicsData);
+	m_enemyBulletPool = new BulletPool(30, mesh, redMaterial, physicsData);
 
 
 	Player* player = new Player();

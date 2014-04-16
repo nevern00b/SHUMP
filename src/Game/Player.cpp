@@ -27,7 +27,7 @@ Player::Player() : Entity(0)
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, { material });
-	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_playerBulletPool);
+	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_redBulletPool);
 }
 
 Player::~Player()
@@ -67,7 +67,7 @@ void Player::update()
 
 	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	{
-
+		shoot();
 	}
 
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
@@ -98,8 +98,26 @@ void Player::onCollisionEnter(EventObject* collider)
 
 void Player::shoot()
 {
-	//b2Vec2 pos = m_physics->m_body->GetPosition();
-	//float vx = 0.0f;
-	//float vy = 10.0f;
-	//m_shootComponent->shoot(pos.x, pos.y, vx, vy);	
+	int bulletState = Globals::m_stateMachine->getBState();
+	if (bulletState == COLOR::RED)
+	{
+		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_redBulletPool;
+	}
+	else if (bulletState == COLOR::BLUE)
+	{
+		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_blueBulletPool;
+	}
+	else if (bulletState == COLOR::GREEN)
+	{
+		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_greenBulletPool;
+	}
+	else if (bulletState == COLOR::YELLOW)
+	{
+		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_yellowBulletPool;
+	}
+
+	b2Vec2 pos = m_physics->m_body->GetPosition();
+	float vx = 0.0f;
+	float vy = 10.0f;
+	m_shootComponent->shoot(pos.x, pos.y, vx, vy);	
 }

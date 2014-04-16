@@ -23,7 +23,10 @@ public:
 	static const float WORLD_BOUND_X;
 	static const float WORLD_BOUND_Y;
 
-	BulletPool* m_playerBulletPool;
+	BulletPool* m_yellowBulletPool;
+	BulletPool* m_greenBulletPool;
+	BulletPool* m_blueBulletPool;
+	BulletPool* m_redBulletPool;
 	BulletPool* m_enemyBulletPool;
 
 private:

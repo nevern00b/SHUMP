@@ -22,16 +22,16 @@ int StateMachine::getIState(){
 void StateMachine::changeBState(int input){
 	switch (input){
 	case 1:
-		bulletST = RED_ST;
+		bulletST = COLOR::RED;
 		break;
 	case 2:
-		bulletST = BLUE_ST;
+		bulletST = COLOR::BLUE;
 		break;
 	case 3:
-		bulletST = GRN_ST;
+		bulletST = COLOR::GREEN;
 		break;
 	case 4:
-		bulletST = YLLW_ST;
+		bulletST = COLOR::YELLOW;
 		break;
 	default:
 		bulletST = bulletST;
@@ -42,16 +42,16 @@ void StateMachine::changeBState(int input){
 void StateMachine::changeIState(int input){
 	switch (input){
 	case 1:
-		immunST = RED_ST;
+		immunST = COLOR::RED;
 		break;
 	case 2:
-		immunST = BLUE_ST;
+		immunST = COLOR::BLUE;
 		break;
 	case 3:
-		immunST = GRN_ST;
+		immunST = COLOR::GREEN;
 		break;
 	case 4:
-		immunST = YLLW_ST;
+		immunST = COLOR::YELLOW;
 		break;
 	default:
 		immunST = immunST;
