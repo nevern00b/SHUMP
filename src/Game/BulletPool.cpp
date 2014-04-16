@@ -4,8 +4,9 @@
 #include "Physics/PhysicsComponent.h"
 #include "Rendering/Mesh.h"
 #include "Rendering/Buffer.h"
+#include "StateMachine.h"
 
-BulletPool::BulletPool(uint size, Mesh* mesh, Material* material, const PhysicsData& physicsData) : ObjectPool(size, mesh, material),
+BulletPool::BulletPool(uint size, Mesh* mesh, Material* material, const PhysicsData& physicsData, COLOR color) : ObjectPool(size, mesh, material),
 	m_bullets(size)
 {
 	// Create the b2body
@@ -26,7 +27,7 @@ BulletPool::BulletPool(uint size, Mesh* mesh, Material* material, const PhysicsD
 
 	for (uint i = 0; i < m_size; i++)
 	{
-		m_bullets[i] = new Bullet(bodyDef, fixtureDef);
+		m_bullets[i] = new Bullet(bodyDef, fixtureDef, color);
 	}
 }
 

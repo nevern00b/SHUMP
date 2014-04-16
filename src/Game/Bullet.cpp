@@ -8,8 +8,9 @@
 #include "ShmupGame.h"
 #include "UIManager.h"
 
-Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef) : EventObject(),
-	m_damage(1.0f)
+Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef, COLOR color) : EventObject(),
+	m_damage(1.0f),
+	m_color(color)
 {	
 	m_body = Globals::m_physicsManager->m_world->CreateBody(&bodyDef);	
 	m_body->CreateFixture(&fixtureDef);

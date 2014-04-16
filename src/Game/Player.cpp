@@ -124,7 +124,13 @@ void Player::onCollisionEnter(EventObject* collider)
 	if (bullet != 0)
 	{
 		bullet->destroy();
+		
+		if (bullet->m_color != Globals::m_stateMachine->getIState())
 		destroy();
+		else
+		{
+
+		}
 	}
 }
 
