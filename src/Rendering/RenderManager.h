@@ -9,6 +9,7 @@
 class Entity;
 class Shader;
 class ObjectPool;
+class FullScreenQuad;
 
 class RenderManager
 {
@@ -17,6 +18,7 @@ public:
     RenderManager();
     ~RenderManager();
 
+	void resizeWindow(int width, int height);
     void render();
 	void addObjectPool(ObjectPool* objectPool);
 	void removeObjectPool(ObjectPool* objectPool);
@@ -48,13 +50,27 @@ public:
 	Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
 	Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
 
+	
+
+
+
 private:
 
     Shader* m_basicShader;
 	Shader* m_instancedShader;
+	Shader* m_finalOutputShader;
 
     std::list<Entity*> m_entities;
 	std::list<ObjectPool*> m_objectPools;
+
+	FullScreenQuad* m_fullScreenQuad;
+
+	// FBO stuff
+	GLenum m_fboAttachments[ShaderCommon::NUM_FBO_BINDINGS];
+	GLuint m_fbo;
+	GLuint m_colorTexture; // Screen sized
+	GLuint m_depthTexture; // Screen sized
+	GLuint m_bloomTexture; // 1024x1024 with mipmapping
 };
 
 namespace RENDER_STATE

@@ -17,6 +17,7 @@ Shader::Shader(const std::string& vertexShader, const std::string& fragmentShade
 	m_reflectTextureBinding = glGetUniformLocation(m_program, "tReflect");
 	m_specularTextureBinding = glGetUniformLocation(m_program, "tSpecular");
 	m_normalTextureBinding = glGetUniformLocation(m_program, "tNormal");
+	m_colorFBOTextureBinding = glGetUniformLocation(m_program, "tColor");
 
 	uint perFrameUBOBinding = glGetUniformBlockIndex(m_program, "PerFrameUBO");
 	glUniformBlockBinding(m_program, perFrameUBOBinding, ShaderCommon::PER_FRAME_UBO);
@@ -44,11 +45,11 @@ void Shader::render()
 	Globals::m_renderManager->m_activeShader = this;
 	glUseProgram(m_program);
 
-	// Bind textures to the shader (TO-DO: remember to do this for each shader)
 	glUniform1i(m_diffuseTextureBinding, ShaderCommon::DIFFUSE_TEXTURE);
 	glUniform1i(m_normalTextureBinding, ShaderCommon::NORMAL_TEXTURE);
 	glUniform1i(m_specularTextureBinding, ShaderCommon::SPECULAR_TEXTURE);
 	glUniform1i(m_reflectTextureBinding, ShaderCommon::REFLECT_TEXTURE);
+	glUniform1i(m_colorFBOTextureBinding, ShaderCommon::COLOR_FBO_TEXTURE_BINDING);
 
 	Globals::m_renderManager->m_materialBuffer->bindToShader();
 	Globals::m_renderManager->m_transformBuffer->bindToShader();

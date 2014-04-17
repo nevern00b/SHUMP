@@ -25,9 +25,7 @@
 // FBO binding points                                            
 #define DEFAULT_FRAMEBUFFER             0
 #define COLOR_FBO_BINDING               0
-#define NORMAL_FBO_BINDING              1
-#define MOTION_BLUR_FBO_BINDING         2
-#define NUM_FBO_BINDINGS                3
+#define NUM_FBO_BINDINGS				1
 
 // Uniform buffer binding points                        
 #define PER_FRAME_UBO                   0

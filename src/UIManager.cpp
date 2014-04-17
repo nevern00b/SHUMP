@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include "Common.h"
+#include "Globals.h"
+#include "Rendering/RenderManager.h"
 
 UIManager::UIManager() : 
     m_oldMouseX(0),
@@ -129,7 +131,7 @@ void UIManager::resizeWindow(int width, int height)
 {
     m_screenWidth = width;
     m_screenHeight = height;
-    //broadcastMessage(MESSAGE_LOCATION::GLOBAL, ResizeWindowMessage());
+	Globals::m_renderManager->resizeWindow(width, height);
 }
 
 float UIManager::getAspectRatio() const

@@ -9,7 +9,7 @@ uniform sampler2D tNormal;
 uniform sampler2D tSpecular;
 uniform samplerCube tReflect;
 
-#define AMBIENT_TERM 1.0
+#define AMBIENT_TERM 0.5
 
 vec3 computeLighting(vec3 viewDir, vec3 lightDir, float lightAttenuation, vec3 lightColor, vec3 diffuse, float specIntensity, float specPower, vec3 normal)
 {

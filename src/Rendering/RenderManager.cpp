@@ -13,6 +13,7 @@
 #include "Game/ShmupGame.h"
 #include "Shader.h"
 #include "ObjectPool.h"
+#include "FullScreenQuad.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false)
@@ -40,6 +41,39 @@ RenderManager::RenderManager() :
     // Load shaders
     m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
+	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
+
+	// Full screen quad
+	m_fullScreenQuad = new FullScreenQuad();
+
+	// Create FBO
+	uint windowWidth = Globals::m_uiManager->m_screenWidth;
+	uint windowHeight = Globals::m_uiManager->m_screenHeight;
+
+	glActiveTexture(GL_TEXTURE0 + ShaderCommon::NON_USED_TEXTURE_BINDING);
+
+	// Create color textures
+	glGenTextures(1, &m_colorTexture);
+	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, windowWidth, windowHeight, 0, GL_RGB, GL_FLOAT, 0);
+	setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST, 1);
+
+	// Create depth texture
+	glGenTextures(1, &m_depthTexture);
+	glBindTexture(GL_TEXTURE_2D, m_depthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, windowWidth, windowHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
+	setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST, 1);
+
+	// Create framebuffer textures
+	m_fboAttachments[ShaderCommon::COLOR_FBO_BINDING] = GL_COLOR_ATTACHMENT0 + ShaderCommon::COLOR_FBO_BINDING;
+
+	// Create fbo
+	glGenFramebuffers(1, &m_fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, m_fboAttachments[ShaderCommon::COLOR_FBO_BINDING], GL_TEXTURE_2D, m_colorTexture, 0);
+	glDrawBuffers(ShaderCommon::NUM_FBO_BINDINGS, m_fboAttachments);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
 RenderManager::~RenderManager()
@@ -53,6 +87,19 @@ RenderManager::~RenderManager()
     delete m_transformBuffer;
     delete m_perFrameBuffer;
     delete m_lightingBuffer;
+}
+
+void RenderManager::resizeWindow(int width, int height)
+{
+	glActiveTexture(GL_TEXTURE0 + ShaderCommon::NON_USED_TEXTURE_BINDING);
+
+	// Color
+	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, 0);
+
+	// Depth
+	glBindTexture(GL_TEXTURE_2D, m_depthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
 }
 
 void RenderManager::render()
@@ -113,11 +160,12 @@ void RenderManager::render()
     }
 
     // Clear the framebuffer
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is default framebuffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     setViewportSize(screenWidth, screenHeight);
     setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
-    clearColor(0, glm::vec4(0, 0, 0, 0));
-    clearDepth();
+    clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
+    clearDepthStencil();
 
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
@@ -137,6 +185,14 @@ void RenderManager::render()
 	}
 
 
+	// Output fbo to screen
+	glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE_BINDING);
+	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is the default fbo
+	setViewportSize(screenWidth, screenHeight);
+	setRenderState(RENDER_STATE::COLOR);
+	m_finalOutputShader->render();
+	m_fullScreenQuad->render();
 }
 
 void RenderManager::renderMaterial(const ShaderCommon::MaterialGL& material)
@@ -183,7 +239,6 @@ void RenderManager::setRenderState(uint renderStateBitfield)
     else glDisable(GL_DEPTH_TEST);
 
     // Depth write (if depthTest is disabled, depthWrite will automatically be disabled)
-
     if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::DEPTH_WRITE))
         glDepthMask(GL_TRUE);
     else glDepthMask(GL_FALSE);

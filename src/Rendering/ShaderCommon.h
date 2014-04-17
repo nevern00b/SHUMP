@@ -26,9 +26,7 @@ namespace ShaderCommon
     // FBO binding points                                            
     const uint DEFAULT_FRAMEBUFFER                  = 0;
     const uint COLOR_FBO_BINDING                    = 0;
-    const uint NORMAL_FBO_BINDING                   = 1;
-    const uint MOTION_BLUR_FBO_BINDING              = 2;
-    const uint NUM_FBO_BINDINGS                     = 3;
+	const uint NUM_FBO_BINDINGS						= 1;
 
     // Uniform buffer binding points                        
     const uint PER_FRAME_UBO                        = 0;
