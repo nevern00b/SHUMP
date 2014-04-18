@@ -9,6 +9,7 @@ class Enemy : public Entity
 {
 public:
 	Enemy();
+	Enemy(int type);
 	virtual ~Enemy();
 	virtual void update();
 
@@ -18,4 +19,5 @@ private:
 	float m_health;
 	ShootComponent* m_shootComponent;
 	float m_timer;
+	int m_type;
 };
