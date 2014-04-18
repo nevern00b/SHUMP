@@ -106,7 +106,7 @@ void Enemy::update()
 	if (currTime > m_timer)
 	{
 		//printf("%f\n", (currTime - m_timer));
-		m_timer += 0.5f; // Shoot every 0.3 seconds
+		m_timer += 1.0f; // Shoot every 0.3 seconds
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 
 		 switch (m_type)

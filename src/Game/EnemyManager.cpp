@@ -35,7 +35,7 @@ void EnemyManager::update()
 	if (currTime > m_timer)
 	{
 		printf("%f\n", (currTime - m_timer));
-		m_timer += 01.0f;
+		m_timer += 03.0f;
 		x = arr[(rand() % 9)];
 		Enemy* enemy = new Enemy(x);
 	}

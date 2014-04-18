@@ -76,6 +76,7 @@ private:
 	GLuint m_bloomFBOs[2];
 	GLuint m_bloomTextures[2]; // 1024x1024 with mipmapping
 	uint m_bloomSize;
+	uint m_bloomLevels;
 
 };
 
