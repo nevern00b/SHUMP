@@ -14,6 +14,8 @@ public:
     virtual ~RenderComponent();
     void render();
 
+	void setMaterial(Material* material);
+
 	std::vector<Material*> m_materials;
 
 private:

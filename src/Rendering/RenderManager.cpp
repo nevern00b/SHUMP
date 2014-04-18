@@ -237,7 +237,7 @@ void RenderManager::render()
 		// Set size based on level
 		uint size = m_bloomSize >> i;
 		setViewportSize(size, size);
-		perFrame.invScreenSize = 1.0f / glm::vec2(size);
+		perFrame.invScreenSize = 1.0f / glm::vec2((float)size);
 		m_perFrameBuffer->updateAll(&perFrame);
 		
 		// Blur X into bloom texture 1

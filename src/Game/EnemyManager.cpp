@@ -14,8 +14,9 @@
 
 EnemyManager::EnemyManager() 
 {	
-	m_health=(2.0f);
-	m_timer=(0.0f);
+	m_timer = new Timer(3.0f);
+
+	m_health = 2.0f;
 	
 	arr[0] = 1; arr[1] = 3; arr[2] = 2; arr[3] = 1; arr[4] = 3;
 	arr[5] = 1; arr[6] = 2; arr[7] = 4; arr[8] = 1; arr[9] = 1;
@@ -31,11 +32,8 @@ void EnemyManager::update()
 {
 	Entity::update();
 	
-	float currTime = Globals::m_uiManager->getTimeSinceBeginning();
-	if (currTime > m_timer)
+	if (m_timer->checkInterval())
 	{
-		printf("%f\n", (currTime - m_timer));
-		m_timer += 03.0f;
 		x = arr[(rand() % 9)];
 		Enemy* enemy = new Enemy(x);
 	}

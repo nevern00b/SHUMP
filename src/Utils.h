@@ -18,13 +18,14 @@ namespace Utils
 class Timer
 {
 public:
-	Timer();
+	Timer(float interval);
 	~Timer();
 	void start();
-	void stop();
 	float getTimeElapsed();
+	void setInterval(float interval);
+	bool checkInterval();
 
 private:
-	float m_timeElapsed;
 	float m_startTime;
+	float m_interval;
 };

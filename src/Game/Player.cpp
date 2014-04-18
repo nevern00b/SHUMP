@@ -15,7 +15,9 @@
 #include "BulletPool.h"
 #include "ShootComponent.h"
 
-Player::Player() : Entity(0)
+Player::Player() : Entity(0),
+	m_lives(3),
+	m_reset(false)
 {
 	Material* material = Globals::m_dataManager->getMaterial("blue");
     Mesh* mesh = Globals::m_dataManager->getMesh("cube");
@@ -28,6 +30,9 @@ Player::Player() : Entity(0)
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, { material });
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_redBulletPool);
+
+	m_shootTimer = new Timer(0.2f);
+	
 }
 
 Player::~Player()
@@ -38,6 +43,12 @@ Player::~Player()
 void Player::update()
 {
     Entity::update();
+
+	if (m_reset)
+	{
+		m_reset = false;
+		m_transform->setTranslation(0.0f, -5.0f);
+	}
 
 	float speed = 10.0f;
     b2Body* body = m_physics->m_body;
@@ -76,11 +87,15 @@ void Player::update()
 	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	{
 		shoot();
+		m_shootTimer->start();
 	}
 
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
     {
-
+		if (m_shootTimer->checkInterval())
+		{
+			shoot();
+		}
     }
 
 	changeColor();
@@ -126,7 +141,17 @@ void Player::onCollisionEnter(EventObject* collider)
 		bullet->destroy();
 		
 		if (bullet->m_color != Globals::m_stateMachine->getIState())
-		destroy();
+		{
+			m_lives--;
+			if (m_lives == 0)
+			{
+				destroy();
+			}
+			else
+			{
+				m_reset = true;
+			}
+		}
 		else
 		{
 
@@ -156,6 +181,6 @@ void Player::shoot()
 
 	b2Vec2 pos = m_physics->m_body->GetPosition();
 	float vx = 0.0f;
-	float vy = 10.0f;
+	float vy = 15.0f;
 	m_shootComponent->shoot(pos.x, pos.y, vx, vy);	
 }

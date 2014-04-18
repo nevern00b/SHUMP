@@ -4,6 +4,7 @@
 #include "Entity.h"
 class BulletPool;
 class ShootComponent;
+class Timer;
 
 class Player : public Entity
 {
@@ -16,10 +17,15 @@ public:
 
 	void changeColor();
 
+	
+
 private:
 
 	void shoot();
 
+	Timer* m_shootTimer;
+	bool m_reset;
+	uint m_lives;
 	ShootComponent* m_shootComponent;
 
 };

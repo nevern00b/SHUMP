@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Enemy.h"
 class ShootComponent;
+class Timer;
 
 class EnemyManager : public Enemy
 
@@ -23,5 +24,5 @@ private:
 	float x = 1;
 
 	ShootComponent* m_shootComponent;
-	float m_timer;
+	Timer* m_timer;
 };

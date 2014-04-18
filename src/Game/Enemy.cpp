@@ -13,8 +13,7 @@
 #include "Rendering/ParticleSystem.h"
 
 Enemy::Enemy() : Entity(0),
-	m_health(2.0f),
-	m_timer(0.0f)
+	m_health(2.0f)
 {
 	//Material* material = Globals::m_dataManager->getMaterial("blue");
 	//Mesh* mesh = Globals::m_dataManager->getMesh("cube");
@@ -34,10 +33,9 @@ Enemy::Enemy() : Entity(0),
 
 }
 
-Enemy::Enemy(int type) : Entity(0),
-m_timer(0.0f)
+Enemy::Enemy(int type) : Entity(0)
 {
-	
+	m_shootTimer = new Timer(0.3f);
 	
 	m_type = type;
 	Material* material;
@@ -102,48 +100,46 @@ void Enemy::update()
 {
 	Entity::update();
 	float vx, vy;
-	float currTime = Globals::m_uiManager->getTimeSinceBeginning();
-	if (currTime > m_timer)
+
+	if (m_shootTimer->checkInterval())
 	{
-		//printf("%f\n", (currTime - m_timer));
-		m_timer += 1.0f; // Shoot every 0.3 seconds
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 
-		 switch (m_type)
-		 {
-		 case 1:
-		 {
-				   vx = (rand() % 10) - 5;
-				   vy = (rand() % 10) - 5;
-				   break;
-		 }
+		switch (m_type)
+		{
+		case 1:
+		{
+			vx = (rand() % 10) - 5;
+			vy = (rand() % 10) - 5;
+			break;
+		}
 
-		 case 2:
-		 {
-				   vx = (rand() % 10) - 5;
-				   vy = (rand() % 10) - 5;
-				   break;
-		 }
-		 case 3:
-		 {
-				   vx = -pos.x;
-				   vy = -pos.y;
-				   break;
-		 }
-		 case 4:
-		 {
-				   vx = -2.0f- pos.x;
-				   vy = -5.0f - pos.y;
-				   break;
-		 }
-		 }
+		case 2:
+		{
+			vx = (rand() % 10) - 5;
+			vy = (rand() % 10) - 5;
+			break;
+		}
+		case 3:
+		{
+			vx = -pos.x;
+			vy = -pos.y;
+			break;
+		}
+		case 4:
+		{
+			vx = -2.0f - pos.x;
+			vy = -5.0f - pos.y;
+			break;
+		}
+		}
 
 		//vx = -pos.x;// (rand() % 10) - 5;
 		//vy = -pos.y;// (rand() % 10) - 5;
 
-		
-		 m_shootComponent->shoot(pos.x, pos.y, vx, vy);
-	}
+
+		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
+	}	
 }
 
 void Enemy::onCollisionEnter(EventObject* collider)

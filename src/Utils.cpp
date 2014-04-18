@@ -36,10 +36,9 @@ namespace Utils
 
 
 
-Timer::Timer() :
-	m_timeElapsed(0.0f)
+Timer::Timer(float interval)
 {
-
+	setInterval(interval);
 }
 
 Timer::~Timer()
@@ -52,13 +51,23 @@ void Timer::start()
 	m_startTime = (float)glfwGetTime();
 }
 
-void Timer::stop()
-{
-	float currTime = (float)glfwGetTime();
-	m_timeElapsed = currTime - m_startTime;
-}
-
 float Timer::getTimeElapsed()
 {
-	return m_timeElapsed;
+	return (float)glfwGetTime() - m_startTime;
+}
+
+void Timer::setInterval(float interval)
+{
+	m_interval = interval;
+}
+
+bool Timer::checkInterval()
+{
+	if (getTimeElapsed() > m_interval)
+	{
+		start();
+		return true;
+	}
+
+	return false;
 }

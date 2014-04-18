@@ -23,3 +23,9 @@ void RenderComponent::render()
 {
     m_mesh->render(m_materials);
 }
+
+void RenderComponent::setMaterial(Material* material)
+{
+	// TO-DO: need to update RenderManager with the material change in case the material is of a different shader
+	m_materials[0] = material;
+}
