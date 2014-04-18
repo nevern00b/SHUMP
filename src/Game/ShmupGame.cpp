@@ -17,7 +17,7 @@
 #include "Rendering/RenderComponent.h"
 #include "Player.h"
 #include "Bullet.h"
-#include "Enemy.h"
+#include "EnemyManager.h"
 #include "BulletPool.h"
 #include "Rendering/ParticleSystem.h"
 
@@ -67,9 +67,10 @@ void ShmupGame::init()
 	
 	Player* player = new Player();
 	player->m_transform->setTranslation(-2, -5);
-	
-	Enemy* enemy = new Enemy();
-	
+
+	//Enemy* enemy = new Enemy();
+	EnemyManager* e_manager = new EnemyManager();
+
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
     light->m_transform->setTranslation(glm::vec3(5, 10, 0));
