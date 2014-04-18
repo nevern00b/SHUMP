@@ -26,6 +26,12 @@ namespace Utils
         return std::string(std::istreambuf_iterator<char>(stream),
             std::istreambuf_iterator<char>());
     }
+
+	uint getLevels(uint textureSize)
+	{
+		uint numLevels = 1 + (uint)glm::floor(glm::log2((float)textureSize));
+		return numLevels;
+	}
 }
 
 

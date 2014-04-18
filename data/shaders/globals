@@ -1,5 +1,6 @@
-#version 140
-#extension GL_ARB_explicit_attrib_location : enable
+#version 330
+#extension GL_ARB_shading_language_420pack : enable
+
 //-------------------------------------
 //      Global constants
 //-------------------------------------
@@ -13,8 +14,10 @@
 #define NORMAL_TEXTURE                  1
 #define SPECULAR_TEXTURE                2
 #define REFLECT_TEXTURE                 3
-#define COLOR_FBO_TEXTURE_BINDING       4
-#define NON_USED_TEXTURE_BINDING        5
+#define COLOR_FBO_TEXTURE				4
+#define BLOOM_TEXTURE					5
+#define BLUR_TEXTURE					6
+#define NON_USED_TEXTURE_BINDING        7
 
 // Vertex attribute indexes                                     
 #define POSITION_ATTR                   0
@@ -37,6 +40,7 @@ struct PerFrameGL
 {
     mat4 viewProjection;
     vec3 cameraPos;
+	vec2 invScreenSize;
 };
 
 struct MaterialGL
@@ -79,22 +83,22 @@ struct LightingGL
 //      UBOs
 //-------------------------------------
 
-layout(std140) uniform PerFrameUBO
+layout(std140, binding = PER_FRAME_UBO) uniform PerFrameUBO
 {
     PerFrameGL uPerFrameData;
 };
 
-layout(std140) uniform TransformUBO
+layout(std140, binding = TRANSFORM_UBO) uniform TransformUBO
 {
     TransformGL uTransform;
 };
 
-layout(std140) uniform MaterialUBO
+layout(std140, binding = MATERIAL_UBO) uniform MaterialUBO
 {
     MaterialGL uMaterial;
 };
 
-layout(std140) uniform LightingUBO
+layout(std140, binding = LIGHTING_UBO) uniform LightingUBO
 {
     LightingGL uLighting;
 };

@@ -1,13 +1,13 @@
-out vec4 fragColor;
+layout (location = 0) out vec4 fragColor;
 
 in vec3 vPosition;
 in vec3 vNormal;
 in vec2 vUV;
 
-uniform sampler2D tDiffuse;
-uniform sampler2D tNormal;
-uniform sampler2D tSpecular;
-uniform samplerCube tReflect;
+layout(binding = DIFFUSE_TEXTURE) uniform sampler2D tDiffuse;
+layout(binding = NORMAL_TEXTURE) uniform sampler2D tNormal;
+layout(binding = SPECULAR_TEXTURE) uniform sampler2D tSpecular;
+layout(binding = REFLECT_TEXTURE) uniform samplerCube tReflect;
 
 #define AMBIENT_TERM 0.5
 

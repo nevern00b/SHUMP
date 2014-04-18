@@ -56,9 +56,11 @@ public:
 
 private:
 
-    Shader* m_basicShader;
-	Shader* m_instancedShader;
-	Shader* m_finalOutputShader;
+    GLuint m_basicShader;
+	GLuint m_instancedShader;
+	GLuint m_finalOutputShader;
+	GLuint m_bloomShader;
+	GLuint m_blurShaders[2];
 
     std::list<Entity*> m_entities;
 	std::list<ObjectPool*> m_objectPools;
@@ -70,7 +72,11 @@ private:
 	GLuint m_fbo;
 	GLuint m_colorTexture; // Screen sized
 	GLuint m_depthTexture; // Screen sized
-	GLuint m_bloomTexture; // 1024x1024 with mipmapping
+
+	GLuint m_bloomFBOs[2];
+	GLuint m_bloomTextures[2]; // 1024x1024 with mipmapping
+	uint m_bloomSize;
+
 };
 
 namespace RENDER_STATE

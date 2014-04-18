@@ -15,6 +15,10 @@ Buffer<DataType>::Buffer(GLenum bufferType, GLenum usage, uint bufferBinding, ui
     glGenBuffers(1, &m_bufferObject);
     glBindBuffer(m_bufferType, m_bufferObject);
     glBufferData(m_bufferType, size, (void*)initData, usage);
+	if (bufferHasBindings())
+	{
+		glBindBufferBase(m_bufferType, m_bufferBinding, m_bufferObject);
+	}
     glBindBuffer(m_bufferType, 0);
 }
 
@@ -36,19 +40,19 @@ void Buffer<DataType>::resize(uint maxCount, DataType* initData)
 }
 
 template <class DataType>
-bool Buffer<DataType>::bufferHasBindings(GLenum bufferType)
+bool Buffer<DataType>::bufferHasBindings()
 {
-    return bufferType == GL_ATOMIC_COUNTER_BUFFER ||
-        bufferType == GL_SHADER_STORAGE_BUFFER ||
-        bufferType == GL_TRANSFORM_FEEDBACK_BUFFER ||
-        bufferType == GL_UNIFORM_BUFFER;
+    return m_bufferType == GL_ATOMIC_COUNTER_BUFFER ||
+        m_bufferType == GL_SHADER_STORAGE_BUFFER ||
+        m_bufferType == GL_TRANSFORM_FEEDBACK_BUFFER ||
+        m_bufferType == GL_UNIFORM_BUFFER;
 }
 
 template <class DataType>
 void Buffer<DataType>::bindToOtherTarget(GLenum bufferType, uint bufferBinding)
 {
     //glBindBuffer(bufferType, m_bufferObject);
-    //if (bufferHasBindings(bufferType))
+    //if (bufferHasBindings())
     //    glBindBufferBase(bufferType, bufferBinding, m_bufferObject);
     //glBindBuffer(bufferType, 0);
 }
@@ -56,7 +60,7 @@ void Buffer<DataType>::bindToOtherTarget(GLenum bufferType, uint bufferBinding)
 template <class DataType>
 void Buffer<DataType>::bindToShader()
 {
-	glBindBufferBase(m_bufferType, m_bufferBinding, m_bufferObject);
+	
 }
 
 template <class DataType>

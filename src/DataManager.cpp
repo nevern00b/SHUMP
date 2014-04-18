@@ -77,9 +77,9 @@ GLuint DataManager::loadTexture(void* data, const glm::uvec2& dimensions, const 
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     Globals::m_renderManager->setTextureParams(GL_TEXTURE_2D, GL_REPEAT, GL_LINEAR, GL_LINEAR, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, dimensions.x, dimensions.y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    //glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, dimensions.x, dimensions.y);
-    //glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, dimensions.x, dimensions.y, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, dimensions.x, dimensions.y, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, dimensions.x, dimensions.y);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, dimensions.x, dimensions.y, GL_RGB, GL_UNSIGNED_BYTE, data);
 
     m_textures[name] = texture;
     return texture;

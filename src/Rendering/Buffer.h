@@ -30,7 +30,7 @@ public:
 
 private:
 
-    bool bufferHasBindings(GLenum bufferType);
+    bool bufferHasBindings();
 
     GLenum m_bufferType;
 	GLenum m_bufferBinding;

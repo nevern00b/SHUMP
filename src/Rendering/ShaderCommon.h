@@ -14,8 +14,10 @@ namespace ShaderCommon
     const uint NORMAL_TEXTURE                       = 1;
     const uint SPECULAR_TEXTURE                     = 2;
     const uint REFLECT_TEXTURE                      = 3;
-    const uint COLOR_FBO_TEXTURE_BINDING            = 4;
-    const uint NON_USED_TEXTURE_BINDING             = 5; // Used for modifying textures that shouldn't be bound to a binding point
+    const uint COLOR_FBO_TEXTURE					= 4;
+	const uint BLOOM_TEXTURE						= 5;
+	const uint BLUR_TEXTURE							= 6;
+    const uint NON_USED_TEXTURE_BINDING             = 7; // Used for modifying textures that shouldn't be bound to a binding point
 
     // Vertex attribute indexes                                     
     const uint POSITION_ATTR                        = 0;
@@ -38,6 +40,8 @@ namespace ShaderCommon
     {
         glm::mat4 viewProjection;
         glm::vec3 cameraPos;
+		float padding;
+		glm::vec2 invScreenSize;
     };
 
     struct MaterialGL

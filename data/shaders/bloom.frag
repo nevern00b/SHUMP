@@ -1,16 +1,10 @@
 layout (location = 0) out vec4 fragColor;
 
 layout(binding = COLOR_FBO_TEXTURE) uniform sampler2D tColor;
-layout(binding = BLOOM_TEXTURE) uniform sampler2D tBloom;
 
 void main()
 {
 	vec2 uv = gl_FragCoord.xy*uPerFrameData.invScreenSize;
-
 	vec3 color = texture(tColor, uv).rgb;
-	vec3 bloom = textureLod(tBloom, uv, 3.0).rgb;
-
-	vec3 finalColor = color + bloom;
-
-    fragColor = vec4(finalColor, 0.0);
+    fragColor = vec4(color, 0.0);
 }

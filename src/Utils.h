@@ -12,6 +12,7 @@ namespace Utils
 {
     bool checkBitfield(uint renderStateBitfield, uint renderStateEnum);
     std::string loadFile(const std::string& filename);
+	uint getLevels(uint textureSize);
 }
 
 class Timer
