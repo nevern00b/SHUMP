@@ -1,6 +1,7 @@
 #include "Enemy.h"
 
 #include <Box2D/Box2D.h>
+#include <glm/gtc/random.hpp>
 #include "Bullet.h"
 #include "Globals.h"
 #include "DataManager.h"
@@ -11,27 +12,6 @@
 #include "ShootComponent.h"
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
-
-Enemy::Enemy() : Entity(0),
-	m_health(2.0f)
-{
-	//Material* material = Globals::m_dataManager->getMaterial("blue");
-	//Mesh* mesh = Globals::m_dataManager->getMesh("cube");
-
-	//b2PolygonShape shape;
-	//shape.SetAsBox(0.5f, 0.5f);
-	//PhysicsData physicsData(shape);
-	//physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-
-	//PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
-	//RenderComponent* render = new RenderComponent(this, mesh, { material });
-
-	//m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBulletPool);
-
-	
-
-
-}
 
 Enemy::Enemy(int type) : Entity(0)
 {
@@ -82,8 +62,8 @@ Enemy::Enemy(int type) : Entity(0)
 
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBulletPool);
 	
-	int x = (rand() % 24) - 12;
-	int y = rand() %  6;
+	float x = glm::linearRand(-6.0f, 6.0f);
+	float y = glm::linearRand(0.0f, 6.0f);
 
 	m_transform->setTranslation(x,y);
 	m_transform->setScale(0.5f);
@@ -109,15 +89,15 @@ void Enemy::update()
 		{
 		case 1:
 		{
-			vx = (rand() % 10) - 5;
-			vy = (rand() % 10) - 5;
+			vx = glm::linearRand(-5.0f, 5.0f);
+			vy = glm::linearRand(-5.0f, 5.0f);
 			break;
 		}
 
 		case 2:
 		{
-			vx = (rand() % 10) - 5;
-			vy = (rand() % 10) - 5;
+			vx = glm::linearRand(-5.0f, 5.0f);
+			vy = glm::linearRand(-5.0f, 5.0f);
 			break;
 		}
 		case 3:
@@ -133,9 +113,6 @@ void Enemy::update()
 			break;
 		}
 		}
-
-		//vx = -pos.x;// (rand() % 10) - 5;
-		//vy = -pos.y;// (rand() % 10) - 5;
 
 
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);

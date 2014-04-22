@@ -146,6 +146,7 @@ void RenderManager::render()
     perFrame.cameraPos = cameraPos;
     perFrame.viewProjection = viewProjectionMatrix;
 	perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
+	perFrame.time = Globals::m_uiManager->getTimeSinceBeginning();
     m_perFrameBuffer->updateAll(&perFrame);
 
     // Update lighting buffer

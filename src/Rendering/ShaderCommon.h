@@ -42,6 +42,7 @@ namespace ShaderCommon
         glm::vec3 cameraPos;
 		float padding;
 		glm::vec2 invScreenSize;
+		float time;
     };
 
     struct MaterialGL

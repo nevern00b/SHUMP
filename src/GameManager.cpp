@@ -38,12 +38,21 @@ void GameManager::init()
 
 void GameManager::update()
 {
-	// New objects may be added during the update loop, so only iterate up to the last element
-	for (auto& it = m_entities.begin(), end = m_entities.end(); it != end; ++it) 
+	// New objects may be added during the update loop, so loop until no new entities are created
+	auto& begin = m_entities.begin();
+	auto& end = m_entities.end();
+
+	while (begin != end)
 	{
-		Entity* entity = *it;
-		if (entity->m_dead) continue;
-		entity->update();
+		for (auto& it = begin; it != end; ++it)
+		{
+			Entity* entity = *it;
+			if (entity->m_dead) continue;
+			entity->update();
+		}
+
+		begin = end;
+		end = m_entities.end();
 	}
 
 	destroyMarkedEntities();

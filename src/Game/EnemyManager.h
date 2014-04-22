@@ -1,28 +1,17 @@
 #pragma once
 
 #include "Common.h"
-#include "Entity.h"
-#include "Enemy.h"
 class ShootComponent;
 class Timer;
 
-class EnemyManager : public Enemy
+class EnemyManager
 
 {
 public:
 	EnemyManager();
-	virtual ~EnemyManager();
-	virtual void update();
-	int Probabilty();
-
-	// = { 1, 3, 2, 1, 3, 1, 2, 4, 1, 1 };
-	int arr[10];// = { 10, 20, 30 };
-	
+	~EnemyManager();
+	void update();	
 
 private:
-	float m_health;
-	float x = 1;
-
-	ShootComponent* m_shootComponent;
 	Timer* m_timer;
 };

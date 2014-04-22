@@ -17,7 +17,7 @@ public:
 
 	void changeColor();
 
-	
+	void gainLives(uint lives);
 
 private:
 

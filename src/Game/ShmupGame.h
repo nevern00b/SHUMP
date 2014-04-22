@@ -4,6 +4,8 @@
 
 class BulletPool;
 class ParticleSystem;
+class Player;
+class EnemyManager;
 
 class ShmupGame : public GameManager
 {
@@ -33,6 +35,7 @@ public:
 
 private:
 
-    Entity* m_player;
+    Player* m_player;
+	EnemyManager* m_enemyManager;
 
 };

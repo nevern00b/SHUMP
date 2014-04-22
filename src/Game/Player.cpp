@@ -19,7 +19,10 @@ Player::Player() : Entity(0),
 	m_lives(3),
 	m_reset(false)
 {
-	Material* material = Globals::m_dataManager->getMaterial("blue");
+	Material* material = new Material();
+	material->m_diffuseBlend = 1.0f;
+	material->m_diffuseTexture = Globals::m_dataManager->getTexture("noise");
+
     Mesh* mesh = Globals::m_dataManager->getMesh("cube");
 
 	b2PolygonShape shape;
@@ -112,23 +115,22 @@ void Player::changeColor()
 	if (immunState == COLOR::RED)
 	{
 		chmaterial = Globals::m_dataManager->getMaterial("red");
-		m_render->m_materials[0] = chmaterial;
-		
+		m_render->setMaterial(chmaterial);
 	}
 	else if (immunState == COLOR::BLUE)
 	{
 		chmaterial = Globals::m_dataManager->getMaterial("blue");
-		m_render->m_materials[0] = chmaterial;
+		m_render->setMaterial(chmaterial);
 	}
 	else if (immunState == COLOR::GREEN)
 	{
 		chmaterial = Globals::m_dataManager->getMaterial("green");
-		m_render->m_materials[0] = chmaterial;
+		m_render->setMaterial(chmaterial);
 	}
 	else if (immunState == COLOR::YELLOW)
 	{
 		chmaterial = Globals::m_dataManager->getMaterial("yellow");
-		m_render->m_materials[0] = chmaterial;
+		m_render->setMaterial(chmaterial);
 	}
 
 }
@@ -183,4 +185,9 @@ void Player::shoot()
 	float vx = 0.0f;
 	float vy = 15.0f;
 	m_shootComponent->shoot(pos.x, pos.y, vx, vy);	
+}
+
+void Player::gainLives(uint lives)
+{
+	m_lives += lives;
 }

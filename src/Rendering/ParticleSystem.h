@@ -12,7 +12,6 @@ public:
 	ParticleSystem(uint size, Mesh* mesh, Material* material);
 	virtual ~ParticleSystem();
 	void createRadial(float x, float y, uint count);
-
 };
 
 class Particle : public PoolObject

@@ -1,5 +1,6 @@
 #include "EnemyManager.h"
 
+#include <glm/gtc/random.hpp>
 #include <Box2D/Box2D.h>
 #include "Bullet.h"
 #include "Globals.h"
@@ -11,16 +12,11 @@
 #include "ShootComponent.h"
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
+#include "Enemy.h"
 
 EnemyManager::EnemyManager() 
 {	
 	m_timer = new Timer(3.0f);
-
-	m_health = 2.0f;
-	
-	arr[0] = 1; arr[1] = 3; arr[2] = 2; arr[3] = 1; arr[4] = 3;
-	arr[5] = 1; arr[6] = 2; arr[7] = 4; arr[8] = 1; arr[9] = 1;
-	
 }
 
 EnemyManager::~EnemyManager()
@@ -29,23 +25,18 @@ EnemyManager::~EnemyManager()
 }
 
 void EnemyManager::update()
-{
-	Entity::update();
-	
+{	
 	if (m_timer->checkInterval())
 	{
-		x = arr[(rand() % 9)];
-		Enemy* enemy = new Enemy(x);
+		// Get the enemy type based off percent chance
+		float rand = glm::linearRand(0.0f, 1.0f);
+		int type = 1;
+
+		if (rand < 0.4f) type = 1;
+		else if (rand < 0.7f)type = 2;
+		else if (rand < 0.9f) type = 3;
+		else if (rand <= 1.0f) type = 4;
+
+		Enemy* enemy = new Enemy(type);
 	}
-	
-
 }
-
-int EnemyManager::Probabilty()
-{
-
-	int final_num;
-	return final_num;
-}
-
-

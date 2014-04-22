@@ -1,5 +1,6 @@
 #include "ShmupGame.h"
 
+#include <glm/gtc/noise.hpp>
 #include "Globals.h"
 #include "DataManager.h"
 #include "Rendering/RenderManager.h"
@@ -38,6 +39,23 @@ void ShmupGame::init()
 {
     GameManager::init();
 
+	// Test out noise
+	const uint noiseSize = 256;
+
+	uchar data[noiseSize*noiseSize*3];
+	for (uint y = 0; y < noiseSize; y++)
+	for (uint x = 0; x < noiseSize; x++)
+	{
+		float value = glm::simplex(glm::vec2(x / 16.f, y / 16.f));
+		uchar color = (uchar)((value * 0.5f + 0.5f) * 255);
+		uint index = (x + noiseSize * y) * 3;
+		data[index+0] = color; // R
+		data[index+1] = color; // G
+		data[index+2] = color; // B
+	}
+	Globals::m_dataManager->loadTexture(data, glm::uvec2(noiseSize, noiseSize), "noise");
+
+
 	// Create bullet pools
 	Mesh* sphereMesh = Globals::m_dataManager->getMesh("sphere");
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
@@ -65,11 +83,10 @@ void ShmupGame::init()
 	// Create particle system
 	m_particleSystem = new ParticleSystem(100, mesh, yellowMaterial);
 	
-	Player* player = new Player();
-	player->m_transform->setTranslation(-2, -5);
+	m_player = new Player();
+	m_player->m_transform->setTranslation(-2, -5);
 
-	//Enemy* enemy = new Enemy();
-	EnemyManager* e_manager = new EnemyManager();
+	m_enemyManager = new EnemyManager();
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
@@ -79,11 +96,23 @@ void ShmupGame::init()
     dirlight->m_transform->rotate(30, glm::vec3(1, 0, 0));
 	
     Camera* camera = new Camera(0, 45.0f);
-    camera->setZoom(20);
-	//camera->applyRotation(0.0f, 0.0f);
+	//camera->setPan(0, 5);
+    //camera->setZoom(20);
+	camera->setRotation(0, 50.0f);
+	camera->setPan(0.0f, -17.15f);
+	camera->setZoom(20.0f);
 }
 
 void ShmupGame::update()
 {
-    GameManager::update();
+	m_enemyManager->update();
+
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_GRAVE_ACCENT))
+	{
+		m_player->gainLives(100);
+	}
+
+	GameManager::update();
+	//printf("===================");
+	//printf("Camera angleX: %f angleY: %f trans: %f %f %f\n", m_camera->m_angleHorizontal, m_camera->m_angleVertical, m_camera->m_transform->m_translation.x, m_camera->m_transform->m_translation.y, m_camera->m_transform->m_translation.z);
 }

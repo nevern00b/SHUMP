@@ -1,5 +1,6 @@
 #include "ParticleSystem.h"
 
+#include <glm/gtc/random.hpp>
 #include "Game/ShmupGame.h"
 #include "Globals.h"
 #include "UIManager.h"
@@ -28,7 +29,6 @@ void ParticleSystem::createRadial(float x, float y, uint count)
 		create(x, y, vx, vy);
 	}
 }
-
 
 Particle::Particle() : PoolObject()
 {

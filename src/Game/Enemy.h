@@ -9,7 +9,6 @@ class Timer;
 class Enemy : public Entity
 {
 public:
-	Enemy();
 	Enemy(int type);
 	virtual ~Enemy();
 	virtual void update();
