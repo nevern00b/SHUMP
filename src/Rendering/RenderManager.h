@@ -57,11 +57,14 @@ public:
 private:
 
     GLuint m_basicShader;
+	GLuint m_noiseShader;
 	GLuint m_instancedShader;
 	GLuint m_finalOutputShader;
 	GLuint m_bloomShader;
 	GLuint m_blurShaders[2];
 
+	// Group things by rendering type
+	std::list<Entity*> m_noiseEntities;
     std::list<Entity*> m_entities;
 	std::list<ObjectPool*> m_objectPools;
 

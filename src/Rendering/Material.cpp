@@ -17,7 +17,8 @@ Material::Material() :
     m_reflectTexture(0),
     m_reflectBlend(0.0),
     m_normalTexture(0),
-    m_normalIntensity(0.0)
+    m_normalIntensity(0.0),
+	m_useNoise(false)
 {
 
 }

@@ -24,5 +24,6 @@ public:
     float m_reflectBlend;
     GLuint m_normalTexture;
     float m_normalIntensity;
+	bool m_useNoise;
 };
 

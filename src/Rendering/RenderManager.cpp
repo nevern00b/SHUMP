@@ -1,5 +1,6 @@
 #include "RenderManager.h"
 
+#include <functional>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Utils.h"
 #include "ShaderCommon.h"
@@ -13,6 +14,8 @@
 #include "Game/ShmupGame.h"
 #include "ObjectPool.h"
 #include "FullScreenQuad.h"
+#include "RenderComponent.h"
+#include "Material.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false)
@@ -39,6 +42,7 @@ RenderManager::RenderManager() :
 
     // Load shaders
 	m_basicShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/basic.frag");
+	m_noiseShader = Globals::m_dataManager->loadShaderProgram("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_instancedShader = Globals::m_dataManager->loadShaderProgram("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_bloomShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
@@ -201,6 +205,13 @@ void RenderManager::render()
         entity->render();
     }
 
+	glUseProgram(m_noiseShader);
+
+	for (auto& entity : m_noiseEntities)
+	{
+		entity->render();
+	}
+
 	glUseProgram(m_instancedShader);
 
 	for (auto& objectPool : m_objectPools)
@@ -301,12 +312,26 @@ void RenderManager::removeObjectPool(ObjectPool* objectPool)
 
 void RenderManager::addEntity(Entity* entity)
 {
-    m_entities.push_back(entity);
+	if (entity->m_render->m_materials[0]->m_useNoise)
+	{
+		m_noiseEntities.push_back(entity);
+	}
+	else
+	{
+		m_entities.push_back(entity);
+	}
 }
 
 void RenderManager::removeEntity(Entity* entity)
 {
-    m_entities.remove(entity);
+	if (entity->m_render->m_materials[0]->m_useNoise)
+	{
+		m_noiseEntities.remove(entity);
+	}
+	else
+	{
+		m_entities.remove(entity);
+	}
 }
 
 void RenderManager::setRenderState(uint renderStateBitfield)

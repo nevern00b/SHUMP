@@ -22,6 +22,7 @@ Player::Player() : Entity(0),
 	Material* material = new Material();
 	material->m_diffuseBlend = 1.0f;
 	material->m_diffuseTexture = Globals::m_dataManager->getTexture("noise");
+	material->m_useNoise = true;
 
     Mesh* mesh = Globals::m_dataManager->getMesh("cube");
 

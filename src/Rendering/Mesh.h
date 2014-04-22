@@ -14,7 +14,7 @@ class Mesh
 public:
 
     Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint numElements);
-    ~Mesh();
+	~Mesh();
 
 	void update(void* vertexData, void* elementArrayData, uint numVertices, uint numElements);
 
