@@ -24,7 +24,7 @@ Player::Player() : Entity(0),
 	material->m_diffuseTexture = Globals::m_dataManager->getTexture("noise");
 	material->m_useNoise = true;
 
-    Mesh* mesh = Globals::m_dataManager->getMesh("cube");
+    Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
 	shape.SetAsBox(0.5f, 0.5f);
