@@ -28,15 +28,35 @@ void EnemyManager::update()
 {	
 	if (m_timer->checkInterval())
 	{
-		// Get the enemy type based off percent chance
-		float rand = glm::linearRand(0.0f, 1.0f);
-		int type = 1;
+		float patternRand = glm::linearRand(0.0f, 1.0f);
 
-		if (rand < 0.4f) type = 1;
-		else if (rand < 0.7f)type = 2;
-		else if (rand < 0.9f) type = 3;
-		else if (rand <= 1.0f) type = 4;
+		if (patternRand < 0.8) // Create single enemy;
+		{
+			int type = getEnemyType();
+			Enemy* enemy = new Enemy(type);
 
-		Enemy* enemy = new Enemy(type);
+			float x = glm::linearRand(-6.0f, 6.0f);
+			float y = glm::linearRand(0.0f, 6.0f);
+
+			enemy->m_transform->setTranslation(x, y);
+			enemy->m_transform->setScale(0.5f);
+		}
+		else if (patternRand < 0.9) // Create V pattern of enemies
+		{
+
+		}
 	}
+}
+
+int EnemyManager::getEnemyType()
+{
+	// Get the enemy type based off percent chance
+	float rand = glm::linearRand(0.0f, 1.0f);
+	int type = 1;
+
+	if (rand < 0.4f) type = 1;
+	else if (rand < 0.7f)type = 2;
+	else if (rand < 0.9f) type = 3;
+	else if (rand <= 1.0f) type = 4;
+	return type;
 }
