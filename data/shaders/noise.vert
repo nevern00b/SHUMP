@@ -10,7 +10,7 @@ void main()
 {
     vec4 position = uTransform.modelMatrix * vec4(aPosition, 1.0);
 	vec3 normal = mat3(uTransform.modelMatrix) * aNormal;
-	position.xyz += normal * fract(uPerFrameData.time);
+	//position.xyz += normal * fract(uPerFrameData.time);
 
     gl_Position = uPerFrameData.viewProjection * position;
 

@@ -82,13 +82,14 @@ RenderManager::RenderManager() :
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	// Bloom textures
-	m_bloomSize = 512;
+	m_bloomSizeX = 640;
+	m_bloomSizeY = 360;
 	m_bloomLevels = 4;
 	glGenTextures(2, m_bloomTextures);
 	for (uint i = 0; i < 2; i++)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[i]);
-		glTexStorage2D(GL_TEXTURE_2D, m_bloomLevels, GL_RGB16F, m_bloomSize, m_bloomSize);
+		glTexStorage2D(GL_TEXTURE_2D, m_bloomLevels, GL_RGB16F, m_bloomSizeX, m_bloomSizeY);
 		setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR, m_bloomLevels);
 	}
 
@@ -224,9 +225,9 @@ void RenderManager::render()
 	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], 0);
-	setViewportSize(m_bloomSize, m_bloomSize);
+	setViewportSize(m_bloomSizeX, m_bloomSizeY);
 	setRenderState(RENDER_STATE::COLOR | RENDER_STATE::LINEAR_SAMPLING_COLOR);
-	perFrame.invScreenSize = 1.0f / glm::vec2((float)m_bloomSize);
+	perFrame.invScreenSize = 1.0f / glm::vec2((float)m_bloomSizeX, (float)m_bloomSizeY);
 	m_perFrameBuffer->updateAll(&perFrame);
 	glUseProgram(m_bloomShader);
 	m_fullScreenQuad->render();
@@ -247,9 +248,10 @@ void RenderManager::render()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
 
 		// Set size based on level
-		uint size = m_bloomSize >> i;
-		setViewportSize(size, size);
-		perFrame.invScreenSize = 1.0f / glm::vec2((float)size);
+		uint sizeX = m_bloomSizeX >> i;
+		uint sizeY = m_bloomSizeY >> i;
+		setViewportSize(sizeX, sizeY);
+		perFrame.invScreenSize = 1.0f / glm::vec2((float)sizeX, (float)sizeY);
 		m_perFrameBuffer->updateAll(&perFrame);
 		
 		// Blur X into bloom texture 1

@@ -77,8 +77,9 @@ private:
 	GLuint m_depthTexture; // Screen sized
 
 	GLuint m_bloomFBOs[2];
-	GLuint m_bloomTextures[2]; // 1024x1024 with mipmapping
-	uint m_bloomSize;
+	GLuint m_bloomTextures[2];
+	uint m_bloomSizeX;
+	uint m_bloomSizeY;
 	uint m_bloomLevels;
 
 };
