@@ -10,7 +10,7 @@ class RenderComponent : public Component
 
 public:
 
-    RenderComponent(Entity* entity, Mesh* mesh, const std::vector<Material*>& materials);
+    RenderComponent(Entity* entity, Mesh* mesh, Material* material);
     virtual ~RenderComponent();
     void render();
 

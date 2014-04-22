@@ -18,7 +18,8 @@
 #include "Material.h"
 
 RenderManager::RenderManager() :
-    m_lightBufferDirty(false)
+    m_lightBufferDirty(false),
+	m_floor(0)
 {
     // Init GL state
     glClearColor(1, 1, 1, 1);
@@ -43,6 +44,7 @@ RenderManager::RenderManager() :
     // Load shaders
 	m_basicShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = Globals::m_dataManager->loadShaderProgram("data/shaders/noise.vert", "data/shaders/basic.frag");
+	m_floorShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/floor.frag");
 	m_instancedShader = Globals::m_dataManager->loadShaderProgram("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_bloomShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
@@ -220,6 +222,12 @@ void RenderManager::render()
 		objectPool->render();
 	}
 
+	if (m_floor != 0)
+	{
+		glUseProgram(m_floorShader);
+		m_floor->render();
+	}
+
 	// Create bloom texture
 	glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
@@ -238,7 +246,7 @@ void RenderManager::render()
 	glGenerateMipmap(GL_TEXTURE_2D);
 	
 	setRenderState(RENDER_STATE::COLOR);
-
+	
 	// Blur the bloom texture
 	for (uint i = 2; i < m_bloomLevels; i++)
 	{
@@ -246,7 +254,7 @@ void RenderManager::render()
 		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
-
+	
 		// Set size based on level
 		uint sizeX = m_bloomSizeX >> i;
 		uint sizeY = m_bloomSizeY >> i;
@@ -259,25 +267,25 @@ void RenderManager::render()
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[1], i);
 		glUseProgram(m_blurShaders[0]);
 		m_fullScreenQuad->render();
-
+	
 		// Bind bloom texture 1, confine to ith mip level
 		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[1]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
-
+	
 		// Blur Y into bloom texture 0
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], i);
 		glUseProgram(m_blurShaders[1]);
 		m_fullScreenQuad->render();
 	}
-
+	
 	// Bind bloom texture for final output
 	glActiveTexture(GL_TEXTURE0 + ShaderCommon::BLOOM_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_bloomLevels-1);
-
+	
 	// Output fbo to screen
 	glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
@@ -334,6 +342,12 @@ void RenderManager::removeEntity(Entity* entity)
 	{
 		m_entities.remove(entity);
 	}
+}
+
+void RenderManager::setFloor(Entity* floor)
+{
+	removeEntity(floor);
+	m_floor = floor;
 }
 
 void RenderManager::setRenderState(uint renderStateBitfield)

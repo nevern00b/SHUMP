@@ -24,6 +24,8 @@ public:
 	void removeObjectPool(ObjectPool* objectPool);
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
+	void setFloor(Entity* floor);
+
     void renderMaterial(const ShaderCommon::MaterialGL& material);
     void renderTransform(const ShaderCommon::TransformGL& transform);
 
@@ -58,6 +60,7 @@ private:
 
     GLuint m_basicShader;
 	GLuint m_noiseShader;
+	GLuint m_floorShader;
 	GLuint m_instancedShader;
 	GLuint m_finalOutputShader;
 	GLuint m_bloomShader;
@@ -67,6 +70,7 @@ private:
 	std::list<Entity*> m_noiseEntities;
     std::list<Entity*> m_entities;
 	std::list<ObjectPool*> m_objectPools;
+	Entity* m_floor; // Floor is rendered differently
 
 	FullScreenQuad* m_fullScreenQuad;
 

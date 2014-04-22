@@ -21,6 +21,8 @@
 #include "EnemyManager.h"
 #include "BulletPool.h"
 #include "Rendering/ParticleSystem.h"
+#include "Rendering/Mesh.h"
+#include "Floor.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
 const float ShmupGame::WORLD_BOUND_Y = 9.0f;
@@ -37,7 +39,9 @@ ShmupGame::~ShmupGame()
 
 void ShmupGame::init()
 {
-    GameManager::init();
+	GameManager::init();
+
+
 
 	// Test out noise
 	const uint noiseSize = 256;
@@ -87,6 +91,9 @@ void ShmupGame::init()
 	m_player->m_transform->setTranslation(-2, -5);
 
 	m_enemyManager = new EnemyManager();
+
+	// Create floor
+	Floor* floor = new Floor();
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
