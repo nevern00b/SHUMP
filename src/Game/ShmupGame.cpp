@@ -105,7 +105,7 @@ void ShmupGame::init()
     Camera* camera = new Camera(0, 45.0f);
 	//camera->setPan(0, 5);
     //camera->setZoom(20);
-	camera->setRotation(0, 50.0f);
+	camera->setRotation(0, 70.0f);
 	camera->setPan(0.0f, -17.15f);
 	camera->setZoom(20.0f);
 }
