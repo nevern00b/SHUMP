@@ -61,14 +61,6 @@ Enemy::Enemy(int type) : Entity(0)
 	RenderComponent* render = new RenderComponent(this, mesh, { material });
 
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBulletPool);
-	
-	float x = glm::linearRand(-6.0f, 6.0f);
-	float y = glm::linearRand(0.0f, 6.0f);
-
-	m_transform->setTranslation(x,y);
-	m_transform->setScale(0.5f);
-	
-	
 }
 
 Enemy::~Enemy()
