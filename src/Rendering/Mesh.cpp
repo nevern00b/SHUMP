@@ -4,14 +4,31 @@
 #include "ShaderCommon.h"
 #include "Material.h"
 
-Mesh::Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint numElements, const std::vector<uint>& materialIndices) :
-    m_numVertices(numVertices),
-    m_numElements(numElements),
-    m_materialIndices(materialIndices)
+Mesh::Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint numElements)
 {
-	uint numFloats = m_numVertices * 8;
-	m_vertexBuffer = new Buffer<float>(GL_ARRAY_BUFFER, GL_STATIC_DRAW, 0, numFloats, vertexData);
-	m_elementArrayBuffer = new Buffer<ushort>(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW, 0, m_numElements, elementArrayData);
+	init((void*)vertexData, (void*)elementArrayData, numVertices, 32, numElements, 2, { 0 }, false);
+}
+
+Mesh::~Mesh()
+{
+    glDeleteVertexArrays(1, &m_vao);
+    delete m_vertexBuffer;
+    delete m_elementArrayBuffer;
+}
+
+void Mesh::init(void* vertexData, void* elementArrayData, uint numVertices, uint vertexSize, uint numElements, uint elementSize, const std::vector<uint>& materialIndices, bool stream)
+{
+	m_numVertices = numVertices;
+	m_numElements = numElements;
+	m_materialIndices = materialIndices;
+	m_vertexSize = vertexSize;
+	m_elementSize = elementSize;
+
+	uint vboSize = vertexSize * numVertices;
+	uint iboSize = elementSize * numElements;
+	GLenum usage = stream ? GL_STREAM_DRAW : GL_STATIC_DRAW;
+	m_vertexBuffer = new Buffer<uchar>(GL_ARRAY_BUFFER, usage, 0, vboSize, (uchar*)vertexData);
+	m_elementArrayBuffer = new Buffer<uchar>(GL_ELEMENT_ARRAY_BUFFER, usage, 0, iboSize, (uchar*)elementArrayData);
 
 	// Generate the vertex array object
 	glGenVertexArrays(1, &m_vao);
@@ -20,7 +37,6 @@ Mesh::Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint n
 	// Add the model VBO to the state of the vertex array object
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer->m_bufferObject);
 
-	uint vertexSize = 32; // In bytes
 	uint positionOffset = 0;
 	uint normalOffset = 12;
 	uint uvOffset = 24;
@@ -28,7 +44,7 @@ Mesh::Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint n
 	// Enable vertex attributes
 	glEnableVertexAttribArray(ShaderCommon::POSITION_ATTR);
 	glEnableVertexAttribArray(ShaderCommon::NORMAL_ATTR);
-	glEnableVertexAttribArray(ShaderCommon::UV_ATTR);
+	if(vertexSize == 32) glEnableVertexAttribArray(ShaderCommon::UV_ATTR);
 
 	// Set the vertex attribute pointers. The vertex attributes are interleaved
 	glVertexAttribPointer(ShaderCommon::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE, vertexSize, (void*)(positionOffset));
@@ -42,14 +58,15 @@ Mesh::Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint n
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 }
 
-Mesh::~Mesh()
+void Mesh::update(void* vertexData, void* elementArrayData, uint numVertices, uint numElements)
 {
-    glDeleteVertexArrays(1, &m_vao);
-    delete m_vertexBuffer;
-    delete m_elementArrayBuffer;
+	m_numVertices = numVertices;
+	m_numElements = numElements;
+
+	m_vertexBuffer->updateAll((uchar*)vertexData);
+	m_elementArrayBuffer->updateAll((uchar*)elementArrayData);
 }
 
 void Mesh::render(const std::vector<Material*>& materials)
@@ -66,7 +83,8 @@ void Mesh::render(const std::vector<Material*>& materials)
             
         materials[i]->render();
 
-        glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_SHORT, (void*)elementArrayOffset);
+		GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+        glDrawElements(GL_TRIANGLES, numElements, type, (void*)elementArrayOffset);
     }
 
     glBindVertexArray(0);    
@@ -89,7 +107,8 @@ void Mesh::renderInstanced(const std::vector<Material*>& materials, uint count, 
 
 		materials[i]->render();
 
-		glDrawElementsInstanced(GL_TRIANGLES, numElements, GL_UNSIGNED_SHORT, (void*)elementArrayOffset, count);
+		GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+		glDrawElementsInstanced(GL_TRIANGLES, numElements, type, (void*)elementArrayOffset, count);
 	}
 
 	glBindVertexArray(0);
