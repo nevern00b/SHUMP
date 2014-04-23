@@ -22,18 +22,22 @@ Enemy::Enemy(COLOR color) : Entity(0),
 	if (m_color == COLOR::RED)
 	{
 		m_health = 2.0f;
-	}
-	else if (m_color == COLOR::GREEN)
-	{
-		m_health = 4.0f;
+		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyRBulletPool);
 	}
 	else if (m_color == COLOR::BLUE)
 	{
+		m_health = 4.0f;
+		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBBulletPool);
+	}
+	else if (m_color == COLOR::GREEN)
+	{
 		m_health = 6.0f;
+		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyGBulletPool);
 	}
 	else if (m_color == COLOR::YELLOW)
 	{
 		m_health = 10.0f;
+		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyYBulletPool);
 	}	
 	
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
@@ -46,7 +50,6 @@ Enemy::Enemy(COLOR color) : Entity(0),
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, material);
 
-	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBulletPool);
 }
 
 Enemy::~Enemy()
@@ -85,8 +88,9 @@ void Enemy::update()
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
 		}
-
+		
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
+		
 	}	
 }
 
@@ -96,12 +100,15 @@ void Enemy::onCollisionEnter(EventObject* collider)
 	if (bullet != 0)
 	{
 		bullet->destroy();
-		m_health -= bullet->m_damage;
-		if (m_health <= 0.0f)
-		{
-			b2Vec2 pos = m_physics->m_body->GetPosition();
-			Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
-			destroy();	
+		if (bullet->m_color != m_color){
+			m_health -= bullet->m_damage;
+			if (m_health <= 0.0f)
+			{
+				b2Vec2 pos = m_physics->m_body->GetPosition();
+				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
+				
+				destroy();
+			}
 		}
 	}
-}
+}	
