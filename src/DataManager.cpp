@@ -103,6 +103,31 @@ Material* DataManager::getMaterial(const std::string& name)
         return 0;
 }
 
+Material* DataManager::getMaterial(COLOR color)
+{
+	if (color == COLOR::STATIC)
+	{
+		return getMaterial("red");
+	}
+	else if (color == COLOR::RED)
+	{
+		return getMaterial("red");
+	}
+	else if (color == COLOR::BLUE)
+	{
+		return getMaterial("blue");
+	}
+	else if (color == COLOR::GREEN)
+	{
+		return getMaterial("green");
+	}
+	else if (color == COLOR::YELLOW)
+	{
+		return getMaterial("yellow");
+	}
+}
+
+
 Mesh* DataManager::getMesh(const std::string& name)
 {
     auto& foundMesh = m_meshes.find(name);

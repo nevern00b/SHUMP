@@ -14,10 +14,10 @@
 Entity::Entity(Entity* parent) : EventObject(),
     m_render(0),
     m_physics(0),
-	m_dead(false)
+	m_dead(false),
+	m_parent(0)
 {
-    m_parent = parent == 0 ? Globals::m_shmupGame->m_rootEntity : parent;
-    if (m_parent != 0) m_parent->m_children.push_back(this);
+	setParent(parent);
 
     m_transform = new Transform(this);
 
@@ -46,6 +46,20 @@ void Entity::destroy()
 	{
 		m_children.front()->destroy();
 	}
+}
+
+void Entity::setParent(Entity* parent)
+{
+	//TO-DO: scene graph transform won't work if new parent was created after this entity. Need to re-order entity list
+	
+	// Remove from previous parent
+	if (m_parent != 0)
+	{
+		m_parent->m_children.remove(this);
+	}
+
+	m_parent = parent == 0 ? Globals::m_shmupGame->m_rootEntity : parent;
+	if (m_parent != 0) m_parent->m_children.push_back(this);
 }
 
 void Entity::update()

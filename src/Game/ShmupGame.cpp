@@ -23,6 +23,7 @@
 #include "Rendering/ParticleSystem.h"
 #include "Rendering/Mesh.h"
 #include "Floor.h"
+#include "Item.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
 const float ShmupGame::WORLD_BOUND_Y = 9.0f;
@@ -94,6 +95,9 @@ void ShmupGame::init()
 
 	// Create floor
 	Floor* floor = new Floor();
+
+	// Item
+	Item* item = new Item();
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);

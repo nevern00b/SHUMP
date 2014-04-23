@@ -13,42 +13,28 @@
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
 
-Enemy::Enemy(int type) : Entity(0)
+Enemy::Enemy(COLOR color) : Entity(0),
+	m_color(color)
 {
 	m_shootTimer = new Timer(0.3f);
 	
-	m_type = type;
-	Material* material;
-	material = Globals::m_dataManager->getMaterial("white");
-	switch (m_type)
+	Material* material = Globals::m_dataManager->getMaterial(color);
+	if (m_color == COLOR::RED)
 	{
-	case 1:
+		m_health = 2.0f;
+	}
+	else if (m_color == COLOR::GREEN)
 	{
-	material = Globals::m_dataManager->getMaterial("red");
-	m_health = 2.0f;
-	break; 
+		m_health = 4.0f;
 	}
-		
-	case 2:
+	else if (m_color == COLOR::BLUE)
 	{
-	material = Globals::m_dataManager->getMaterial("green");
-	m_health = 4.0f;
-	break;
+		m_health = 6.0f;
 	}
-	case 3:
+	else if (m_color == COLOR::YELLOW)
 	{
-	material = Globals::m_dataManager->getMaterial("blue");
-	m_health = 6.0f;
-	break;
-	}
-	case 4:
-	{
-	material = Globals::m_dataManager->getMaterial("yellow");
-	m_health = 10.0f;
-	break;
-	}
-	}
-	
+		m_health = 10.0f;
+	}	
 	
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
 
@@ -58,7 +44,7 @@ Enemy::Enemy(int type) : Entity(0)
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
 
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
-	RenderComponent* render = new RenderComponent(this, mesh, { material });
+	RenderComponent* render = new RenderComponent(this, mesh, material);
 
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBulletPool);
 }
@@ -71,41 +57,34 @@ Enemy::~Enemy()
 void Enemy::update()
 {
 	Entity::update();
-	float vx, vy;
 
 	if (m_shootTimer->checkInterval())
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 
-		switch (m_type)
-		{
-		case 1:
+		float vx;
+		float vy;
+
+		if (m_color == COLOR::RED)
 		{
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
-			break;
 		}
-
-		case 2:
+		else if (m_color == COLOR::GREEN)
 		{
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
-			break;
 		}
-		case 3:
+		else if (m_color == COLOR::BLUE)
 		{
-			vx = -pos.x;
-			vy = -pos.y;
-			break;
+			vx = glm::linearRand(-5.0f, 5.0f);
+			vy = glm::linearRand(-5.0f, 5.0f);
 		}
-		case 4:
+		else if (m_color == COLOR::YELLOW)
 		{
-			vx = -2.0f - pos.x;
-			vy = -5.0f - pos.y;
-			break;
+			vx = glm::linearRand(-5.0f, 5.0f);
+			vy = glm::linearRand(-5.0f, 5.0f);
 		}
-		}
-
 
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 	}	
