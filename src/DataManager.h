@@ -4,6 +4,7 @@
 #include <map>
 #include <glm/glm.hpp>
 #include "Common.h"
+#include "Game/StateMachine.h"
 
 class Material;
 class Mesh;
@@ -20,6 +21,7 @@ public:
 
     GLuint getTexture(const std::string& name);
     Material* getMaterial(const std::string& name);
+	Material* getMaterial(COLOR color);
     Mesh* getMesh(const std::string& name);
 
 private:

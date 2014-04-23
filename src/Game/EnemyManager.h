@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "StateMachine.h"
 class ShootComponent;
 class Timer;
 
@@ -11,8 +12,8 @@ public:
 	EnemyManager();
 	~EnemyManager();
 	void update();	
-	int getEnemyType();
 	
+	COLOR getEnemyColor();
 
 private:
 	Timer* m_timer;

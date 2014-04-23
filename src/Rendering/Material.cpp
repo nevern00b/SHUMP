@@ -66,3 +66,23 @@ void Material::render()
         glBindTexture(GL_TEXTURE_CUBE_MAP, m_reflectTexture);
     }
 }
+
+void Material::setColor(COLOR color)
+{
+	if (color == RED)
+	{
+		m_diffuseColor = glm::vec4(1, 0, 0, 1);
+	}
+	else if (color == BLUE)
+	{
+		m_diffuseColor = glm::vec4(0, 0, 1, 1);
+	}
+	else if (color == GREEN)
+	{
+		m_diffuseColor = glm::vec4(0, 1, 0, 1);
+	}
+	else if (color == YELLOW)
+	{
+		m_diffuseColor = glm::vec4(1, 1, 0, 1);
+	}
+}

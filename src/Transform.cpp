@@ -70,7 +70,7 @@ void Transform::rotate(const glm::quat& quat)
 }
 void Transform::rotate(float angle, const glm::vec3& axis)
 {
-    rotate(glm::angleAxis(glm::radians(angle), axis));
+	rotate(glm::angleAxis(glm::radians(angle), glm::normalize(axis)));
 }
 
 void Transform::rotate(float angle)

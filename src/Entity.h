@@ -21,6 +21,8 @@ public:
     virtual ~Entity();
 	void destroy();
 
+	void setParent(Entity* parent);
+
     virtual void update();
     void render();
     glm::vec3 getPosition();

@@ -6,9 +6,9 @@
 #include "GameManager.h"
 #include "Mesh.h"
 
-RenderComponent::RenderComponent(Entity* entity, Mesh* mesh, const std::vector<Material*>& materials) : Component(entity),
+RenderComponent::RenderComponent(Entity* entity, Mesh* mesh, Material* material) : Component(entity),
     m_mesh(mesh),
-    m_materials(materials)
+    m_materials(1, material)
 {
     m_entity->m_render = this;
     Globals::m_renderManager->addEntity(m_entity);

@@ -20,10 +20,7 @@ Player::Player() : Entity(0),
 	m_reset(false)
 {
 	Material* material = new Material();
-	material->m_diffuseBlend = 1.0f;
-	material->m_diffuseTexture = Globals::m_dataManager->getTexture("noise");
 	material->m_useNoise = true;
-
     Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
@@ -32,10 +29,13 @@ Player::Player() : Entity(0),
     PhysicsData physicsData(shape);
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
-	RenderComponent* render = new RenderComponent(this, mesh, { material });
+	RenderComponent* render = new RenderComponent(this, mesh, material);
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_redBulletPool);
 
 	m_shootTimer = new Timer(0.2f);
+
+	changeColor(); // Sets color to default immunity state color
+	material->m_useNoise = true;
 	
 }
 
@@ -70,23 +70,23 @@ void Player::update()
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
         desiredVel.y -= speed;
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))//Keyboard to take bullet change 
-		Globals::m_stateMachine->changeBState(1);
+		Globals::m_stateMachine->changeBState(COLOR::RED);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_I))
-		Globals::m_stateMachine->changeBState(2);
+		Globals::m_stateMachine->changeBState(COLOR::BLUE);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_O))
-		Globals::m_stateMachine->changeBState(3);
+		Globals::m_stateMachine->changeBState(COLOR::GREEN);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_P))
-		Globals::m_stateMachine->changeBState(4);
+		Globals::m_stateMachine->changeBState(COLOR::YELLOW);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_Y))
 		Globals::m_stateMachine->checkStates();
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_H))
-		Globals::m_stateMachine->changeIState(1);
+		Globals::m_stateMachine->changeIState(COLOR::RED);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_J))
-		Globals::m_stateMachine->changeIState(2);
+		Globals::m_stateMachine->changeIState(COLOR::BLUE);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_K))
-		Globals::m_stateMachine->changeIState(3);
+		Globals::m_stateMachine->changeIState(COLOR::GREEN);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_L))
-		Globals::m_stateMachine->changeIState(4);
+		Globals::m_stateMachine->changeIState(COLOR::YELLOW);
 
 	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	{
@@ -110,35 +110,14 @@ void Player::update()
 
 void Player::changeColor()
 {
-	int immunState = Globals::m_stateMachine->getIState();
-	Material* chmaterial = Globals::m_dataManager->getMaterial("blue");
-
-	if (immunState == COLOR::RED)
-	{
-		chmaterial = Globals::m_dataManager->getMaterial("red");
-		m_render->setMaterial(chmaterial);
-	}
-	else if (immunState == COLOR::BLUE)
-	{
-		chmaterial = Globals::m_dataManager->getMaterial("blue");
-		m_render->setMaterial(chmaterial);
-	}
-	else if (immunState == COLOR::GREEN)
-	{
-		chmaterial = Globals::m_dataManager->getMaterial("green");
-		m_render->setMaterial(chmaterial);
-	}
-	else if (immunState == COLOR::YELLOW)
-	{
-		chmaterial = Globals::m_dataManager->getMaterial("yellow");
-		m_render->setMaterial(chmaterial);
-	}
-
+	COLOR immunState = Globals::m_stateMachine->getIState();
+	m_render->m_materials[0]->setColor(immunState);
 }
 
 void Player::onCollisionEnter(EventObject* collider)
 {
 	Bullet* bullet = dynamic_cast<Bullet*>(collider);
+
 	if (bullet != 0)
 	{
 		bullet->destroy();
@@ -160,6 +139,8 @@ void Player::onCollisionEnter(EventObject* collider)
 
 		}
 	}
+
+
 }
 
 void Player::shoot()

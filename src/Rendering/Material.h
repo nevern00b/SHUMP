@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "Common.h"
+#include "DataManager.h"
 
 class Material
 {
@@ -10,6 +11,8 @@ public:
     Material();
     ~Material();
     void render();
+
+	void setColor(COLOR color);
 
     bool m_transparent;
     bool m_cutout;

@@ -12,12 +12,12 @@ enum COLOR
 
 class StateMachine{
 public:
-	int getBState();
-	int getIState();
+	COLOR getBState();
+	COLOR getIState();
 	void checkStates();
-	void changeBState(int input);
-	void changeIState(int input);
+	void changeBState(COLOR input);
+	void changeIState(COLOR input);
 private:
-	int bulletST = COLOR::RED;
-	int immunST = COLOR::STATIC;
+	COLOR bulletST = COLOR::RED;
+	COLOR immunST = COLOR::RED;
 };

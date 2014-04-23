@@ -11,50 +11,21 @@ void StateMachine::checkStates(){
 	printf("The Immunity State is: %d \n", immunST);
 }
 
-int StateMachine::getBState(){
+COLOR StateMachine::getBState()
+{
 	return bulletST;
 }
 
-int StateMachine::getIState(){
+COLOR StateMachine::getIState()
+{
 	return immunST;
 }
 
-void StateMachine::changeBState(int input){
-	switch (input){
-	case 1:
-		bulletST = COLOR::RED;
-		break;
-	case 2:
-		bulletST = COLOR::BLUE;
-		break;
-	case 3:
-		bulletST = COLOR::GREEN;
-		break;
-	case 4:
-		bulletST = COLOR::YELLOW;
-		break;
-	default:
-		bulletST = bulletST;
-
-	}
+void StateMachine::changeBState(COLOR input)
+{
+	bulletST = input;
 }
 
-void StateMachine::changeIState(int input){
-	switch (input){
-	case 1:
-		immunST = COLOR::RED;
-		break;
-	case 2:
-		immunST = COLOR::BLUE;
-		break;
-	case 3:
-		immunST = COLOR::GREEN;
-		break;
-	case 4:
-		immunST = COLOR::YELLOW;
-		break;
-	default:
-		immunST = immunST;
-
-	}
+void StateMachine::changeIState(COLOR input){
+	immunST = input;
 }

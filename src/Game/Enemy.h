@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Entity.h"
+#include "StateMachine.h"
 
 class ShootComponent;
 class Timer;
@@ -9,7 +10,7 @@ class Timer;
 class Enemy : public Entity
 {
 public:
-	Enemy(int type);
+	Enemy(COLOR color);
 	virtual ~Enemy();
 	virtual void update();
 
@@ -20,6 +21,5 @@ private:
 	float m_health;
 	ShootComponent* m_shootComponent;
 	Timer* m_shootTimer;
-	int m_type;
-	
+	COLOR m_color;
 };

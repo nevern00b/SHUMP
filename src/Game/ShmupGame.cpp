@@ -21,6 +21,9 @@
 #include "EnemyManager.h"
 #include "BulletPool.h"
 #include "Rendering/ParticleSystem.h"
+#include "Rendering/Mesh.h"
+#include "Floor.h"
+#include "Item.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
 const float ShmupGame::WORLD_BOUND_Y = 9.0f;
@@ -37,7 +40,9 @@ ShmupGame::~ShmupGame()
 
 void ShmupGame::init()
 {
-    GameManager::init();
+	GameManager::init();
+
+
 
 	// Test out noise
 	const uint noiseSize = 256;
@@ -77,7 +82,16 @@ void ShmupGame::init()
 	m_blueBulletPool = new BulletPool(50, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
+	m_enemyRBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
+
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyBBulletPool = new BulletPool(50, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
+
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyGBulletPool = new BulletPool(50, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
+	
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyYBulletPool = new BulletPool(50, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	
 	// Create particle system
@@ -87,6 +101,12 @@ void ShmupGame::init()
 	m_player->m_transform->setTranslation(-2, -5);
 
 	m_enemyManager = new EnemyManager();
+
+	// Create floor
+	Floor* floor = new Floor();
+
+	// Item
+	Item* item = new Item();
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
@@ -98,7 +118,7 @@ void ShmupGame::init()
     Camera* camera = new Camera(0, 45.0f);
 	//camera->setPan(0, 5);
     //camera->setZoom(20);
-	camera->setRotation(0, 50.0f);
+	camera->setRotation(0, 70.0f);
 	camera->setPan(0.0f, -17.15f);
 	camera->setZoom(20.0f);
 }

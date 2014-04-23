@@ -150,9 +150,9 @@ void Globals::init()
     m_dataManager = new DataManager();
     m_physicsManager = new PhysicsManager();
     m_renderManager = new RenderManager();
+	m_stateMachine = new StateMachine();
     m_shmupGame = new ShmupGame();
     m_shmupGame->init();
-	m_stateMachine = new StateMachine();
     
     // Set glfw window callbacks to UIManager
     glfwSetKeyCallback(window, glfwKeyEvent);
