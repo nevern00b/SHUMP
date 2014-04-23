@@ -38,7 +38,7 @@ PhysicsManager::~PhysicsManager()
 
 void PhysicsManager::update()
 {
-	float timeStep = 1.0f / 60.0f;
+	float timeStep = 1.0f / 100.0f;
 	float frameTime = Globals::m_uiManager->m_frameTime;
 
 	bool clearForces = false;
