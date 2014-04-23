@@ -12,7 +12,9 @@ public:
 	~EnemyManager();
 	void update();	
 	int getEnemyType();
+	
 
 private:
 	Timer* m_timer;
+	int pattern;
 };

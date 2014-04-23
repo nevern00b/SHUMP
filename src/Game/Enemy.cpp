@@ -1,5 +1,4 @@
 #include "Enemy.h"
-
 #include <Box2D/Box2D.h>
 #include <glm/gtc/random.hpp>
 #include "Bullet.h"
@@ -61,6 +60,7 @@ Enemy::Enemy(int type) : Entity(0)
 	RenderComponent* render = new RenderComponent(this, mesh, { material });
 
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyBulletPool);
+	
 }
 
 Enemy::~Enemy()
@@ -71,6 +71,16 @@ Enemy::~Enemy()
 void Enemy::update()
 {
 	Entity::update();
+
+	float speed = 10.0f;
+	b2Body* body = m_physics->m_body;
+
+	b2Vec2 vel = body->GetLinearVelocity();
+	b2Vec2 desiredVel(0, 0);
+	desiredVel.x = enemyDirection.x;
+	desiredVel.y -= enemyDirection.y;
+
+
 	float vx, vy;
 
 	if (m_shootTimer->checkInterval())
@@ -83,6 +93,8 @@ void Enemy::update()
 		{
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
+			if (vx == 0) vx = -1;
+			if (vy == 0) vy = -1;
 			break;
 		}
 
@@ -90,6 +102,8 @@ void Enemy::update()
 		{
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
+			if (vx == 0) vx = -1;
+			if (vy == 0) vy = -1;
 			break;
 		}
 		case 3:
@@ -109,6 +123,10 @@ void Enemy::update()
 
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 	}	
+
+	b2Vec2 velChange = desiredVel-vel;
+	b2Vec2 impulse = body->GetMass() * velChange;
+	body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
 }
 
 void Enemy::onCollisionEnter(EventObject* collider)

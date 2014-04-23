@@ -1,5 +1,4 @@
 #include "EnemyManager.h"
-
 #include <glm/gtc/random.hpp>
 #include <Box2D/Box2D.h>
 #include "Bullet.h"
@@ -30,21 +29,119 @@ void EnemyManager::update()
 	{
 		float patternRand = glm::linearRand(0.0f, 1.0f);
 
-		if (patternRand < 0.8) // Create single enemy;
-		{
+
 			int type = getEnemyType();
-			Enemy* enemy = new Enemy(type);
+			
 
-			float x = glm::linearRand(-6.0f, 6.0f);
-			float y = glm::linearRand(0.0f, 6.0f);
+			float x = glm::linearRand(-15.0f, 15.0f);
+			float y = glm::linearRand(0.0f, 10.0f);
 
-			enemy->m_transform->setTranslation(x, y);
-			enemy->m_transform->setScale(0.5f);
-		}
-		else if (patternRand < 0.9) // Create V pattern of enemies
-		{
+			pattern = 3;// glm::linearRand(1, 3);
+			switch (pattern)
+			{
 
-		}
+			case 1: // get spawned from top and move either left,right
+			{
+						Enemy* enemy = new Enemy(type);
+						enemy->m_transform->setTranslation(x, y);
+						enemy->m_transform->setScale(0.5f);
+						enemy->enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
+						enemy->enemyDirection.y = 10;
+						break;
+			}
+			case 2: // hover only on top
+			{
+						Enemy* enemy = new Enemy(type);
+						enemy->m_transform->setTranslation(x, y);
+						enemy->m_transform->setScale(0.5f);
+						enemy->enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
+						if (enemy->enemyDirection.x > -1.0f && enemy->enemyDirection.x < 1.0f) enemy->enemyDirection.x = -1.5f;
+						enemy->enemyDirection.y = 0;
+						break;
+			}
+			case 3: // form  V pattern
+			{
+						int xV = glm::linearRand(-10.0f, 10.0f);
+						Enemy* enemy = new Enemy(type);
+						enemy->m_transform->setTranslation(x, y);
+						enemy->m_transform->setScale(0.5f);
+						enemy->enemyDirection.x = xV;
+						if (enemy->enemyDirection.x > -1.0f && enemy->enemyDirection.x < 1.0f) enemy->enemyDirection.x = -1.5f;
+						enemy->enemyDirection.y = 0;
+
+						Enemy* enemy1 = new Enemy(type);
+						enemy1->m_transform->setTranslation(x+2, y+2);
+						enemy1->m_transform->setScale(0.5f);
+						enemy1->enemyDirection.x = xV;
+						if (enemy1->enemyDirection.x > -1.0f && enemy1->enemyDirection.x < 1.0f) enemy1->enemyDirection.x = -1.5f;
+						enemy1->enemyDirection.y = 0;
+
+						Enemy* enemy2 = new Enemy(type);
+						enemy2->m_transform->setTranslation(x+2, y-2);
+						enemy2->m_transform->setScale(0.5f);
+						enemy2->enemyDirection.x = xV;
+						if (enemy2->enemyDirection.x > -1.0f && enemy2->enemyDirection.x < 1.0f) enemy2->enemyDirection.x = -1.5f;
+						enemy2->enemyDirection.y = 0;
+
+						Enemy* enemy3 = new Enemy(type);
+						enemy3->m_transform->setTranslation(x + 4, y +4);
+						enemy3->m_transform->setScale(0.5f);
+						enemy3->enemyDirection.x = xV;
+						if (enemy3->enemyDirection.x > -1.0f && enemy3->enemyDirection.x < 1.0f) enemy3->enemyDirection.x = -1.5f;
+						enemy3->enemyDirection.y = 0;
+
+						Enemy* enemy5 = new Enemy(type);
+						enemy5->m_transform->setTranslation(x+4 , y -4);
+						enemy5->m_transform->setScale(0.5f);
+						enemy5->enemyDirection.x = xV;
+						if (enemy5->enemyDirection.x > -1.0f && enemy5->enemyDirection.x < 1.0f) enemy5->enemyDirection.x = -1.5f;
+						enemy5->enemyDirection.y = 0;
+
+						break;
+			}
+			case 4: // form  V pattern
+			{
+						int xV = glm::linearRand(-10.0f, 10.0f);
+						
+						Enemy* enemy = new Enemy(type);
+						enemy->m_transform->setTranslation(x, y);
+						enemy->m_transform->setScale(0.5f);
+						enemy->enemyDirection.x = xV;
+						if (enemy->enemyDirection.x > -1.0f && enemy->enemyDirection.x < 1.0f) enemy->enemyDirection.x = -1.5f;
+						enemy->enemyDirection.y = 0;
+
+						Enemy* enemy1 = new Enemy(type);
+						enemy1->m_transform->setTranslation(x - 2, y - 2);
+						enemy1->m_transform->setScale(0.5f);
+						enemy1->enemyDirection.x = xV;
+						if (enemy1->enemyDirection.x > -1.0f && enemy1->enemyDirection.x < 1.0f) enemy1->enemyDirection.x = -1.5f;
+						enemy1->enemyDirection.y = 0;
+
+						Enemy* enemy2 = new Enemy(type);
+						enemy2->m_transform->setTranslation(x + 2, y - 2);
+						enemy2->m_transform->setScale(0.5f);
+						enemy2->enemyDirection.x = xV;
+						if (enemy2->enemyDirection.x > -1.0f && enemy2->enemyDirection.x < 1.0f) enemy2->enemyDirection.x = -1.5f;
+						enemy2->enemyDirection.y = 0;
+
+						Enemy* enemy3 = new Enemy(type);
+						enemy3->m_transform->setTranslation(x - 4, y - 4);
+						enemy3->m_transform->setScale(0.5f);
+						enemy3->enemyDirection.x = xV;
+						if (enemy3->enemyDirection.x > -1.0f && enemy3->enemyDirection.x < 1.0f) enemy3->enemyDirection.x = -1.5f;
+						enemy3->enemyDirection.y = 0;
+
+						Enemy* enemy5 = new Enemy(type);
+						enemy5->m_transform->setTranslation(x + 4, y - 4);
+						enemy5->m_transform->setScale(0.5f);
+						enemy5->enemyDirection.x = xV;
+						if (enemy5->enemyDirection.x > -1.0f && enemy5->enemyDirection.x < 1.0f) enemy5->enemyDirection.x = -1.5f;
+						enemy5->enemyDirection.y = 0;
+
+						break;
+			}
+			}
+
 	}
 }
 
@@ -60,3 +157,6 @@ int EnemyManager::getEnemyType()
 	else if (rand <= 1.0f) type = 4;
 	return type;
 }
+
+
+

@@ -14,10 +14,12 @@ public:
 	virtual void update();
 
 	virtual void onCollisionEnter(EventObject* collider);
+	glm::vec2 enemyDirection;
 
 private:
 	float m_health;
 	ShootComponent* m_shootComponent;
 	Timer* m_shootTimer;
 	int m_type;
+	
 };
