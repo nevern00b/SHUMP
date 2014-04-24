@@ -10,7 +10,7 @@ public:
 	Item();
 	virtual ~Item();
 
-	virtual void update();
+	virtual bool update();
 
 protected:
 	Entity* m_visual;

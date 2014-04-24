@@ -10,7 +10,6 @@ class Entity;
 class Shader;
 class ObjectPool;
 class FullScreenQuad;
-class Background;
 
 class RenderManager
 {
@@ -53,15 +52,11 @@ public:
 	Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
 	Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
 
-	Background* m_background;
-
-
 private:
 
     GLuint m_basicShader;
 	GLuint m_noiseShader;
 	GLuint m_floorShader;
-	GLuint m_backgroundShader;
 	GLuint m_instancedShader;
 	GLuint m_finalOutputShader;
 	GLuint m_bloomShader;

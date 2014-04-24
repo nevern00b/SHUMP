@@ -23,10 +23,13 @@ Item::~Item()
 
 }
 
-void Item::update()
+bool Item::update()
 {
-	Entity::update();
+	if (!Entity::update()) return false;
+
 	m_visual->m_transform->rotate(3.0f, glm::vec3(1, 1, 0));
+	
+	return true;
 }
 
 

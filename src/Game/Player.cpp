@@ -16,8 +16,7 @@
 #include "ShootComponent.h"
 
 Player::Player() : Entity(0),
-	m_lives(3),
-	m_reset(false)
+	m_lives(3)
 {
 	Material* material = new Material();
 	material->m_useNoise = true;
@@ -44,15 +43,9 @@ Player::~Player()
 
 }
 
-void Player::update()
+bool Player::update()
 {
-    Entity::update();
-
-	if (m_reset)
-	{
-		m_reset = false;
-		m_transform->setTranslation(0.0f, -5.0f);
-	}
+	if (!Entity::update()) return false;
 
 	float speed = 10.0f;
 	float vx = 0.0f;
@@ -102,22 +95,18 @@ void Player::update()
 
 	m_physics->setVelocity(vx, vy);
 	changeColor();
+
+	return true;
 }
 
-void Player::changeColor()
-{
-	COLOR immunState = Globals::m_stateMachine->getIState();
-	m_render->m_materials[0]->setColor(immunState);
-}
-
-void Player::onCollisionEnter(EventObject* collider)
+void Player::onCollide(EventObject* collider)
 {
 	Bullet* bullet = dynamic_cast<Bullet*>(collider);
 
 	if (bullet != 0)
 	{
 		bullet->destroy();
-		
+
 		if (bullet->m_color != Globals::m_stateMachine->getIState())
 		{
 			m_lives--;
@@ -127,17 +116,20 @@ void Player::onCollisionEnter(EventObject* collider)
 			}
 			else
 			{
-				m_reset = true;
+				m_transform->setTranslation(0.0f, -5.0f);
 			}
 		}
-		else
-		{
-
-		}
 	}
-
-
 }
+
+void Player::changeColor()
+{
+	COLOR immunState = Globals::m_stateMachine->getIState();
+	m_render->m_materials[0]->setColor(immunState);
+}
+
+
+	
 
 void Player::shoot()
 {

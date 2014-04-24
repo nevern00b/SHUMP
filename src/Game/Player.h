@@ -12,8 +12,8 @@ public:
     Player();
     virtual ~Player();
 
-    virtual void update();
-	virtual void onCollisionEnter(EventObject* collider);
+    virtual bool update();
+	virtual void onCollide(EventObject* collider);
 
 	void changeColor();
 
@@ -24,7 +24,6 @@ private:
 	void shoot();
 
 	Timer* m_shootTimer;
-	bool m_reset;
 	uint m_lives;
 	ShootComponent* m_shootComponent;
 

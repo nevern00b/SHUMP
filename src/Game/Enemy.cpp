@@ -55,9 +55,9 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::update()
+bool Enemy::update()
 {
-	Entity::update();
+	if(!Entity::update()) return false;
 
 	if (m_shootTimer->checkInterval())
 	{
@@ -97,23 +97,26 @@ void Enemy::update()
 	}	
 
 	m_physics->setVelocity(m_enemyDirection.x, -m_enemyDirection.y);
+
+	return true;
 }
 
-void Enemy::onCollisionEnter(EventObject* collider)
+void Enemy::onCollide(EventObject* collider)
 {
-	Bullet* bullet = dynamic_cast<Bullet*>(collider);
+	Bullet* bullet = dynamic_cast<Bullet*>(m_collider);
 	if (bullet != 0)
 	{
 		bullet->destroy();
-		if (bullet->m_color != m_color){
+		if (bullet->m_color != m_color)
+		{
 			m_health -= bullet->m_damage;
 			if (m_health <= 0.0f)
 			{
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
-				
+
 				destroy();
 			}
 		}
 	}
-}	
+}

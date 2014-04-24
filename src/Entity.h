@@ -23,25 +23,24 @@ public:
 
 	void setParent(Entity* parent);
 
-    virtual void update();
+    virtual bool update();
+	virtual void onCollisionEnter(EventObject* collider);
+	virtual void onCollide(EventObject* collider);
     void render();
     glm::vec3 getPosition();
-
-	virtual void onCollisionEnter(EventObject* collider);
-	virtual void onCollisionLeave(EventObject* collider);
 
     Entity* m_parent;
     std::list<Entity*> m_children;
     std::string m_name;
-    
     glm::mat4 m_renderMatrix;
+	bool m_dead;
 
+	// Components
     RenderComponent* m_render;
     Transform* m_transform; // Equals m_physics if entity has physics
     PhysicsComponent* m_physics;
-
     std::list<Component*> m_components;
 
-	bool m_dead;
-    
+	// Object that collided with it this frame
+	EventObject* m_collider;
 };
