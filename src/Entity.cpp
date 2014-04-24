@@ -27,13 +27,11 @@ Entity::Entity(Entity* parent) : EventObject(),
 
 Entity::~Entity()
 {
-	
-}
+	for (auto& child : m_children)
+	{
+		child->m_parent = 0;
+	}
 
-void Entity::destroy()
-{
-	// Object removed and marked for deletion. Deletion happens inside GameManager update loop.
-	m_dead = true;
 	if (m_parent != 0) m_parent->m_children.remove(this); // Remove from parent's list
 
 	// Delete components
@@ -41,10 +39,17 @@ void Entity::destroy()
 	{
 		delete m_components.front();
 	}
+}
 
-	while (m_children.size() > 0)
+void Entity::destroy()
+{
+	// Object marked for deletion. Deletion happens inside GameManager update loop.
+	m_dead = true;
+
+	// Destroy children
+	for (auto& child : m_children)
 	{
-		m_children.front()->destroy();
+		child->destroy();
 	}
 }
 
@@ -64,8 +69,6 @@ void Entity::setParent(Entity* parent)
 
 bool Entity::update()
 {
-	if (m_dead) return false;
-
 	if (m_collider)
 	{
 		onCollide(m_collider);

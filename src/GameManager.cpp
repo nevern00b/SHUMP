@@ -39,17 +39,23 @@ void GameManager::update()
 {
 	// Entities may be added and removed while iterating
 
+	std::vector<Entity*> destroyedEntities;
+
 	auto& it = m_entities.begin();
 	while (it != m_entities.end())
 	{
 		Entity* entity = *it;
-		entity->update();
+
+		if (!entity->m_dead)
+		{
+			entity->update();
+		}
 
 		// Remove from list if dead
 		if (entity->m_dead)
 		{
 			m_entities.erase(it++);
-			delete entity;
+			destroyedEntities.push_back(entity);
 		}
 		else
 		{
@@ -57,6 +63,10 @@ void GameManager::update()
 		}
 	}
 
+	for (auto& entity : destroyedEntities)
+	{
+		delete entity;
+	}
 }
 
 Entity* GameManager::getEntity(const std::string& name)
