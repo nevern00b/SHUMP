@@ -16,11 +16,16 @@
 #include "FullScreenQuad.h"
 #include "RenderComponent.h"
 #include "Material.h"
+#include "Rendering/Background/Background.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
-	m_floor(0)
+	m_floor(0),
+	m_background(0)
 {
+
+	//m_background = new Background();
+
     // Init GL state
     glClearColor(1, 1, 1, 1);
     glCullFace(GL_BACK);
@@ -45,6 +50,7 @@ RenderManager::RenderManager() :
 	m_basicShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = Globals::m_dataManager->loadShaderProgram("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_floorShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/floor.frag");
+	//m_backgroundShader = Globals::m_dataManager->loadShaderProgram("data/shaders/background.vert", "data/shaders/background.frag");
 	m_instancedShader = Globals::m_dataManager->loadShaderProgram("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_bloomShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
@@ -229,6 +235,13 @@ void RenderManager::render()
 	{
 		glUseProgram(m_floorShader);
 		m_floor->render();
+	}
+
+	if (m_background != 0)
+	{
+		glUseProgram(m_backgroundShader);
+		glLineWidth(3.0f);
+		m_background->render();
 	}
 
 	if (bloomEnabled)

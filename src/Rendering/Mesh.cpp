@@ -6,7 +6,7 @@
 
 Mesh::Mesh(float* vertexData, ushort* elementArrayData, uint numVertices, uint numElements)
 {
-	init((void*)vertexData, (void*)elementArrayData, numVertices, 32, numElements, 2, { 0 }, false);
+	init((void*)vertexData, (void*)elementArrayData, numVertices, 32, numElements, 2, { 0 }, false, GL_TRIANGLES);
 }
 
 Mesh::~Mesh()
@@ -16,13 +16,14 @@ Mesh::~Mesh()
     delete m_elementArrayBuffer;
 }
 
-void Mesh::init(void* vertexData, void* elementArrayData, uint numVertices, uint vertexSize, uint numElements, uint elementSize, const std::vector<uint>& materialIndices, bool stream)
+void Mesh::init(void* vertexData, void* elementArrayData, uint numVertices, uint vertexSize, uint numElements, uint elementSize, const std::vector<uint>& materialIndices, bool stream, GLenum drawType)
 {
 	m_numVertices = numVertices;
 	m_numElements = numElements;
 	m_materialIndices = materialIndices;
 	m_vertexSize = vertexSize;
 	m_elementSize = elementSize;
+	m_drawType = drawType;
 
 	uint vboSize = vertexSize * numVertices;
 	uint iboSize = elementSize * numElements;
@@ -44,7 +45,7 @@ void Mesh::init(void* vertexData, void* elementArrayData, uint numVertices, uint
 	// Enable vertex attributes
 	glEnableVertexAttribArray(ShaderCommon::POSITION_ATTR);
 	glEnableVertexAttribArray(ShaderCommon::NORMAL_ATTR);
-	if(vertexSize == 32) glEnableVertexAttribArray(ShaderCommon::UV_ATTR);
+	glEnableVertexAttribArray(ShaderCommon::UV_ATTR);
 
 	// Set the vertex attribute pointers. The vertex attributes are interleaved
 	glVertexAttribPointer(ShaderCommon::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE, vertexSize, (void*)(positionOffset));
@@ -84,7 +85,7 @@ void Mesh::render(const std::vector<Material*>& materials)
         materials[i]->render();
 
 		GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
-        glDrawElements(GL_TRIANGLES, numElements, type, (void*)elementArrayOffset);
+        glDrawElements(m_drawType, numElements, type, (void*)elementArrayOffset);
     }
 
     glBindVertexArray(0);    
@@ -108,7 +109,7 @@ void Mesh::renderInstanced(const std::vector<Material*>& materials, uint count, 
 		materials[i]->render();
 
 		GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
-		glDrawElementsInstanced(GL_TRIANGLES, numElements, type, (void*)elementArrayOffset, count);
+		glDrawElementsInstanced(m_drawType, numElements, type, (void*)elementArrayOffset, count);
 	}
 
 	glBindVertexArray(0);
@@ -116,8 +117,11 @@ void Mesh::renderInstanced(const std::vector<Material*>& materials, uint count, 
 
 void Mesh::render()
 {
-    //glBindVertexArray(m_vao);
-    //glDrawElements(GL_TRIANGLES, m_numElements, GL_UNSIGNED_SHORT, 0);
+	//// Set up the vao
+	//GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+	//glBindVertexArray(m_vao);
+	//glDisableVertexAttribArray(ShaderCommon::TRANSFORM_ATTR);
+	//glDrawElements(m_drawType, m_numElements, type, 0);
     //glBindVertexArray(0);
 }
 

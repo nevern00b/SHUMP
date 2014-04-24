@@ -1,5 +1,6 @@
 #include "Globals.h"
 
+#include <time.h>
 #include <string>
 #include <sstream>
 #include <glm/glm.hpp>
@@ -94,7 +95,7 @@ void Globals::init()
     bool vsync = false;
     bool showDebugOutput = false;
     bool resizable = true;
-    //srand((uint)time(NULL));
+    srand((uint)time(NULL));
 
     glfwSetErrorCallback(glfwErrorCallback);
 

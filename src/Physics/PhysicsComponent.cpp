@@ -68,6 +68,15 @@ void PhysicsComponent::setTranslation(const glm::vec3& translation)
     m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
 }
 
+void PhysicsComponent::setVelocity(float vx, float vy)
+{
+	b2Vec2 vel = m_body->GetLinearVelocity();
+	b2Vec2 desiredVel(vx, vy);
+	b2Vec2 velChange = desiredVel - vel;
+	b2Vec2 impulse = m_body->GetMass() * velChange;
+	m_body->ApplyLinearImpulse(impulse, m_body->GetWorldCenter(), true);
+}
+
 PhysicsData::PhysicsData(b2Shape& shape) :
     m_shape(&shape),
     m_bodyType(b2_dynamicBody),

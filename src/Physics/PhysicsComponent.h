@@ -18,6 +18,8 @@ public:
     virtual void setRotation(const glm::quat& quat);
     virtual void setTranslation(const glm::vec3& translation);
 
+	void setVelocity(float vx, float vy);
+
     b2Body* m_body;
 };
 

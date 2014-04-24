@@ -55,20 +55,18 @@ void Player::update()
 	}
 
 	float speed = 10.0f;
-    b2Body* body = m_physics->m_body;
-
-    b2Vec2 vel = body->GetLinearVelocity();
-    b2Vec2 desiredVel(0, 0);
+	float vx = 0.0f;
+	float vy = 0.0f;
 
     // Get keyboard input
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_A))
-        desiredVel.x -= speed;
+        vx -= speed;
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_D))
-        desiredVel.x += speed;
+        vx += speed;
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_W))
-        desiredVel.y += speed;
+        vy += speed;
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
-        desiredVel.y -= speed;
+        vy -= speed;
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))//Keyboard to take bullet change 
 		Globals::m_stateMachine->changeBState(COLOR::RED);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_I))
@@ -102,10 +100,8 @@ void Player::update()
 		}
     }
 
+	m_physics->setVelocity(vx, vy);
 	changeColor();
-    b2Vec2 velChange = desiredVel - vel;
-    b2Vec2 impulse = body->GetMass() * velChange;
-    body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
 }
 
 void Player::changeColor()
