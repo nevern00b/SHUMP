@@ -59,14 +59,6 @@ void Enemy::update()
 {
 	Entity::update();
 
-	float speed = 10.0f;
-	b2Body* body = m_physics->m_body;
-
-	b2Vec2 vel = body->GetLinearVelocity();
-	b2Vec2 desiredVel(0, 0);
-	desiredVel.x = enemyDirection.x;
-	desiredVel.y -= enemyDirection.y;
-
 	if (m_shootTimer->checkInterval())
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
@@ -79,16 +71,13 @@ void Enemy::update()
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
 
-			if (vx == 0) vx = -1;
-			if (vy == 0) vy = -1;
+			if (glm::abs(vx) < 0.1) vx = -1;
+			if (glm::abs(vy) < 0.1) vy = -1;
 		}
 		else if (m_color == COLOR::GREEN)
 		{
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
-
-			if (vx == 0) vx = -1;
-			if (vy == 0) vy = -1;
 		}
 		else if (m_color == COLOR::BLUE)
 		{
@@ -101,13 +90,13 @@ void Enemy::update()
 			vy = glm::linearRand(-5.0f, 5.0f);
 		}
 		
+		if (glm::abs(vx) < 0.1) vx = -1.0f;
+		if (glm::abs(vy) < 0.1) vy = -1.0f;
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 		
 	}	
 
-	b2Vec2 velChange = desiredVel-vel;
-	b2Vec2 impulse = body->GetMass() * velChange;
-	body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
+	m_physics->setVelocity(m_enemyDirection.x, -m_enemyDirection.y);
 }
 
 void Enemy::onCollisionEnter(EventObject* collider)

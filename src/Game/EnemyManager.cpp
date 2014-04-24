@@ -42,17 +42,17 @@ void EnemyManager::update()
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_transform->setScale(0.5f);
-			enemy->enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
-			enemy->enemyDirection.y = 10;
+			enemy->m_enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
+			enemy->m_enemyDirection.y = 10;
 		}
 		else if(pattern == 2) // hover only on top
 		{
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_transform->setScale(0.5f);
-			enemy->enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
-			if (enemy->enemyDirection.x > -1.0f && enemy->enemyDirection.x < 1.0f) enemy->enemyDirection.x = -1.5f;
-			enemy->enemyDirection.y = 0;
+			enemy->m_enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
+			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
+			enemy->m_enemyDirection.y = 0;
 		}
 		else if (pattern == 3) // form  V pattern
 		{
@@ -60,37 +60,37 @@ void EnemyManager::update()
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_transform->setScale(0.5f);
-			enemy->enemyDirection.x = xV;
-			if (enemy->enemyDirection.x > -1.0f && enemy->enemyDirection.x < 1.0f) enemy->enemyDirection.x = -1.5f;
-			enemy->enemyDirection.y = 0;
+			enemy->m_enemyDirection.x = xV;
+			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
+			enemy->m_enemyDirection.y = 0;
 
 			Enemy* enemy1 = new Enemy(color);
 			enemy1->m_transform->setTranslation(x + 2, y + 2);
 			enemy1->m_transform->setScale(0.5f);
-			enemy1->enemyDirection.x = xV;
-			if (enemy1->enemyDirection.x > -1.0f && enemy1->enemyDirection.x < 1.0f) enemy1->enemyDirection.x = -1.5f;
-			enemy1->enemyDirection.y = 0;
+			enemy1->m_enemyDirection.x = xV;
+			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
+			enemy1->m_enemyDirection.y = 0;
 
 			Enemy* enemy2 = new Enemy(color);
 			enemy2->m_transform->setTranslation(x + 2, y - 2);
 			enemy2->m_transform->setScale(0.5f);
-			enemy2->enemyDirection.x = xV;
-			if (enemy2->enemyDirection.x > -1.0f && enemy2->enemyDirection.x < 1.0f) enemy2->enemyDirection.x = -1.5f;
-			enemy2->enemyDirection.y = 0;
+			enemy2->m_enemyDirection.x = xV;
+			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
+			enemy2->m_enemyDirection.y = 0;
 
 			Enemy* enemy3 = new Enemy(color);
 			enemy3->m_transform->setTranslation(x + 4, y + 4);
 			enemy3->m_transform->setScale(0.5f);
-			enemy3->enemyDirection.x = xV;
-			if (enemy3->enemyDirection.x > -1.0f && enemy3->enemyDirection.x < 1.0f) enemy3->enemyDirection.x = -1.5f;
-			enemy3->enemyDirection.y = 0;
+			enemy3->m_enemyDirection.x = xV;
+			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
+			enemy3->m_enemyDirection.y = 0;
 
 			Enemy* enemy5 = new Enemy(color);
 			enemy5->m_transform->setTranslation(x + 4, y - 4);
 			enemy5->m_transform->setScale(0.5f);
-			enemy5->enemyDirection.x = xV;
-			if (enemy5->enemyDirection.x > -1.0f && enemy5->enemyDirection.x < 1.0f) enemy5->enemyDirection.x = -1.5f;
-			enemy5->enemyDirection.y = 0;
+			enemy5->m_enemyDirection.x = xV;
+			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
+			enemy5->m_enemyDirection.y = 0;
 		}
 		else if (pattern == 4)
 		{
@@ -99,37 +99,37 @@ void EnemyManager::update()
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_transform->setScale(0.5f);
-			enemy->enemyDirection.x = xV;
-			if (enemy->enemyDirection.x > -1.0f && enemy->enemyDirection.x < 1.0f) enemy->enemyDirection.x = -1.5f;
-			enemy->enemyDirection.y = 0;
+			enemy->m_enemyDirection.x = xV;
+			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
+			enemy->m_enemyDirection.y = 0;
 
 			Enemy* enemy1 = new Enemy(color);
 			enemy1->m_transform->setTranslation(x - 2, y - 2);
 			enemy1->m_transform->setScale(0.5f);
-			enemy1->enemyDirection.x = xV;
-			if (enemy1->enemyDirection.x > -1.0f && enemy1->enemyDirection.x < 1.0f) enemy1->enemyDirection.x = -1.5f;
-			enemy1->enemyDirection.y = 0;
+			enemy1->m_enemyDirection.x = xV;
+			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
+			enemy1->m_enemyDirection.y = 0;
 
 			Enemy* enemy2 = new Enemy(color);
 			enemy2->m_transform->setTranslation(x + 2, y - 2);
 			enemy2->m_transform->setScale(0.5f);
-			enemy2->enemyDirection.x = xV;
-			if (enemy2->enemyDirection.x > -1.0f && enemy2->enemyDirection.x < 1.0f) enemy2->enemyDirection.x = -1.5f;
-			enemy2->enemyDirection.y = 0;
+			enemy2->m_enemyDirection.x = xV;
+			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
+			enemy2->m_enemyDirection.y = 0;
 
 			Enemy* enemy3 = new Enemy(color);
 			enemy3->m_transform->setTranslation(x - 4, y - 4);
 			enemy3->m_transform->setScale(0.5f);
-			enemy3->enemyDirection.x = xV;
-			if (enemy3->enemyDirection.x > -1.0f && enemy3->enemyDirection.x < 1.0f) enemy3->enemyDirection.x = -1.5f;
-			enemy3->enemyDirection.y = 0;
+			enemy3->m_enemyDirection.x = xV;
+			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
+			enemy3->m_enemyDirection.y = 0;
 
 			Enemy* enemy5 = new Enemy(color);
 			enemy5->m_transform->setTranslation(x + 4, y - 4);
 			enemy5->m_transform->setScale(0.5f);
-			enemy5->enemyDirection.x = xV;
-			if (enemy5->enemyDirection.x > -1.0f && enemy5->enemyDirection.x < 1.0f) enemy5->enemyDirection.x = -1.5f;
-			enemy5->enemyDirection.y = 0;
+			enemy5->m_enemyDirection.x = xV;
+			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
+			enemy5->m_enemyDirection.y = 0;
 		}
 	}
 }

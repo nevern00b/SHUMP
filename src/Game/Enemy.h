@@ -15,7 +15,7 @@ public:
 	virtual void update();
 
 	virtual void onCollisionEnter(EventObject* collider);
-	glm::vec2 enemyDirection;
+	glm::vec2 m_enemyDirection;
 
 private:
 	float m_health;
