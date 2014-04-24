@@ -97,7 +97,7 @@ bool Enemy::update()
 		
 	}	
 
-	m_physics->setVelocity(m_enemyDirection.x, -m_enemyDirection.y);
+	m_physics->applyVelocity(m_enemyDirection.x, -m_enemyDirection.y);
 
 	return true;
 }
@@ -117,8 +117,17 @@ void Enemy::onCollide(EventObject* collider)
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 
 				// Drop immunity item
-				ImmunityItem* immunityItem = new ImmunityItem(m_color);
+				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -5.0f);
 				immunityItem->m_transform->setTranslation(pos.x, pos.y);
+
+				// Randomly drop life item
+				if (glm::linearRand(0.0, 1.0) < 0.3f)
+				{
+					float vx = glm::linearRand(-5.0f, 5.0f);
+					float vy = -5.0f;
+					LifeItem* lifeItem = new LifeItem(vx, vy);
+					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
+				}
 
 				destroy();
 			}

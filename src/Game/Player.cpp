@@ -100,7 +100,7 @@ bool Player::update()
 		shoot();
 	}
 
-	m_physics->setVelocity(vx, vy);
+	m_physics->applyVelocity(vx, vy);
 	changeColor();
 
 	return true;
@@ -110,6 +110,8 @@ void Player::onCollide(EventObject* collider)
 {
 	Bullet* bullet = dynamic_cast<Bullet*>(collider);
 	ImmunityItem* immunityItem = dynamic_cast<ImmunityItem*>(collider);
+	LifeItem* lifeItem = dynamic_cast<LifeItem*>(collider);
+
 	if (bullet != 0)
 	{
 		bullet->destroy();
@@ -133,6 +135,11 @@ void Player::onCollide(EventObject* collider)
 		Globals::m_stateMachine->changeIState(color);
 		Globals::m_stateMachine->changeBState(color);
 		immunityItem->destroy();
+	}
+	else if (lifeItem != 0)
+	{
+		m_lives++;
+		lifeItem->destroy();
 	}
 
 }

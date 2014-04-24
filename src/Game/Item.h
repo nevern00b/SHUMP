@@ -7,7 +7,7 @@
 class Item : public Entity
 {
 public:
-	Item();
+	Item(float vx, float vy);
 	virtual ~Item();
 
 	virtual bool update();
@@ -19,8 +19,15 @@ protected:
 class ImmunityItem : public Item
 {
 public:
-	ImmunityItem(COLOR color);
+	ImmunityItem(COLOR color, float vx, float vy);
 	virtual ~ImmunityItem();
 
 	COLOR m_color;
+};
+
+class LifeItem : public Item
+{
+public:
+	LifeItem(float vx, float vy);
+	virtual ~LifeItem();
 };

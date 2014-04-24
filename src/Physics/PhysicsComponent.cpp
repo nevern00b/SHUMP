@@ -75,6 +75,11 @@ void PhysicsComponent::setTranslation(const glm::vec3& translation)
 
 void PhysicsComponent::setVelocity(float vx, float vy)
 {
+	m_body->SetLinearVelocity(b2Vec2(vx, vy));
+}
+
+void PhysicsComponent::applyVelocity(float vx, float vy)
+{
 	b2Vec2 vel = m_body->GetLinearVelocity();
 	b2Vec2 desiredVel(vx, vy);
 	b2Vec2 velChange = desiredVel - vel;
