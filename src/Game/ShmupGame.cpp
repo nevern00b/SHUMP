@@ -26,7 +26,7 @@
 #include "Item.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
-const float ShmupGame::WORLD_BOUND_Y = 9.0f;
+const float ShmupGame::WORLD_BOUND_Y = 12.0f;
 
 ShmupGame::ShmupGame() : GameManager()
 {

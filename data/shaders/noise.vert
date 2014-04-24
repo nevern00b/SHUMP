@@ -207,13 +207,7 @@ out float vNoise;
 
 void main() 
 {
-    //vec4 position = uTransform.modelMatrix * vec4(aPosition, 1.0);
-	//vec3 normal = mat3(uTransform.modelMatrix) * aNormal;
-	//position.xyz += normal * fract(uPerFrameData.time);
-
-    //gl_Position = uPerFrameData.viewProjection * position;
-
-	float weight = 0.2;
+	float weight = 0.15;
 
 	vec3 evNormal = aNormal;
 	vec3 aniNormal = 2.0 * evNormal + uPerFrameData.time;
@@ -223,13 +217,14 @@ void main()
 	float fz = weight * f( aniNormal + vec3( 0.0, 0.0, .0001 ) );
 	vec3 modifiedNormal = normalize( evNormal - vec3( (fx - f0) / .0001, (fy - f0) / .0001, (fz - f0) / .0001 ) );
 
-	vNoise = -turbulence( 0.5 * evNormal );
-
-
 	vec3 newPosition = aPosition + f0 * evNormal;
-	gl_Position = uPerFrameData.viewProjection * uTransform.modelMatrix * vec4( newPosition, 1.0 );
+
+	// range 0.3 to 0.8
+	//vNoise = -turbulence( 0.5 * evNormal );
+	vNoise = 2*(length(newPosition)-0.3);
 
 	vec4 position = uTransform.modelMatrix * vec4(newPosition, 1.0);
+	gl_Position = uPerFrameData.viewProjection * position;
 	vPosition = vec3(position);
 	vNormal = mat3(uTransform.modelMatrix) * modifiedNormal;	
 	vUV = aUV;
