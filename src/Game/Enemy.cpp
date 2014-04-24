@@ -12,8 +12,8 @@
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
 
-Enemy::Enemy(COLOR color) : Entity(0),
-	m_color(color)
+Enemy::Enemy(COLOR color, int pattern, int pos_x) : Entity(0),
+m_color(color), m_pattern(pattern), m_x(pos_x)
 {
 	m_shootTimer = new Timer(0.3f);
 	
@@ -48,6 +48,9 @@ Enemy::Enemy(COLOR color) : Entity(0),
 
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, material);
+
+	
+
 }
 
 Enemy::~Enemy()
@@ -70,6 +73,12 @@ void Enemy::update()
 	if (m_shootTimer->checkInterval())
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
+
+		if (m_pattern == 2)
+		{
+			if (pos.x < (m_x - 3)) enemyDirection.x = -enemyDirection.x;
+			else if (pos.x > (m_x + 3)) enemyDirection.x = -enemyDirection.x;
+		}
 
 		float vx;
 		float vy;
@@ -102,12 +111,17 @@ void Enemy::update()
 		}
 		
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
-		
+
+		if (pos.x < -20 || pos.x > 20 || pos.y<-20 || pos.y >20)
+			destroy();
 	}	
 
 	b2Vec2 velChange = desiredVel-vel;
 	b2Vec2 impulse = body->GetMass() * velChange;
 	body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
+
+
+	
 }
 
 void Enemy::onCollisionEnter(EventObject* collider)

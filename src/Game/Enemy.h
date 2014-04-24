@@ -10,7 +10,7 @@ class Timer;
 class Enemy : public Entity
 {
 public:
-	Enemy(COLOR color);
+	Enemy(COLOR color, int pattern,int pos_x);
 	virtual ~Enemy();
 	virtual void update();
 
@@ -22,4 +22,7 @@ private:
 	ShootComponent* m_shootComponent;
 	Timer* m_shootTimer;
 	COLOR m_color;
+	int m_pattern;
+
+	float m_x;
 };
