@@ -53,7 +53,7 @@ public:
 	Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
 	Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
 
-	Background* m_background;
+	//Background* m_background;
 
 
 private:

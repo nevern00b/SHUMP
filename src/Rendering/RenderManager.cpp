@@ -16,12 +16,12 @@
 #include "FullScreenQuad.h"
 #include "RenderComponent.h"
 #include "Material.h"
-#include "Rendering/Background/Background.h"
+//#include "Rendering/Background/Background.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
-	m_floor(0),
-	m_background(0)
+	m_floor(0)//,
+	//m_background(0)
 {
 
 	//m_background = new Background();
@@ -237,12 +237,12 @@ void RenderManager::render()
 		m_floor->render();
 	}
 
-	if (m_background != 0)
+	/*if (m_background != 0)
 	{
 		glUseProgram(m_backgroundShader);
 		glLineWidth(3.0f);
 		m_background->render();
-	}
+	}*/
 
 	if (bloomEnabled)
 	{

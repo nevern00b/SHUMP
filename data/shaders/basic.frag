@@ -3,6 +3,7 @@ layout (location = 0) out vec4 fragColor;
 in vec3 vPosition;
 in vec3 vNormal;
 in vec2 vUV;
+in float vNoise;
 
 layout(binding = DIFFUSE_TEXTURE) uniform sampler2D tDiffuse;
 layout(binding = NORMAL_TEXTURE) uniform sampler2D tNormal;
@@ -17,7 +18,7 @@ vec3 computeLighting(vec3 viewDir, vec3 lightDir, float lightAttenuation, vec3 l
     float diffuseTerm = max(dot(lightDir, normal), 0.0);
     float specularTerm = pow(max(dot(reflectedLight,viewDir), 0.0), specPower);  //phong
 
-    vec3 color = (lightColor * lightAttenuation) * (diffuse * diffuseTerm + specIntensity * specularTerm);
+    vec3 color = (lightColor * lightAttenuation) * (diffuse * diffuseTerm + vec3(specIntensity * specularTerm));
     return color;
 }
 
@@ -42,7 +43,9 @@ mat3 getTangentMatrix(vec3 N, vec3 p, vec2 uv)
 
 void main()
 {
-    vec4 diffuse = uMaterial.diffuseColor;
+	vec4 diffuse;
+	if(uMaterial.useNoise == 1) diffuse.xyz = vec3( vUV * ( 1.0 - 2.0 * vNoise ), 0.0 );
+    else  diffuse = uMaterial.diffuseColor;
     if(uMaterial.diffuseBlend > 0.0)
     {
         vec4 diffuseTexture = texture(tDiffuse, vUV);
@@ -107,6 +110,6 @@ void main()
         float visibility = 1.0;
         finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
     }
-
+	
     fragColor = vec4(finalColor, diffuse.a);
 }

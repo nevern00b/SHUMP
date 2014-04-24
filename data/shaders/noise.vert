@@ -176,13 +176,13 @@ float pnoise(vec3 P, vec3 rep)
   return 2.2 * n_xyz;
 }
 
-float stripes( float x, float f) {
+float stripes(float x, float f) {
 		float PI = 3.14159265358979323846264;
 		float t = .5 + .5 * sin( f * 2.0 * PI * x);
 		return t * t - .5;
 }
 	
-float turbulence( vec3 p ) {
+float turbulence(vec3 p) {
 	float w = 100.0;
 	float t = -.5;
 	for (float f = 1.0 ; f <= 10.0 ; f++ ){
@@ -192,9 +192,8 @@ float turbulence( vec3 p ) {
 	return t;
 }
 	
-float f( vec3 p ) {
+float f(vec3 p) {
 	return pnoise( vec3( p ), vec3( 10.0, 10.0, 10.0 ) );
-	return pnoise( 8.0 * vec3( p ), vec3( 10.0, 10.0, 10.0 ) );
 }
 
 layout(location = POSITION_ATTR) in vec3 aPosition;
@@ -204,6 +203,7 @@ layout(location = UV_ATTR) in vec2 aUV;
 out vec3 vPosition;
 out vec3 vNormal;
 out vec2 vUV;
+out float vNoise;
 
 void main() 
 {
@@ -222,6 +222,8 @@ void main()
 	float fy = weight * f( aniNormal + vec3( 0.0, .0001, 0.0 ) );
 	float fz = weight * f( aniNormal + vec3( 0.0, 0.0, .0001 ) );
 	vec3 modifiedNormal = normalize( evNormal - vec3( (fx - f0) / .0001, (fy - f0) / .0001, (fz - f0) / .0001 ) );
+
+	vNoise = -turbulence( 0.5 * evNormal );
 
 
 	vec3 newPosition = aPosition + f0 * evNormal;
