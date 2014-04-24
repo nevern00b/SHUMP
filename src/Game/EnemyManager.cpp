@@ -35,8 +35,11 @@ void EnemyManager::update()
 		float x = glm::linearRand(-15.0f, 15.0f);
 		float y = glm::linearRand(0.0f, 10.0f);
 
+		if (patternRand < 0.4f) pattern = 1;
+		else if (patternRand < 0.7f) pattern = 2;
+		else if (patternRand < 0.9f)  pattern = 3;
+		else if (patternRand <= 1.0f)  pattern = 4;
 
-		pattern = 1;// glm::linearRand(1, 3);
 
 
 		if (pattern == 1) // get spawned from top and move either left,right
