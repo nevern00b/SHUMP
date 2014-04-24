@@ -97,6 +97,8 @@ bool Camera::update()
         float speed = -m_zoomSpeed * m_zoomOldAverage;
         applyZoom(ui->getFramerateAdjust(speed));
     }
+
+	return true;
 }
 
 void Camera::setZoom(float amount)

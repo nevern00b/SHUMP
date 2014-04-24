@@ -27,6 +27,8 @@ bool Item::update()
 {
 	if (!Entity::update()) return false;
 
+	m_physics->setVelocity(0, -1.0f);
+
 	m_visual->m_transform->rotate(3.0f, glm::vec3(1, 1, 0));
 	
 	return true;
@@ -35,10 +37,11 @@ bool Item::update()
 
 // Immunity
 
-ImmunityItem::ImmunityItem(COLOR color)
+ImmunityItem::ImmunityItem(COLOR color) : Item(),
+	m_color(color)
 {
 	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
-	Material* material = Globals::m_dataManager->getMaterial("yellow");
+	Material* material = Globals::m_dataManager->getMaterial(m_color);
 	RenderComponent* render = new RenderComponent(m_visual, mesh, material);
 }
 

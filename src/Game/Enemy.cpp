@@ -11,6 +11,7 @@
 #include "ShootComponent.h"
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
+#include "Item.h"
 
 Enemy::Enemy(COLOR color) : Entity(0),
 	m_color(color)
@@ -114,6 +115,10 @@ void Enemy::onCollide(EventObject* collider)
 			{
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
+
+				// Drop immunity item
+				ImmunityItem* immunityItem = new ImmunityItem(m_color);
+				immunityItem->m_transform->setTranslation(pos.x, pos.y);
 
 				destroy();
 			}

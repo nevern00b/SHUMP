@@ -35,7 +35,6 @@ void Entity::destroy()
 	// Object removed and marked for deletion. Deletion happens inside GameManager update loop.
 	m_dead = true;
 	if (m_parent != 0) m_parent->m_children.remove(this); // Remove from parent's list
-	Globals::m_shmupGame->removeEntity(this);
 
 	// Delete components
 	while (m_components.size() > 0)
@@ -65,13 +64,14 @@ void Entity::setParent(Entity* parent)
 
 bool Entity::update()
 {
+	if (m_dead) return false;
+
 	if (m_collider)
 	{
 		onCollide(m_collider);
 		m_collider = 0;
-	}
-
-	if (m_dead) return false;
+		if (m_dead) return false;
+	}	
 
     // Concat parent's matrix to get render matrix
     m_transform->update();

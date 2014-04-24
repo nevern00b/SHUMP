@@ -21,4 +21,6 @@ class ImmunityItem : public Item
 public:
 	ImmunityItem(COLOR color);
 	virtual ~ImmunityItem();
+
+	COLOR m_color;
 };

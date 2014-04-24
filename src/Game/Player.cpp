@@ -14,6 +14,7 @@
 #include "ShmupGame.h"
 #include "BulletPool.h"
 #include "ShootComponent.h"
+#include "Item.h"
 
 Player::Player() : Entity(0),
 	m_lives(3)
@@ -102,7 +103,7 @@ bool Player::update()
 void Player::onCollide(EventObject* collider)
 {
 	Bullet* bullet = dynamic_cast<Bullet*>(collider);
-
+	ImmunityItem* immunityItem = dynamic_cast<ImmunityItem*>(collider);
 	if (bullet != 0)
 	{
 		bullet->destroy();
@@ -120,6 +121,14 @@ void Player::onCollide(EventObject* collider)
 			}
 		}
 	}
+	else if (immunityItem != 0)
+	{
+		COLOR color = immunityItem->m_color;
+		Globals::m_stateMachine->changeIState(color);
+		Globals::m_stateMachine->changeBState(color);
+		immunityItem->destroy();
+	}
+
 }
 
 void Player::changeColor()
