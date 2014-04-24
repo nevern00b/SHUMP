@@ -12,8 +12,10 @@ public:
 	EnemyManager();
 	~EnemyManager();
 	void update();	
+	
 	COLOR getEnemyColor();
 
 private:
 	Timer* m_timer;
+	int pattern;
 };

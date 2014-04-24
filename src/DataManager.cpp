@@ -125,6 +125,10 @@ Material* DataManager::getMaterial(COLOR color)
 	{
 		return getMaterial("yellow");
 	}
+	else
+	{
+		return getMaterial("red");
+	}
 }
 
 

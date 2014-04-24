@@ -82,7 +82,16 @@ void ShmupGame::init()
 	m_blueBulletPool = new BulletPool(50, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
+	m_enemyRBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
+
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyBBulletPool = new BulletPool(50, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
+
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyGBulletPool = new BulletPool(50, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
+	
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	m_enemyYBulletPool = new BulletPool(50, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	
 	// Create particle system

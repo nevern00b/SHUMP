@@ -30,7 +30,10 @@ public:
 	BulletPool* m_greenBulletPool;
 	BulletPool* m_blueBulletPool;
 	BulletPool* m_redBulletPool;
-	BulletPool* m_enemyBulletPool;
+	BulletPool* m_enemyRBulletPool;
+	BulletPool* m_enemyBBulletPool;
+	BulletPool* m_enemyGBulletPool;
+	BulletPool* m_enemyYBulletPool;
 	ParticleSystem* m_particleSystem;
 
 private:
