@@ -27,7 +27,7 @@ public:
 
 private:
 
-	void init(void* vertexData, void* elementArrayData, uint numVertices, uint vertexSize, uint numElements, uint elementSize, const std::vector<uint>& materialIndices, bool stream);
+	void init(void* vertexData, void* elementArrayData, uint numVertices, uint vertexSize, uint numElements, uint elementSize, const std::vector<uint>& materialIndices, bool stream, GLenum drawType);
 
     Buffer<uchar>* m_vertexBuffer;
     Buffer<uchar>* m_elementArrayBuffer;
@@ -36,5 +36,6 @@ private:
     uint m_numElements;
 	uint m_vertexSize;
 	uint m_elementSize;
+	GLenum m_drawType;
     std::vector<uint> m_materialIndices;
 };

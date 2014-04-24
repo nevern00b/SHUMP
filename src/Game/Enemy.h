@@ -12,10 +12,10 @@ class Enemy : public Entity
 public:
 	Enemy(COLOR color, int pattern,int pos_x);
 	virtual ~Enemy();
-	virtual void update();
+	virtual bool update();
+	virtual void onCollide(EventObject* collider);
 
-	virtual void onCollisionEnter(EventObject* collider);
-	glm::vec2 enemyDirection;
+	glm::vec2 m_enemyDirection;
 
 private:
 	float m_health;

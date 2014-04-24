@@ -16,11 +16,12 @@
 #include "FullScreenQuad.h"
 #include "RenderComponent.h"
 #include "Material.h"
-
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
 	m_floor(0)
+
 {
+
     // Init GL state
     glClearColor(1, 1, 1, 1);
     glCullFace(GL_BACK);

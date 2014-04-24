@@ -26,7 +26,6 @@ public:
     void addDirLight(DirLight* dirLight);
     void addPointLight(PointLight* pointLight);
     void setCamera(Camera* camera);
-    void removeEntity(Entity* entity);
     void removeDirLight(DirLight* dirLight);
     void removePointLight(PointLight* pointLight);
 
@@ -37,8 +36,5 @@ public:
 
 private:
 
-	void destroyMarkedEntities();
-
     std::list<Entity*> m_entities;
-	std::vector<Entity*> m_entitiesToRemove;
 };

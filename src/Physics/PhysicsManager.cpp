@@ -31,7 +31,6 @@ PhysicsManager::PhysicsManager() :
 
 PhysicsManager::~PhysicsManager()
 {
-	destroyMarkedBodies();
     delete m_world;
 	delete m_contactListener;
 }
@@ -64,28 +63,6 @@ void PhysicsManager::update()
 	{
 		m_world->ClearForces();
 	}
-    
-    // Destroy the bodies that were marked for destruction during the timestep
-    destroyMarkedBodies();
-
-}
-
-void PhysicsManager::destroyBody(b2Body* body)
-{
-    body->SetUserData(0);
-    m_bodiesToDestroy.push_back(body);
-    // Body is fully destroyed after the time step
-}
-
-
-void PhysicsManager::destroyMarkedBodies()
-{
-    for (auto& body : m_bodiesToDestroy)
-    {
-        m_world->DestroyBody(body);
-    }
-
-    m_bodiesToDestroy.clear();
 }
 
 ContactListener::ContactListener() : b2ContactListener()
@@ -107,14 +84,14 @@ void ContactListener::BeginContact(b2Contact* contact)
 
 void ContactListener::EndContact(b2Contact* contact)
 {
-	EventObject* obj1 = (EventObject*)contact->GetFixtureA()->GetBody()->GetUserData();
-	EventObject* obj2 = (EventObject*)contact->GetFixtureB()->GetBody()->GetUserData();
-
-    if (obj1 != 0 && obj2 != 0)
-    {
-        obj1->onCollisionLeave(obj2);
-        obj2->onCollisionEnter(obj1);
-    }
+	//EventObject* obj1 = (EventObject*)contact->GetFixtureA()->GetBody()->GetUserData();
+	//EventObject* obj2 = (EventObject*)contact->GetFixtureB()->GetBody()->GetUserData();
+	//
+    //if (obj1 != 0 && obj2 != 0)
+    //{
+    //    obj1->onCollisionLeave(obj2);
+    //    obj2->onCollisionEnter(obj1);
+    //}
 }
 
 void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)

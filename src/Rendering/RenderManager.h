@@ -52,10 +52,6 @@ public:
 	Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
 	Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
 
-	
-
-
-
 private:
 
     GLuint m_basicShader;

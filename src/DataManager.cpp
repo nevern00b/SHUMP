@@ -36,6 +36,10 @@ DataManager::DataManager()
 	yellowMaterial->m_diffuseColor = glm::vec4(1, 1, 0, 1);
 	m_materials["yellow"] = yellowMaterial;
 
+	Material* pinkMaterial = new Material();
+	pinkMaterial->m_diffuseColor = glm::vec4(1.0, 0.34f, 0.6f, 1);
+	m_materials["pink"] = pinkMaterial;
+
 
     m_shaderHeader = Utils::loadFile("data/shaders/globals");
 }

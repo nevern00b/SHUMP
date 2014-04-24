@@ -11,6 +11,7 @@
 #include "ShootComponent.h"
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
+#include "Item.h"
 
 Enemy::Enemy(COLOR color, int pattern, int pos_x) : Entity(0),
 m_color(color), m_pattern(pattern), m_x(pos_x)
@@ -39,7 +40,7 @@ m_color(color), m_pattern(pattern), m_x(pos_x)
 		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyYBulletPool);
 	}	
 	
-	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
+	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
 	shape.SetAsBox(0.5f, 0.5f);
@@ -58,17 +59,9 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::update()
+bool Enemy::update()
 {
-	Entity::update();
-
-	float speed = 10.0f;
-	b2Body* body = m_physics->m_body;
-
-	b2Vec2 vel = body->GetLinearVelocity();
-	b2Vec2 desiredVel(0, 0);
-	desiredVel.x = enemyDirection.x;
-	desiredVel.y -= enemyDirection.y;
+	if(!Entity::update()) return false;
 
 	if (m_shootTimer->checkInterval())
 	{
@@ -76,8 +69,8 @@ void Enemy::update()
 
 		if (m_pattern == 2)
 		{
-			if (pos.x < (m_x - 3)) enemyDirection.x = -enemyDirection.x;
-			else if (pos.x > (m_x + 3)) enemyDirection.x = -enemyDirection.x;
+			if (pos.x < (m_x - 3)) m_enemyDirection.x = -m_enemyDirection.x;
+			else if (pos.x > (m_x + 3)) m_enemyDirection.x = -m_enemyDirection.x;
 		}
 
 		float vx;
@@ -88,16 +81,13 @@ void Enemy::update()
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
 
-			if (vx == 0) vx = -1;
-			if (vy == 0) vy = -1;
+			if (glm::abs(vx) < 0.1) vx = -1;
+			if (glm::abs(vy) < 0.1) vy = -1;
 		}
 		else if (m_color == COLOR::GREEN)
 		{
 			vx = glm::linearRand(-5.0f, 5.0f);
 			vy = glm::linearRand(-5.0f, 5.0f);
-
-			if (vx == 0) vx = -1;
-			if (vy == 0) vy = -1;
 		}
 		else if (m_color == COLOR::BLUE)
 		{
@@ -110,35 +100,48 @@ void Enemy::update()
 			vy = glm::linearRand(-5.0f, 5.0f);
 		}
 		
+		if (glm::abs(vx) < 0.1) vx = -1.0f;
+		if (glm::abs(vy) < 0.1) vy = -1.0f;
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 
 		if (pos.x < -20 || pos.x > 20 || pos.y<-20 || pos.y >20)
 			destroy();
 	}	
 
-	b2Vec2 velChange = desiredVel-vel;
-	b2Vec2 impulse = body->GetMass() * velChange;
-	body->ApplyLinearImpulse(impulse, body->GetWorldCenter(), true);
+	m_physics->applyVelocity(m_enemyDirection.x, -m_enemyDirection.y);
 
-
-	
+	return true;
 }
 
-void Enemy::onCollisionEnter(EventObject* collider)
+void Enemy::onCollide(EventObject* collider)
 {
-	Bullet* bullet = dynamic_cast<Bullet*>(collider);
+	Bullet* bullet = dynamic_cast<Bullet*>(m_collider);
 	if (bullet != 0)
 	{
 		bullet->destroy();
-		if (bullet->m_color != m_color){
+		if (bullet->m_color != m_color)
+		{
 			m_health -= bullet->m_damage;
 			if (m_health <= 0.0f)
 			{
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
-				
+
+				// Drop immunity item
+				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -5.0f);
+				immunityItem->m_transform->setTranslation(pos.x, pos.y);
+
+				// Randomly drop life item
+				if (glm::linearRand(0.0, 1.0) < 0.3f)
+				{
+					float vx = glm::linearRand(-5.0f, 5.0f);
+					float vy = -5.0f;
+					LifeItem* lifeItem = new LifeItem(vx, vy);
+					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
+				}
+
 				destroy();
 			}
 		}
 	}
-}	
+}

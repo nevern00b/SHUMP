@@ -15,7 +15,8 @@ Entity::Entity(Entity* parent) : EventObject(),
     m_render(0),
     m_physics(0),
 	m_dead(false),
-	m_parent(0)
+	m_parent(0),
+	m_collider(0)
 {
 	setParent(parent);
 
@@ -34,7 +35,6 @@ void Entity::destroy()
 	// Object removed and marked for deletion. Deletion happens inside GameManager update loop.
 	m_dead = true;
 	if (m_parent != 0) m_parent->m_children.remove(this); // Remove from parent's list
-	Globals::m_shmupGame->removeEntity(this);
 
 	// Delete components
 	while (m_components.size() > 0)
@@ -50,7 +50,7 @@ void Entity::destroy()
 
 void Entity::setParent(Entity* parent)
 {
-	//TO-DO: scene graph transform won't work if new parent was created after this entity. Need to re-order entity list
+	//TO-DO: scene graph transform won't work if parent was created after this entity. Need to re-order entity list
 	
 	// Remove from previous parent
 	if (m_parent != 0)
@@ -62,8 +62,17 @@ void Entity::setParent(Entity* parent)
 	if (m_parent != 0) m_parent->m_children.push_back(this);
 }
 
-void Entity::update()
+bool Entity::update()
 {
+	if (m_dead) return false;
+
+	if (m_collider)
+	{
+		onCollide(m_collider);
+		m_collider = 0;
+		if (m_dead) return false;
+	}	
+
     // Concat parent's matrix to get render matrix
     m_transform->update();
     m_renderMatrix = m_transform->m_matrix;
@@ -73,6 +82,8 @@ void Entity::update()
     {
         m_renderMatrix = m_parent->m_renderMatrix * m_renderMatrix;
     }
+
+	return true;
 } 
 
 void Entity::render()
@@ -93,10 +104,10 @@ glm::vec3 Entity::getPosition()
 
 void Entity::onCollisionEnter(EventObject* collider)
 {
-    //printf("collision enter");
+	m_collider = collider;
 }
 
-void Entity::onCollisionLeave(EventObject* collider)
+void Entity::onCollide(EventObject* collider)
 {
-    //printf("collision leave");
+	// Overriden
 }

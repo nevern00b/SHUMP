@@ -16,7 +16,7 @@ public:
 	EventObject();
 	virtual ~EventObject();
 
+	virtual bool update();
 	virtual void onCollisionEnter(EventObject* collider);
-	virtual void onCollisionLeave(EventObject* collider);
 };
 

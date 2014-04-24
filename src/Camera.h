@@ -11,7 +11,7 @@ public:
 
     Camera(Entity* parent, float fov);
     virtual ~Camera();
-    virtual void update();
+    virtual bool update();
 
     void setZoom(float amount);
     void applyZoom(float amount);

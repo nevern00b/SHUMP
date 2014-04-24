@@ -22,6 +22,7 @@ public:
 
 	virtual bool update();
 	virtual void create(float x, float y, float vx, float vy);
+	virtual void destroy();
 	virtual glm::vec4 getTransform();
 
 

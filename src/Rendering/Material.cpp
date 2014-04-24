@@ -38,6 +38,7 @@ void Material::render()
     materialGL.specPower = m_specPower;
     materialGL.specBlend = m_specBlend;
     materialGL.normalIntensity = m_normalIntensity;
+	materialGL.useNoise = m_useNoise;
 
     Globals::m_renderManager->renderMaterial(materialGL);
 
