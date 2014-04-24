@@ -40,7 +40,7 @@ Enemy::Enemy(COLOR color) : Entity(0),
 		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyYBulletPool);
 	}	
 	
-	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
+	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
 	shape.SetAsBox(0.5f, 0.5f);

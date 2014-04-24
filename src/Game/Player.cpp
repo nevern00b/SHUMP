@@ -80,19 +80,25 @@ bool Player::update()
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_L))
 		Globals::m_stateMachine->changeIState(COLOR::YELLOW);
 
-	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
+	//if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
+	//{
+	//	shoot();
+	//	m_shootTimer->start();
+	//}
+	//
+    //if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
+    //{
+	//	if (m_shootTimer->checkInterval())
+	//	{
+	//		shoot();
+	//	}
+    //}
+
+	// Auto shoot
+	if (m_shootTimer->checkInterval())
 	{
 		shoot();
-		m_shootTimer->start();
 	}
-
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
-    {
-		if (m_shootTimer->checkInterval())
-		{
-			shoot();
-		}
-    }
 
 	m_physics->setVelocity(vx, vy);
 	changeColor();
