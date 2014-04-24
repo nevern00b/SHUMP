@@ -19,6 +19,7 @@ public:
     virtual void setTranslation(const glm::vec3& translation);
 
 	void setVelocity(float vx, float vy);
+	void applyVelocity(float vx, float vy);
 
     b2Body* m_body;
 };

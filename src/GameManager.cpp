@@ -27,7 +27,6 @@ GameManager::~GameManager()
 {
 	// Will delete the whole scene graph
 	m_rootEntity->destroy();
-	destroyMarkedEntities();
 }
 
 void GameManager::init()
@@ -38,35 +37,26 @@ void GameManager::init()
 
 void GameManager::update()
 {
-	// New objects may be added during the update loop, so loop until no new entities are created
-	auto& begin = m_entities.begin();
-	auto& end = m_entities.end();
+	// Entities may be added and removed while iterating
 
-	while (begin != end)
+	auto& it = m_entities.begin();
+	while (it != m_entities.end())
 	{
-		for (auto& it = begin; it != end; ++it)
+		Entity* entity = *it;
+		entity->update();
+
+		// Remove from list if dead
+		if (entity->m_dead)
 		{
-			Entity* entity = *it;
-			if (entity->m_dead) continue;
-			entity->update();
+			m_entities.erase(it++);
+			delete entity;
 		}
-
-		begin = end;
-		end = m_entities.end();
+		else
+		{
+			++it;
+		}
 	}
 
-	destroyMarkedEntities();
-}
-
-void GameManager::destroyMarkedEntities()
-{
-	// Delete entities that were destroyed during the update
-	for (auto& entity : m_entitiesToRemove)
-	{
-		m_entities.remove(entity);
-		delete entity;
-	}
-	m_entitiesToRemove.clear();
 }
 
 Entity* GameManager::getEntity(const std::string& name)
@@ -102,11 +92,6 @@ void GameManager::addPointLight(PointLight* pointLight)
 void GameManager::setCamera(Camera* camera)
 {
     m_camera = camera;
-}
-
-void GameManager::removeEntity(Entity* entity)
-{
-	m_entitiesToRemove.push_back(entity);
 }
 
 void GameManager::removeDirLight(DirLight* dirLight)

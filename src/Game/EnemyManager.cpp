@@ -35,21 +35,19 @@ void EnemyManager::update()
 		float x = glm::linearRand(-15.0f, 15.0f);
 		float y = glm::linearRand(0.0f, 10.0f);
 
-		pattern = 3;// glm::linearRand(1, 3);
+		pattern = 1;// glm::linearRand(1, 3);
 
 		if (pattern == 1) // get spawned from top and move either left,right
 		{
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
-			enemy->m_transform->setScale(0.5f);
-			enemy->m_enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
-			enemy->m_enemyDirection.y = 10;
+			enemy->m_enemyDirection.x = glm::linearRand(-1.0f, 1.0f);
+			enemy->m_enemyDirection.y = 1.0f;
 		}
 		else if(pattern == 2) // hover only on top
 		{
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
-			enemy->m_transform->setScale(0.5f);
 			enemy->m_enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
 			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
 			enemy->m_enemyDirection.y = 0;
@@ -59,35 +57,30 @@ void EnemyManager::update()
 			float xV = glm::linearRand(-10.0f, 10.0f);
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
-			enemy->m_transform->setScale(0.5f);
 			enemy->m_enemyDirection.x = xV;
 			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
 			enemy->m_enemyDirection.y = 0;
 
 			Enemy* enemy1 = new Enemy(color);
 			enemy1->m_transform->setTranslation(x + 2, y + 2);
-			enemy1->m_transform->setScale(0.5f);
 			enemy1->m_enemyDirection.x = xV;
 			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
 			enemy1->m_enemyDirection.y = 0;
 
 			Enemy* enemy2 = new Enemy(color);
 			enemy2->m_transform->setTranslation(x + 2, y - 2);
-			enemy2->m_transform->setScale(0.5f);
 			enemy2->m_enemyDirection.x = xV;
 			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
 			enemy2->m_enemyDirection.y = 0;
 
 			Enemy* enemy3 = new Enemy(color);
 			enemy3->m_transform->setTranslation(x + 4, y + 4);
-			enemy3->m_transform->setScale(0.5f);
 			enemy3->m_enemyDirection.x = xV;
 			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
 			enemy3->m_enemyDirection.y = 0;
 
 			Enemy* enemy5 = new Enemy(color);
 			enemy5->m_transform->setTranslation(x + 4, y - 4);
-			enemy5->m_transform->setScale(0.5f);
 			enemy5->m_enemyDirection.x = xV;
 			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
 			enemy5->m_enemyDirection.y = 0;
@@ -98,35 +91,30 @@ void EnemyManager::update()
 						
 			Enemy* enemy = new Enemy(color);
 			enemy->m_transform->setTranslation(x, y);
-			enemy->m_transform->setScale(0.5f);
 			enemy->m_enemyDirection.x = xV;
 			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
 			enemy->m_enemyDirection.y = 0;
 
 			Enemy* enemy1 = new Enemy(color);
 			enemy1->m_transform->setTranslation(x - 2, y - 2);
-			enemy1->m_transform->setScale(0.5f);
 			enemy1->m_enemyDirection.x = xV;
 			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
 			enemy1->m_enemyDirection.y = 0;
 
 			Enemy* enemy2 = new Enemy(color);
 			enemy2->m_transform->setTranslation(x + 2, y - 2);
-			enemy2->m_transform->setScale(0.5f);
 			enemy2->m_enemyDirection.x = xV;
 			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
 			enemy2->m_enemyDirection.y = 0;
 
 			Enemy* enemy3 = new Enemy(color);
 			enemy3->m_transform->setTranslation(x - 4, y - 4);
-			enemy3->m_transform->setScale(0.5f);
 			enemy3->m_enemyDirection.x = xV;
 			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
 			enemy3->m_enemyDirection.y = 0;
 
 			Enemy* enemy5 = new Enemy(color);
 			enemy5->m_transform->setTranslation(x + 4, y - 4);
-			enemy5->m_transform->setScale(0.5f);
 			enemy5->m_enemyDirection.x = xV;
 			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
 			enemy5->m_enemyDirection.y = 0;

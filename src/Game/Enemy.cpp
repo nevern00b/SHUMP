@@ -11,6 +11,7 @@
 #include "ShootComponent.h"
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
+#include "Item.h"
 
 Enemy::Enemy(COLOR color) : Entity(0),
 	m_color(color)
@@ -39,7 +40,7 @@ Enemy::Enemy(COLOR color) : Entity(0),
 		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyYBulletPool);
 	}	
 	
-	Mesh* mesh = Globals::m_dataManager->getMesh("cube");
+	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
 	shape.SetAsBox(0.5f, 0.5f);
@@ -55,9 +56,9 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::update()
+bool Enemy::update()
 {
-	Entity::update();
+	if(!Entity::update()) return false;
 
 	if (m_shootTimer->checkInterval())
 	{
@@ -96,24 +97,40 @@ void Enemy::update()
 		
 	}	
 
-	m_physics->setVelocity(m_enemyDirection.x, -m_enemyDirection.y);
+	m_physics->applyVelocity(m_enemyDirection.x, -m_enemyDirection.y);
+
+	return true;
 }
 
-void Enemy::onCollisionEnter(EventObject* collider)
+void Enemy::onCollide(EventObject* collider)
 {
-	Bullet* bullet = dynamic_cast<Bullet*>(collider);
+	Bullet* bullet = dynamic_cast<Bullet*>(m_collider);
 	if (bullet != 0)
 	{
 		bullet->destroy();
-		if (bullet->m_color != m_color){
+		if (bullet->m_color != m_color)
+		{
 			m_health -= bullet->m_damage;
 			if (m_health <= 0.0f)
 			{
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
-				
+
+				// Drop immunity item
+				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -5.0f);
+				immunityItem->m_transform->setTranslation(pos.x, pos.y);
+
+				// Randomly drop life item
+				if (glm::linearRand(0.0, 1.0) < 0.3f)
+				{
+					float vx = glm::linearRand(-5.0f, 5.0f);
+					float vy = -5.0f;
+					LifeItem* lifeItem = new LifeItem(vx, vy);
+					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
+				}
+
 				destroy();
 			}
 		}
 	}
-}	
+}

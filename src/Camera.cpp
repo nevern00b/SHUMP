@@ -30,13 +30,15 @@ Camera::~Camera()
 
 }
 
-void Camera::update()
+bool Camera::update()
 {
     if (m_disabled)
     {
         Entity::update();
-        return;
+        return false;
     }
+
+	if (!Entity::update()) return false;
 
 	UIManager* ui = Globals::m_uiManager;
     float newRotationX = 0.0f;
@@ -96,7 +98,7 @@ void Camera::update()
         applyZoom(ui->getFramerateAdjust(speed));
     }
 
-    Entity::update();
+	return true;
 }
 
 void Camera::setZoom(float amount)

@@ -14,10 +14,10 @@
 #include "ShmupGame.h"
 #include "BulletPool.h"
 #include "ShootComponent.h"
+#include "Item.h"
 
 Player::Player() : Entity(0),
-	m_lives(3),
-	m_reset(false)
+	m_lives(3)
 {
 	Material* material = new Material();
 	material->m_useNoise = true;
@@ -44,15 +44,9 @@ Player::~Player()
 
 }
 
-void Player::update()
+bool Player::update()
 {
-    Entity::update();
-
-	if (m_reset)
-	{
-		m_reset = false;
-		m_transform->setTranslation(0.0f, -5.0f);
-	}
+	if (!Entity::update()) return false;
 
 	float speed = 10.0f;
 	float vx = 0.0f;
@@ -86,38 +80,42 @@ void Player::update()
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_L))
 		Globals::m_stateMachine->changeIState(COLOR::YELLOW);
 
-	if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
+	//if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
+	//{
+	//	shoot();
+	//	m_shootTimer->start();
+	//}
+	//
+    //if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
+    //{
+	//	if (m_shootTimer->checkInterval())
+	//	{
+	//		shoot();
+	//	}
+    //}
+
+	// Auto shoot
+	if (m_shootTimer->checkInterval())
 	{
 		shoot();
-		m_shootTimer->start();
 	}
 
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
-    {
-		if (m_shootTimer->checkInterval())
-		{
-			shoot();
-		}
-    }
-
-	m_physics->setVelocity(vx, vy);
+	m_physics->applyVelocity(vx, vy);
 	changeColor();
+
+	return true;
 }
 
-void Player::changeColor()
-{
-	COLOR immunState = Globals::m_stateMachine->getIState();
-	m_render->m_materials[0]->setColor(immunState);
-}
-
-void Player::onCollisionEnter(EventObject* collider)
+void Player::onCollide(EventObject* collider)
 {
 	Bullet* bullet = dynamic_cast<Bullet*>(collider);
+	ImmunityItem* immunityItem = dynamic_cast<ImmunityItem*>(collider);
+	LifeItem* lifeItem = dynamic_cast<LifeItem*>(collider);
 
 	if (bullet != 0)
 	{
 		bullet->destroy();
-		
+
 		if (bullet->m_color != Globals::m_stateMachine->getIState())
 		{
 			m_lives--;
@@ -127,17 +125,33 @@ void Player::onCollisionEnter(EventObject* collider)
 			}
 			else
 			{
-				m_reset = true;
+				m_transform->setTranslation(0.0f, -5.0f);
 			}
 		}
-		else
-		{
-
-		}
+	}
+	else if (immunityItem != 0)
+	{
+		COLOR color = immunityItem->m_color;
+		Globals::m_stateMachine->changeIState(color);
+		Globals::m_stateMachine->changeBState(color);
+		immunityItem->destroy();
+	}
+	else if (lifeItem != 0)
+	{
+		m_lives++;
+		lifeItem->destroy();
 	}
 
-
 }
+
+void Player::changeColor()
+{
+	COLOR immunState = Globals::m_stateMachine->getIState();
+	m_render->m_materials[0]->setColor(immunState);
+}
+
+
+	
 
 void Player::shoot()
 {

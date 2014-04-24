@@ -39,7 +39,8 @@ PhysicsComponent::PhysicsComponent(Entity* entity, const PhysicsData& physicsDat
 
 PhysicsComponent::~PhysicsComponent()
 {
-    Globals::m_physicsManager->destroyBody(m_body);
+	m_body->SetUserData(0);
+	Globals::m_physicsManager->m_world->DestroyBody(m_body);
 }
 
 void PhysicsComponent::update()
@@ -64,11 +65,20 @@ void PhysicsComponent::setRotation(const glm::quat& quat)
 
 void PhysicsComponent::setTranslation(const glm::vec3& translation)
 {
-    // TO-DO: is this safe to do, or should we apply temporary linear velocity instead
+	//b2Vec2 pos = m_body->GetPosition();
+	//float vx = translation.x - pos.x;
+	//float vy = translation.y - pos.y;
+	//setVelocity(vx, vy);
+    // TO-DO: is this safe to do, or should we apply temporary linear velocity instead (above)
     m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
 }
 
 void PhysicsComponent::setVelocity(float vx, float vy)
+{
+	m_body->SetLinearVelocity(b2Vec2(vx, vy));
+}
+
+void PhysicsComponent::applyVelocity(float vx, float vy)
 {
 	b2Vec2 vel = m_body->GetLinearVelocity();
 	b2Vec2 desiredVel(vx, vy);

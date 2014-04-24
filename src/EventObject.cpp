@@ -10,13 +10,13 @@ EventObject::~EventObject()
 
 }
 
-
 void EventObject::onCollisionEnter(EventObject* collider)
 {
-
+	// Overriden in Entity
 }
 
-void EventObject::onCollisionLeave(EventObject* collider)
+bool EventObject::update()
 {
-
+	return true;
+	// Overriden
 }

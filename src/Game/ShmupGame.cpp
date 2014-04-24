@@ -106,7 +106,7 @@ void ShmupGame::init()
 	Floor* floor = new Floor();
 
 	// Item
-	Item* item = new Item();
+	Item* item = new ImmunityItem(COLOR::YELLOW, 0.0f, -5.0f);
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);

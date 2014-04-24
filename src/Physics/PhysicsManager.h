@@ -15,7 +15,6 @@ public:
     PhysicsManager();
     ~PhysicsManager();
     void update();
-	void destroyBody(b2Body* body);
 
     static const uint MASK_DEFAULT;
     static const uint COLLISION_NONE;
@@ -30,9 +29,6 @@ public:
 
 private:    
 
-    void destroyMarkedBodies();
-
-    std::vector<b2Body*> m_bodiesToDestroy;
 	ContactListener* m_contactListener;
 	float m_accumulator; // For timestep
 

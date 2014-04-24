@@ -20,18 +20,11 @@ Bullet::Bullet(const b2BodyDef& bodyDef, const b2FixtureDef& fixtureDef, COLOR c
 
 Bullet::~Bullet()
 {
-	Globals::m_physicsManager->destroyBody(m_body);
+	Globals::m_physicsManager->m_world->DestroyBody(m_body);
 }
 
 bool Bullet::update()
 {
-	// Deactivate body if it was marked as disabled
-	if (m_disabled && m_body->IsActive())
-	{
-		m_body->SetActive(false);
-		return false;
-	}
-
 	b2Vec2 pos = m_body->GetPosition();
 	if (pos.y > ShmupGame::WORLD_BOUND_Y ||
 		pos.y < -ShmupGame::WORLD_BOUND_Y ||
@@ -62,4 +55,10 @@ glm::vec4 Bullet::getTransform()
 	float angle = m_body->GetAngle();
 	glm::vec4 transform(pos.x, pos.y, 0.0f, angle);
 	return transform;
+}
+
+void Bullet::destroy()
+{
+	PoolObject::destroy();
+	m_body->SetActive(false);
 }
