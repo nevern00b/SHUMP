@@ -40,7 +40,7 @@ void EnemyManager::update()
 		else if (patternRand < 0.9f)  pattern = 3;
 		else if (patternRand <= 1.0f)  pattern = 4;
 
-
+		pattern = 1;
 
 		if (pattern == 1) // get spawned from top and move either left,right
 		{

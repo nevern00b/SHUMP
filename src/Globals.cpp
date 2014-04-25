@@ -187,10 +187,11 @@ void Globals::init()
 			fpsAvg /= fpsDelay;
 			fpsAvg = glm::round(fpsAvg);
 			std::stringstream iss;
+			iss << "FPS: ";
 			iss << fpsAvg;
-			std::string fpsString = iss.str();
-			std::string windowTitle = "FPS: " + fpsString;
-			glfwSetWindowTitle(window, windowTitle.c_str());
+			iss << " Score: ";
+			iss << Globals::m_stateMachine->p_score;
+			glfwSetWindowTitle(window, iss.str().c_str());
 			fpsAvg = 0.0f;
 		}
     }

@@ -62,24 +62,16 @@ bool Player::update()
     if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
         vy -= speed;
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))//Keyboard to take bullet change 
-		Globals::m_stateMachine->changeBState(COLOR::RED);
+		Globals::m_stateMachine->changePlayerState(COLOR::RED);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_I))
-		Globals::m_stateMachine->changeBState(COLOR::BLUE);
+		Globals::m_stateMachine->changePlayerState(COLOR::BLUE);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_O))
-		Globals::m_stateMachine->changeBState(COLOR::GREEN);
+		Globals::m_stateMachine->changePlayerState(COLOR::GREEN);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_P))
-		Globals::m_stateMachine->changeBState(COLOR::YELLOW);
+		Globals::m_stateMachine->changePlayerState(COLOR::YELLOW);
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_Y))
 		Globals::m_stateMachine->checkStates();
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_H))
-		Globals::m_stateMachine->changeIState(COLOR::RED);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_J))
-		Globals::m_stateMachine->changeIState(COLOR::BLUE);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_K))
-		Globals::m_stateMachine->changeIState(COLOR::GREEN);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_L))
-		Globals::m_stateMachine->changeIState(COLOR::YELLOW);
-
+	
 	//if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	//{
 	//	shoot();
@@ -116,7 +108,7 @@ void Player::onCollide(EventObject* collider)
 	{
 		bullet->destroy();
 
-		if (bullet->m_color != Globals::m_stateMachine->getIState())
+		if (bullet->m_color != Globals::m_stateMachine->getPlayerState())
 		{
 			m_lives--;
 			if (m_lives == 0)
@@ -132,8 +124,7 @@ void Player::onCollide(EventObject* collider)
 	else if (immunityItem != 0)
 	{
 		COLOR color = immunityItem->m_color;
-		Globals::m_stateMachine->changeIState(color);
-		Globals::m_stateMachine->changeBState(color);
+		Globals::m_stateMachine->changePlayerState(color);
 		immunityItem->destroy();
 	}
 	else if (lifeItem != 0)
@@ -146,7 +137,7 @@ void Player::onCollide(EventObject* collider)
 
 void Player::changeColor()
 {
-	COLOR immunState = Globals::m_stateMachine->getIState();
+	COLOR immunState = Globals::m_stateMachine->getPlayerState();
 	m_render->m_materials[0]->setColor(immunState);
 }
 
@@ -155,7 +146,7 @@ void Player::changeColor()
 
 void Player::shoot()
 {
-	int bulletState = Globals::m_stateMachine->getBState();
+	int bulletState = Globals::m_stateMachine->getPlayerState();
 	if (bulletState == COLOR::RED)
 	{
 		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_redBulletPool;

@@ -93,6 +93,9 @@ void ShmupGame::init()
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
 	m_enemyYBulletPool = new BulletPool(50, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
+	//Score System
+	m_scoreTimer = new Timer(0.1f);
+
 	
 	// Create particle system
 	m_particleSystem = new ParticleSystem(100, mesh, yellowMaterial);
@@ -126,6 +129,14 @@ void ShmupGame::init()
 void ShmupGame::update()
 {
 	m_enemyManager->update();
+
+	if (m_player->m_lives != 0)
+	{
+		if (m_scoreTimer->checkInterval())
+		{
+			Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 10;
+		}
+	}
 
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_GRAVE_ACCENT))
 	{
