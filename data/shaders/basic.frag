@@ -44,7 +44,7 @@ mat3 getTangentMatrix(vec3 N, vec3 p, vec2 uv)
 void main()
 {
 	vec4 diffuse = uMaterial.diffuseColor;
-	if(uMaterial.useNoise == 1) diffuse.rgb *= vNoise;
+	if(uMaterial.noiseStrength > 0.01) diffuse.rgb *= vNoise;
     if(uMaterial.diffuseBlend > 0.0)
     {
         vec4 diffuseTexture = texture(tDiffuse, vUV);

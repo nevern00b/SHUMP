@@ -20,7 +20,7 @@ Player::Player() : Entity(0),
 	m_lives(3)
 {
 	Material* material = new Material();
-	material->m_useNoise = true;
+	material->m_noiseStrength = 0.15f;
     Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
@@ -35,7 +35,6 @@ Player::Player() : Entity(0),
 	m_shootTimer = new Timer(0.2f);
 
 	changeColor(); // Sets color to default immunity state color
-	material->m_useNoise = true;
 	
 }
 

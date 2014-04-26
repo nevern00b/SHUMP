@@ -12,13 +12,17 @@
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
 #include "Item.h"
+#include "Rendering/Material.h"
 
-Enemy::Enemy(COLOR color, int pattern, int pos_x) : Entity(0),
-m_color(color), m_pattern(pattern), m_x(pos_x)
+Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) : Entity(0),
+	m_color(color), 
+	m_pattern(pattern), 
+	m_type(type),
+	m_x(pos_x)
 {
 	m_shootTimer = new Timer(0.3f);
 	
-	Material* material = Globals::m_dataManager->getMaterial(color);
+	Material* material = Globals::m_dataManager->getEnemyMaterial(color);
 	if (m_color == COLOR::RED)
 	{
 		m_health = 2.0f;
@@ -40,6 +44,12 @@ m_color(color), m_pattern(pattern), m_x(pos_x)
 		m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_enemyYBulletPool);
 	}	
 	
+	if (m_type == ENEMY_TYPE::EXPLOSIVE)
+	{
+		material->m_noiseStrength = 0.3f;
+	}
+
+
 	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
@@ -49,8 +59,6 @@ m_color(color), m_pattern(pattern), m_x(pos_x)
 
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, material);
-
-	
 
 }
 
@@ -67,7 +75,7 @@ bool Enemy::update()
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 
-		if (m_pattern == 2)
+		if (m_pattern == ENEMY_PATTERN::HOVER)
 		{
 			if (pos.x < (m_x - 3)) m_enemyDirection.x = -m_enemyDirection.x;
 			else if (pos.x > (m_x + 3)) m_enemyDirection.x = -m_enemyDirection.x;
@@ -122,20 +130,21 @@ void Enemy::onCollide(EventObject* collider)
 		if (bullet->m_color != m_color)
 		{
 			m_health -= bullet->m_damage;
+
 			if (m_health <= 0.0f)
 			{
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 
 				// Drop immunity item
-				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -5.0f);
+				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
 				immunityItem->m_transform->setTranslation(pos.x, pos.y);
 
 				// Randomly drop life item
 				if (glm::linearRand(0.0, 1.0) < 0.3f)
 				{
 					float vx = glm::linearRand(-5.0f, 5.0f);
-					float vy = -5.0f;
+					float vy = -3.0f;
 					LifeItem* lifeItem = new LifeItem(vx, vy);
 					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
 				}

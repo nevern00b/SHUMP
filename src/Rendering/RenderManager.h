@@ -10,6 +10,7 @@ class Entity;
 class Shader;
 class ObjectPool;
 class FullScreenQuad;
+class Background;
 
 class RenderManager
 {
@@ -54,9 +55,12 @@ public:
 
 private:
 
+	Background* m_background;
+
     GLuint m_basicShader;
 	GLuint m_noiseShader;
 	GLuint m_floorShader;
+	GLuint m_backgroundShader;
 	GLuint m_instancedShader;
 	GLuint m_finalOutputShader;
 	GLuint m_bloomShader;

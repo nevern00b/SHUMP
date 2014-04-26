@@ -14,6 +14,7 @@ public:
 
 protected:
 	Entity* m_visual;
+	float m_scaleDir;
 };
 
 class ImmunityItem : public Item

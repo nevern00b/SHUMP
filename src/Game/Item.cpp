@@ -5,8 +5,10 @@
 #include "DataManager.h"
 #include "Physics/PhysicsComponent.h"
 #include "Rendering/RenderComponent.h"
+#include "UIManager.h"
 
-Item::Item(float vx, float vy) : Entity(0)
+Item::Item(float vx, float vy) : Entity(0),
+	m_scaleDir(1.0f)
 {
 	b2PolygonShape shape;
 	shape.SetAsBox(0.3f, 0.3f);
@@ -31,7 +33,21 @@ bool Item::update()
 {
 	if (!Entity::update()) return false;
 
-	m_visual->m_transform->rotate(3.0f, glm::vec3(1, 1, 0));
+	float rotateAmount = Globals::m_uiManager->getFramerateAdjust(3.0f);
+	m_visual->m_transform->rotate(rotateAmount, glm::vec3(1, 1, 0));
+
+	float scaleAmount = Globals::m_uiManager->getFramerateAdjust(0.01f);
+	float scale = m_transform->m_scale.x + scaleAmount * m_scaleDir;
+	if (scale >= 0.4f)
+	{
+		m_scaleDir = -1.0f;
+	}
+	else if (scale <= 0.2f)
+	{
+		m_scaleDir = 1.0f;
+	}
+
+	m_transform->setScale(scale);
 	
 	return true;
 }
