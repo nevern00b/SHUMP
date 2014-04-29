@@ -42,10 +42,7 @@ void Buffer<DataType>::resize(uint maxCount, DataType* initData)
 template <class DataType>
 bool Buffer<DataType>::bufferHasBindings()
 {
-    return m_bufferType == GL_ATOMIC_COUNTER_BUFFER ||
-        m_bufferType == GL_SHADER_STORAGE_BUFFER ||
-        m_bufferType == GL_TRANSFORM_FEEDBACK_BUFFER ||
-        m_bufferType == GL_UNIFORM_BUFFER;
+    return m_bufferType == GL_UNIFORM_BUFFER;
 }
 
 template <class DataType>
@@ -95,9 +92,9 @@ std::vector<DataType> Buffer<DataType>::getDataSubset(uint index, uint count)
     uint length = sizeof(DataType)*count;
 
     std::vector<DataType> data(count);
-    glBindBuffer(m_bufferType, m_bufferObject);
-    glGetBufferSubData(m_bufferType, offset, length, &data[0]);
-    glBindBuffer(m_bufferType, 0);
+    //glBindBuffer(m_bufferType, m_bufferObject);
+    //glGetBufferSubData(m_bufferType, offset, length, &data[0]);
+    //glBindBuffer(m_bufferType, 0);
     return data;
 }
 

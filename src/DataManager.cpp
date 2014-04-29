@@ -91,7 +91,7 @@ DataManager::~DataManager()
 GLuint DataManager::loadTexture(void* data, const glm::uvec2& dimensions, const std::string& name)
 {
     // Return if it was loaded already
-    auto& foundTexture = m_textures.find(name);
+    auto foundTexture = m_textures.find(name);
     if (foundTexture != m_textures.end())
         return foundTexture->second;
 
@@ -111,7 +111,7 @@ GLuint DataManager::loadTexture(void* data, const glm::uvec2& dimensions, const 
 
 GLuint DataManager::getTexture(const std::string& name)
 {
-    auto& foundTexture = m_textures.find(name);
+    auto foundTexture = m_textures.find(name);
     if (foundTexture != m_textures.end())
         return foundTexture->second;
     else
@@ -120,7 +120,7 @@ GLuint DataManager::getTexture(const std::string& name)
 
 Material* DataManager::getMaterial(const std::string& name)
 {
-    auto& foundMaterial = m_materials.find(name);
+    auto foundMaterial = m_materials.find(name);
     if (foundMaterial != m_materials.end())
         return foundMaterial->second;
     else
@@ -150,7 +150,7 @@ Material* DataManager::getEnemyMaterial(COLOR color)
 
 Mesh* DataManager::getMesh(const std::string& name)
 {
-    auto& foundMesh = m_meshes.find(name);
+    auto foundMesh = m_meshes.find(name);
     if (foundMesh != m_meshes.end())
         return foundMesh->second;
     else
