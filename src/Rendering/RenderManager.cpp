@@ -407,7 +407,7 @@ void RenderManager::setRenderState(uint renderStateBitfield)
             glEnable(GL_FRAMEBUFFER_SRGB);
         else glDisable(GL_FRAMEBUFFER_SRGB);
     #endif
-    
+
     // Linear vs. Nearest sampling for FBO color texture
     if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::LINEAR_SAMPLING_COLOR))
         glBindSampler(ShaderCommon::COLOR_FBO_TEXTURE, m_linearSampler);
