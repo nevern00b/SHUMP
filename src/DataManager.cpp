@@ -177,7 +177,13 @@ GLuint DataManager::loadShaderProgram(const std::string& vertexShader, const std
 
 GLuint DataManager::createShader(GLenum Type, const std::string& filename)
 {
-    std::string shaderSource = m_shaderHeader + Utils::loadFile(filename);
+	#if defined(OS_WINDOWS)
+		std::string version = "#version 330\n";
+	#elif defined(OS_IOS)
+		std::string version = "#version 300 es\n";
+	#endif
+
+    std::string shaderSource = version + m_shaderHeader + Utils::loadFile(filename);
     const char* shaderSourceC = shaderSource.c_str();
     GLuint shader = glCreateShader(Type);
     glShaderSource(shader, 1, &shaderSourceC, 0);

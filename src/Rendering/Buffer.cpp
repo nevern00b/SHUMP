@@ -57,7 +57,10 @@ void Buffer<DataType>::bindToOtherTarget(GLenum bufferType, uint bufferBinding)
 template <class DataType>
 void Buffer<DataType>::bindToShader()
 {
-	
+	glBindBuffer(m_bufferType, m_bufferObject);
+	if (bufferHasBindings())
+	    glBindBufferBase(m_bufferType, m_bufferBinding, m_bufferObject);
+	glBindBuffer(m_bufferType, 0);
 }
 
 template <class DataType>
