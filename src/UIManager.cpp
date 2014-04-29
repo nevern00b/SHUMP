@@ -5,14 +5,14 @@
 #include "Globals.h"
 #include "Rendering/RenderManager.h"
 
-UIManager::UIManager() : 
+UIManager::UIManager(float time, uint width, uint height) :
     m_oldMouseX(0),
     m_oldMouseY(0),
     m_mouseX(0),
     m_mouseY(0),
-    m_screenWidth(0),
-    m_screenHeight(0),
-    m_oldFrameTime(0.0)
+    m_screenWidth(width),
+    m_screenHeight(height),
+    m_oldFrameTime(time)
 {
 
 }

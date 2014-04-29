@@ -13,12 +13,12 @@ ShmupGame* Globals::m_shmupGame;
 PhysicsManager* Globals::m_physicsManager;
 StateMachine* Globals::m_stateMachine;
 
-void Globals::init(uint screenWidth, uint screenHeight)
+void Globals::init(float time, uint screenWidth, uint screenHeight)
 {
 	
 
 	// Create all the global managers
-	m_uiManager = new UIManager();
+	m_uiManager = new UIManager(time, screenWidth, screenHeight);
 	m_uiManager->m_screenWidth = screenWidth;
 	m_uiManager->m_screenHeight = screenHeight;
 	m_uiManager->update(0.0f);
@@ -32,12 +32,15 @@ void Globals::init(uint screenWidth, uint screenHeight)
 }
 
 void Globals::update(float time)
-{
-	// Render
-	m_uiManager->update(time);
-	m_renderManager->render(); // Goes first because it lets the GPU start working early.
+{	
 	m_physicsManager->update();
 	m_shmupGame->update();
+    m_uiManager->update(time);
+}
+
+void Globals::render()
+{
+    m_renderManager->render();
 }
 
 void Globals::destroy()

@@ -14,9 +14,10 @@ class Globals
 
 public:
 
-	static void init(uint screenWidth, uint screenHeight);
+	static void init(float time, uint screenWidth, uint screenHeight);
 	static void destroy();
 	static void update(float time);
+    static void render();
 
     static RenderManager* m_renderManager;
     static UIManager* m_uiManager;

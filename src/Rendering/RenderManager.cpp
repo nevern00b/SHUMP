@@ -139,181 +139,199 @@ void RenderManager::resizeWindow(int width, int height)
 
 void RenderManager::render()
 {
-	bool bloomEnabled = true;
-
     uint screenWidth = Globals::m_uiManager->m_screenWidth;
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
-    float aspectRatio = (float)screenWidth / screenHeight;
-
-	Camera* camera = Globals::m_shmupGame->m_camera;
-    glm::vec3 cameraPos = camera->getPosition();
-    float fov = glm::radians(camera->m_fov);
-    m_viewMatrix = camera->getViewMatrix();
-    m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
-	//float orthoSizeX = ShmupGame::WORLD_BOUND_X;
-	//float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
-	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
-    glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
-
-    // Update the per frame buffer
-    ShaderCommon::PerFrameGL perFrame;
-    perFrame.cameraPos = cameraPos;
-    perFrame.viewProjection = viewProjectionMatrix;
-	perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
-	perFrame.time = Globals::m_uiManager->getTime();
-    m_perFrameBuffer->updateAll(&perFrame);
-
-    // Update lighting buffer
-    if (m_lightBufferDirty)
-    {
-        ShaderCommon::LightingGL lighting;
-
-        uint numDirLights = Globals::m_shmupGame->m_dirLights.size();
-        uint numPointLights = Globals::m_shmupGame->m_pointLights.size();
-        lighting.numDirLights = numDirLights;
-        lighting.numPointLights = numPointLights;
-
-        // Dir lights
-        uint i = 0;
-        for (auto& dirLight : Globals::m_shmupGame->m_dirLights)
-        {
-            lighting.dirLights[i].color = dirLight->m_color;
-            lighting.dirLights[i].direction = dirLight->getDirection();
-            i++;
-        }
-
-        // Point lights
-        i = 0;
-        for (auto& pointLight : Globals::m_shmupGame->m_pointLights)
-        {
-            float radius = pointLight->m_radius;
-            float attenuation = 1.0f / (radius * radius);
-            glm::vec3 position = pointLight->getPosition();
-
-            lighting.pointLights[i].color = pointLight->m_color;
-            lighting.pointLights[i].position = glm::vec4(position, attenuation);
-        }
-        m_lightingBuffer->updateAll(&lighting);
-
-		m_lightBufferDirty = false;
-    }
-
-    // Clear the framebuffer
-	GLuint fbo = bloomEnabled ? m_fbo : 0;
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     setViewportSize(screenWidth, screenHeight);
     setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
-    clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
+    clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(1, 0, 0, 1));
     clearDepthStencil();
 
-    // Render scene
-    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-	
-	glUseProgram(m_basicShader);
-
-    for (auto& entity : m_entities)
-    {
-        entity->render();
-    }
-
-	glUseProgram(m_noiseShader);
-
-	for (auto& entity : m_noiseEntities)
-	{
-		entity->render();
-	}
-
-	glUseProgram(m_instancedShader);
-
-	for (auto& objectPool : m_objectPools)
-	{
-		objectPool->render();
-	}
-
-	if (m_floor != 0)
-	{
-		glUseProgram(m_floorShader);
-		m_floor->render();
-	}
-
-	//if (m_background)
-	//{
-	//	glUseProgram(m_backgroundShader);
-	//	m_background->render();
-	//}
-
-	if (bloomEnabled)
-	{
-		// Create bloom texture
-		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
-		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], 0);
-		setViewportSize(m_bloomSizeX, m_bloomSizeY);
-		setRenderState(RENDER_STATE::COLOR | RENDER_STATE::LINEAR_SAMPLING_COLOR);
-		perFrame.invScreenSize = 1.0f / glm::vec2((float)m_bloomSizeX, (float)m_bloomSizeY);
-		m_perFrameBuffer->updateAll(&perFrame);
-		glUseProgram(m_bloomShader);
-		m_fullScreenQuad->render();
-
-		// Generate mipmap for bloom texture
-		glActiveTexture(GL_TEXTURE0 + ShaderCommon::BLUR_TEXTURE);
-		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		setRenderState(RENDER_STATE::COLOR);
-
-		// Blur the bloom texture
-		for (uint i = 2; i < m_bloomLevels; i++)
-		{
-			// Bind bloom texture 0, confine to ith mip level
-			glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
-
-			// Set size based on level
-			uint sizeX = m_bloomSizeX >> i;
-			uint sizeY = m_bloomSizeY >> i;
-			setViewportSize(sizeX, sizeY);
-			perFrame.invScreenSize = 1.0f / glm::vec2((float)sizeX, (float)sizeY);
-			m_perFrameBuffer->updateAll(&perFrame);
-
-			// Blur X into bloom texture 1
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[1]);
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[1], i);
-			glUseProgram(m_blurShaders[0]);
-			m_fullScreenQuad->render();
-
-			// Bind bloom texture 1, confine to ith mip level
-			glBindTexture(GL_TEXTURE_2D, m_bloomTextures[1]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
-
-			// Blur Y into bloom texture 0
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], i);
-			glUseProgram(m_blurShaders[1]);
-			m_fullScreenQuad->render();
-		}
-
-		// Bind bloom texture for final output
-		glActiveTexture(GL_TEXTURE0 + ShaderCommon::BLOOM_TEXTURE);
-		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_bloomLevels - 1);
-
-		// Output fbo to screen
-        setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
-		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
-		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is the default fbo
-		setViewportSize(screenWidth, screenHeight);
-		setRenderState(RENDER_STATE::COLOR);
-		perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
-		m_perFrameBuffer->updateAll(&perFrame);
-		glUseProgram(m_finalOutputShader);
-		m_fullScreenQuad->render();
-	}
+//    // Render scene
+//    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
+//
+//    glUseProgram(m_basicShader);
+//
+//    for (auto& entity : m_entities)
+//    {
+//        entity->render();
+//    }
+    
+//	bool bloomEnabled = true;
+//
+//    uint screenWidth = Globals::m_uiManager->m_screenWidth;
+//    uint screenHeight = Globals::m_uiManager->m_screenHeight;
+//    float aspectRatio = (float)screenWidth / screenHeight;
+//
+//	Camera* camera = Globals::m_shmupGame->m_camera;
+//    glm::vec3 cameraPos = camera->getPosition();
+//    float fov = glm::radians(camera->m_fov);
+//    m_viewMatrix = camera->getViewMatrix();
+//    m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+//	//float orthoSizeX = ShmupGame::WORLD_BOUND_X;
+//	//float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
+//	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
+//    glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
+//
+//    // Update the per frame buffer
+//    ShaderCommon::PerFrameGL perFrame;
+//    perFrame.cameraPos = cameraPos;
+//    perFrame.viewProjection = viewProjectionMatrix;
+//	perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
+//	perFrame.time = Globals::m_uiManager->getTime();
+//    m_perFrameBuffer->updateAll(&perFrame);
+//
+//    // Update lighting buffer
+//    if (m_lightBufferDirty)
+//    {
+//        ShaderCommon::LightingGL lighting;
+//
+//        uint numDirLights = Globals::m_shmupGame->m_dirLights.size();
+//        uint numPointLights = Globals::m_shmupGame->m_pointLights.size();
+//        lighting.numDirLights = numDirLights;
+//        lighting.numPointLights = numPointLights;
+//
+//        // Dir lights
+//        uint i = 0;
+//        for (auto& dirLight : Globals::m_shmupGame->m_dirLights)
+//        {
+//            lighting.dirLights[i].color = dirLight->m_color;
+//            lighting.dirLights[i].direction = dirLight->getDirection();
+//            i++;
+//        }
+//
+//        // Point lights
+//        i = 0;
+//        for (auto& pointLight : Globals::m_shmupGame->m_pointLights)
+//        {
+//            float radius = pointLight->m_radius;
+//            float attenuation = 1.0f / (radius * radius);
+//            glm::vec3 position = pointLight->getPosition();
+//
+//            lighting.pointLights[i].color = pointLight->m_color;
+//            lighting.pointLights[i].position = glm::vec4(position, attenuation);
+//        }
+//        m_lightingBuffer->updateAll(&lighting);
+//
+//		m_lightBufferDirty = false;
+//    }
+//
+//    // Clear the framebuffer
+//	GLuint fbo = bloomEnabled ? m_fbo : 0;
+//	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+//    setViewportSize(screenWidth, screenHeight);
+//    setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
+//    clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
+//    clearDepthStencil();
+//
+//    // Render scene
+//    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
+//	
+//	glUseProgram(m_basicShader);
+//
+//    for (auto& entity : m_entities)
+//    {
+//        entity->render();
+//    }
+//
+//	glUseProgram(m_noiseShader);
+//
+//	for (auto& entity : m_noiseEntities)
+//	{
+//		entity->render();
+//	}
+//
+//	glUseProgram(m_instancedShader);
+//
+//	for (auto& objectPool : m_objectPools)
+//	{
+//		objectPool->render();
+//	}
+//
+//	if (m_floor != 0)
+//	{
+//		glUseProgram(m_floorShader);
+//		m_floor->render();
+//	}
+//
+//	//if (m_background)
+//	//{
+//	//	glUseProgram(m_backgroundShader);
+//	//	m_background->render();
+//	//}
+//
+//	if (bloomEnabled)
+//	{
+//		// Create bloom texture
+//		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
+//		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
+//		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
+//		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], 0);
+//		setViewportSize(m_bloomSizeX, m_bloomSizeY);
+//		setRenderState(RENDER_STATE::COLOR | RENDER_STATE::LINEAR_SAMPLING_COLOR);
+//		perFrame.invScreenSize = 1.0f / glm::vec2((float)m_bloomSizeX, (float)m_bloomSizeY);
+//		m_perFrameBuffer->updateAll(&perFrame);
+//		glUseProgram(m_bloomShader);
+//		m_fullScreenQuad->render();
+//
+//		// Generate mipmap for bloom texture
+//		glActiveTexture(GL_TEXTURE0 + ShaderCommon::BLUR_TEXTURE);
+//		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
+//		glGenerateMipmap(GL_TEXTURE_2D);
+//
+//		setRenderState(RENDER_STATE::COLOR);
+//
+//		// Blur the bloom texture
+//		for (uint i = 2; i < m_bloomLevels; i++)
+//		{
+//			// Bind bloom texture 0, confine to ith mip level
+//			glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
+//			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i);
+//			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
+//
+//			// Set size based on level
+//			uint sizeX = m_bloomSizeX >> i;
+//			uint sizeY = m_bloomSizeY >> i;
+//			setViewportSize(sizeX, sizeY);
+//			perFrame.invScreenSize = 1.0f / glm::vec2((float)sizeX, (float)sizeY);
+//			m_perFrameBuffer->updateAll(&perFrame);
+//
+//			// Blur X into bloom texture 1
+//			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[1]);
+//			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[1], i);
+//			glUseProgram(m_blurShaders[0]);
+//			m_fullScreenQuad->render();
+//
+//			// Bind bloom texture 1, confine to ith mip level
+//			glBindTexture(GL_TEXTURE_2D, m_bloomTextures[1]);
+//			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i);
+//			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i);
+//
+//			// Blur Y into bloom texture 0
+//			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
+//			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], i);
+//			glUseProgram(m_blurShaders[1]);
+//			m_fullScreenQuad->render();
+//		}
+//
+//		// Bind bloom texture for final output
+//		glActiveTexture(GL_TEXTURE0 + ShaderCommon::BLOOM_TEXTURE);
+//		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_bloomLevels - 1);
+//
+//		// Output fbo to screen
+//        setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
+//		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
+//		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
+//		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is the default fbo
+//		setViewportSize(screenWidth, screenHeight);
+//		setRenderState(RENDER_STATE::COLOR);
+//		perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
+//		m_perFrameBuffer->updateAll(&perFrame);
+//		glUseProgram(m_finalOutputShader);
+//		m_fullScreenQuad->render();
+//	}
 
 }
 

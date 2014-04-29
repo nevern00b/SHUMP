@@ -131,7 +131,7 @@ GLFW::GLFW()
 	}
 
 
-	Globals::init(windowSize.x, windowSize.y);
+	Globals::init(0.0, windowSize.x, windowSize.y);
 
 	// Set glfw window callbacks to UIManager
 	glfwSetKeyCallback(window, glfwKeyEvent);
@@ -149,6 +149,7 @@ GLFW::GLFW()
 	{
 		glfwPollEvents();
 		float time = (float)glfwGetTime();
+        Globals::render();
 		Globals::update(time);
 		glfwSwapBuffers(window);
 
