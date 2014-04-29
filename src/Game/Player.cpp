@@ -52,40 +52,40 @@ bool Player::update()
 	float vy = 0.0f;
 
     // Get keyboard input
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_A))
+    if (Globals::m_uiManager->isKeyDown(KEY_A))
         vx -= speed;
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_D))
+    if (Globals::m_uiManager->isKeyDown(KEY_D))
         vx += speed;
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_W))
+    if (Globals::m_uiManager->isKeyDown(KEY_W))
         vy += speed;
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
+    if (Globals::m_uiManager->isKeyDown(KEY_S))
         vy -= speed;
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))//Keyboard to take bullet change 
+	if (Globals::m_uiManager->isKeyDown(KEY_U))//Keyboard to take bullet change 
 		Globals::m_stateMachine->changeBState(COLOR::RED);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_I))
+	if (Globals::m_uiManager->isKeyDown(KEY_I))
 		Globals::m_stateMachine->changeBState(COLOR::BLUE);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_O))
+	if (Globals::m_uiManager->isKeyDown(KEY_O))
 		Globals::m_stateMachine->changeBState(COLOR::GREEN);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_P))
+	if (Globals::m_uiManager->isKeyDown(KEY_P))
 		Globals::m_stateMachine->changeBState(COLOR::YELLOW);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_Y))
+	if (Globals::m_uiManager->isKeyDown(KEY_Y))
 		Globals::m_stateMachine->checkStates();
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_H))
+	if (Globals::m_uiManager->isKeyDown(KEY_H))
 		Globals::m_stateMachine->changeIState(COLOR::RED);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_J))
+	if (Globals::m_uiManager->isKeyDown(KEY_J))
 		Globals::m_stateMachine->changeIState(COLOR::BLUE);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_K))
+	if (Globals::m_uiManager->isKeyDown(KEY_K))
 		Globals::m_stateMachine->changeIState(COLOR::GREEN);
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_L))
+	if (Globals::m_uiManager->isKeyDown(KEY_L))
 		Globals::m_stateMachine->changeIState(COLOR::YELLOW);
 
-	//if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
+	//if (Globals::m_uiManager->isKeyPressed(KEY_SPACE))
 	//{
 	//	shoot();
 	//	m_shootTimer->start();
 	//}
 	//
-    //if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
+    //if (Globals::m_uiManager->isKeyDown(KEY_SPACE))
     //{
 	//	if (m_shootTimer->checkInterval())
 	//	{

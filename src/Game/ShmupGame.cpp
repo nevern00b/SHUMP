@@ -127,7 +127,7 @@ void ShmupGame::update()
 {
 	m_enemyManager->update();
 
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_GRAVE_ACCENT))
+	if (Globals::m_uiManager->isKeyDown(KEY_Z))
 	{
 		m_player->gainLives(100);
 	}

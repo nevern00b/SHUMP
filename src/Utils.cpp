@@ -9,7 +9,6 @@
 #include "GameManager.h"
 #include "Rendering/RenderManager.h"
 #include "Camera.h"
-#include "GLFW/glfw3.h"
 #include "Globals.h"
 #include "UIManager.h"
 
@@ -48,12 +47,12 @@ Timer::~Timer()
 
 void Timer::start()
 {
-	m_startTime = (float)glfwGetTime();
+	m_startTime = Globals::m_uiManager->getTime();
 }
 
 float Timer::getTimeElapsed()
 {
-	return (float)glfwGetTime() - m_startTime;
+	return Globals::m_uiManager->getTime() - m_startTime;
 }
 
 void Timer::setInterval(float interval)

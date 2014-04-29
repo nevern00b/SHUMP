@@ -22,9 +22,9 @@ UIManager::~UIManager()
 
 }
 
-void UIManager::update()
+void UIManager::update(float time)
 {
-    float currTime = (float)glfwGetTime();
+	float currTime = time;
     m_frameTime = currTime - m_oldFrameTime;
     m_oldFrameTime = currTime;
     m_oldMouseX = m_mouseX;
@@ -35,13 +35,12 @@ void UIManager::update()
 
 void UIManager::keyEvent(int key, int action, int modifiers)
 {
+	#ifdef OS_WINDOWS
 	if (action == GLFW_PRESS)
 	{
-		//if (!isKeyDown(key))
-		//{
-			m_keyPressed = key;
-		//}
+		m_keyPressed = key;
 	}
+	#endif
 }
 
 bool UIManager::isKeyPressed(int key) const
@@ -51,22 +50,38 @@ bool UIManager::isKeyPressed(int key) const
 
 bool UIManager::isKeyDown(int key) const
 {
-    return glfwGetKey(glfwGetCurrentContext(), key) == GLFW_PRESS;
+	#ifdef OS_WINDOWS
+		return glfwGetKey(glfwGetCurrentContext(), key) == GLFW_PRESS;
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 bool UIManager::isShiftDown() const
 {
-    return isKeyDown(GLFW_MOD_SHIFT);
+	#ifdef OS_WINDOWS
+		return isKeyDown(GLFW_MOD_SHIFT);
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 bool UIManager::isControlDown() const
 {
-    return isKeyDown(GLFW_MOD_CONTROL);
+	#ifdef OS_WINDOWS
+		return isKeyDown(GLFW_MOD_CONTROL);
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 bool UIManager::isAltDown() const
 {
-    return isKeyDown(GLFW_MOD_ALT);
+	#ifdef OS_WINDOWS
+		return isKeyDown(GLFW_MOD_ALT);
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 bool UIManager::isModifierDown() const
@@ -76,11 +91,13 @@ bool UIManager::isModifierDown() const
 
 void UIManager::mouseEvent(int button, int action, int modifiers)
 {
-    //broadcastMessage(MESSAGE_LOCATION::GLOBAL, MouseEventMessage(button, action, modifiers));
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
-        m_mousePressed = true;
-    }
+	#ifdef OS_WINDOWS
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		{
+			m_mousePressed = true;
+		}
+	#endif
+    
 }
 
 void UIManager::mouseMove(int x, int y)
@@ -89,7 +106,6 @@ void UIManager::mouseMove(int x, int y)
     m_oldMouseY = m_mouseY;
     m_mouseX = x;
     m_mouseY = m_screenHeight - y;
-    //broadcastMessage(MESSAGE_LOCATION::GLOBAL, MouseMoveMessage());
 }
 
 int UIManager::getMouseMoveX() const
@@ -109,22 +125,39 @@ bool UIManager::isMouseMoving() const
 
 bool UIManager::isMouseButtonDown(int button) const
 {
-    return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;
+	#ifdef OS_WINDOWS
+		return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 bool UIManager::isLeftMouseButtonDown() const
 {
-    return isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
+	#ifdef OS_WINDOWS
+		return isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
+	#elif OS_IOS
+		return false;
+	#endif
+    
 }
 
 bool UIManager::isRightMouseButtonDown() const
 {
-    return isMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT);
+	#ifdef OS_WINDOWS
+		return isMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT);
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 bool UIManager::isMiddleMouseButtonDown() const
 {
-    return isMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE);
+	#ifdef OS_WINDOWS
+		return isMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE);
+	#elif OS_IOS
+		return false;
+	#endif
 }
 
 void UIManager::resizeWindow(int width, int height)
@@ -139,9 +172,13 @@ float UIManager::getAspectRatio() const
     return (float)m_screenWidth / (float)m_screenHeight;
 }
 
-float UIManager::getTimeSinceBeginning()
+float UIManager::getTime()
 {
-    return (float)glfwGetTime();
+	#ifdef OS_WINDOWS
+		return (float)glfwGetTime();
+	#elif OS_IOS
+		return m_oldFrameTime;
+	#endif
 }
 
 float UIManager::getFramerateAdjust(float value)
