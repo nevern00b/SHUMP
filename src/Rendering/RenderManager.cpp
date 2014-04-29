@@ -207,7 +207,7 @@ void RenderManager::render()
     clearDepthStencil();
 
     // Render scene
-    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
+    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
 	
 	glUseProgram(m_basicShader);
 
@@ -303,6 +303,7 @@ void RenderManager::render()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_bloomLevels - 1);
 
 		// Output fbo to screen
+		setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
 		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
 		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is the default fbo
@@ -400,9 +401,11 @@ void RenderManager::setRenderState(uint renderStateBitfield)
     else glDisable(GL_BLEND);
 
     // sRGB conversion when writing to color buffer
-    if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::FRAMEBUFFER_SRGB))
-        glEnable(GL_FRAMEBUFFER_SRGB);
-    else glDisable(GL_FRAMEBUFFER_SRGB);
+	#ifdef OS_WINDOWS
+		if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::FRAMEBUFFER_SRGB))
+			glEnable(GL_FRAMEBUFFER_SRGB);
+		else glDisable(GL_FRAMEBUFFER_SRGB);
+	#endif
 
     // Linear vs. Nearest sampling for FBO color texture
     if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::LINEAR_SAMPLING_COLOR))
