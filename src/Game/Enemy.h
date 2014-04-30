@@ -7,10 +7,26 @@
 class ShootComponent;
 class Timer;
 
+enum ENEMY_PATTERN
+{
+	SIDE,
+	HOVER,
+	V_SHAPE,
+	CLUSTER_1,
+	CLUSTER_2
+};
+
+enum ENEMY_TYPE
+{
+	MISSILE,
+	MELEE,
+	EXPLOSIVE
+};
+
 class Enemy : public Entity
 {
 public:
-	Enemy(COLOR color, int pattern,int pos_x);
+	Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x);
 	virtual ~Enemy();
 	virtual bool update();
 	virtual void onCollide(EventObject* collider);
@@ -22,7 +38,8 @@ private:
 	ShootComponent* m_shootComponent;
 	Timer* m_shootTimer;
 	COLOR m_color;
-	int m_pattern;
+	ENEMY_PATTERN m_pattern;
+	ENEMY_TYPE m_type;
 
 	float m_x;
 };

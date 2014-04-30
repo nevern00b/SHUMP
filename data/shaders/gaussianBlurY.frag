@@ -1,6 +1,6 @@
 layout (location = 0) out vec4 fragColor;
 
-layout(binding = BLUR_TEXTURE) uniform sampler2D tBlur;
+uniform sampler2D tBlur;
 
 uniform float offset[3] = float[]( 0.0, 1.3846153846, 3.2307692308 );
 uniform float weight[3] = float[]( 0.2270270270, 0.3162162162, 0.0702702703 );

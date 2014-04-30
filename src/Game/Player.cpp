@@ -20,7 +20,7 @@ Player::Player() : Entity(0),
 	m_lives(3)
 {
 	Material* material = new Material();
-	material->m_useNoise = true;
+	material->m_noiseStrength = 0.15f;
     Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
@@ -35,7 +35,6 @@ Player::Player() : Entity(0),
 	m_shootTimer = new Timer(0.2f);
 
 	changeColor(); // Sets color to default immunity state color
-	material->m_useNoise = true;
 	
 }
 
@@ -53,13 +52,13 @@ bool Player::update()
 	float vy = 0.0f;
 
     // Get keyboard input
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_A))
+    if (Globals::m_uiManager->isKeyDown(KEY_A))
         vx -= speed;
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_D))
+    if (Globals::m_uiManager->isKeyDown(KEY_D))
         vx += speed;
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_W))
+    if (Globals::m_uiManager->isKeyDown(KEY_W))
         vy += speed;
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S))
+    if (Globals::m_uiManager->isKeyDown(KEY_S))
         vy -= speed;
 	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_U))//Keyboard to take bullet change 
 		Globals::m_stateMachine->changePlayerState(COLOR::RED);
@@ -78,7 +77,7 @@ bool Player::update()
 	//	m_shootTimer->start();
 	//}
 	//
-    //if (Globals::m_uiManager->isKeyDown(GLFW_KEY_SPACE))
+    //if (Globals::m_uiManager->isKeyDown(KEY_SPACE))
     //{
 	//	if (m_shootTimer->checkInterval())
 	//	{

@@ -18,7 +18,7 @@ Material::Material() :
     m_reflectBlend(0.0),
     m_normalTexture(0),
     m_normalIntensity(0.0),
-	m_useNoise(false)
+	m_noiseStrength(0.0)
 {
 
 }
@@ -38,7 +38,7 @@ void Material::render()
     materialGL.specPower = m_specPower;
     materialGL.specBlend = m_specBlend;
     materialGL.normalIntensity = m_normalIntensity;
-	materialGL.useNoise = m_useNoise;
+	materialGL.noiseStrength = m_noiseStrength;
 
     Globals::m_renderManager->renderMaterial(materialGL);
 

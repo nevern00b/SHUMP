@@ -41,7 +41,7 @@ void GameManager::update()
 
 	std::vector<Entity*> destroyedEntities;
 
-	auto& it = m_entities.begin();
+	auto it = m_entities.begin();
 	while (it != m_entities.end())
 	{
 		Entity* entity = *it;

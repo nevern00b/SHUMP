@@ -22,6 +22,7 @@ public:
     GLuint getTexture(const std::string& name);
     Material* getMaterial(const std::string& name);
 	Material* getMaterial(COLOR color);
+	Material* getEnemyMaterial(COLOR color);
     Mesh* getMesh(const std::string& name);
 
 private:

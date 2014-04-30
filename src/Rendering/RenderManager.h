@@ -10,6 +10,7 @@ class Entity;
 class Shader;
 class ObjectPool;
 class FullScreenQuad;
+class Background;
 
 class RenderManager
 {
@@ -54,13 +55,16 @@ public:
 
 private:
 
-    GLuint m_basicShader;
-	GLuint m_noiseShader;
-	GLuint m_floorShader;
-	GLuint m_instancedShader;
-	GLuint m_finalOutputShader;
-	GLuint m_bloomShader;
-	GLuint m_blurShaders[2];
+	Background* m_background;
+
+    Shader* m_basicShader;
+	Shader* m_noiseShader;
+	Shader* m_floorShader;
+	Shader* m_backgroundShader;
+	Shader* m_instancedShader;
+	Shader* m_finalOutputShader;
+	Shader* m_bloomShader;
+	Shader* m_blurShaders[2];
 
 	// Group things by rendering type
 	std::list<Entity*> m_noiseEntities;

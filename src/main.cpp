@@ -1,9 +1,9 @@
-#include "Globals.h"
+#include "GLFW.h"
 
 //#include <vld.h>
 
 int main()
 {
-    Globals::init();
+	GLFW glfw;
     return 0;
 }

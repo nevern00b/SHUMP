@@ -40,6 +40,26 @@ DataManager::DataManager()
 	pinkMaterial->m_diffuseColor = glm::vec4(1.0, 0.34f, 0.6f, 1);
 	m_materials["pink"] = pinkMaterial;
 
+	// Enemey materials
+	Material* enemyGreenMaterial = new Material();
+	enemyGreenMaterial->m_diffuseColor = glm::vec4(0, 1, 0, 1);
+	enemyGreenMaterial->m_noiseStrength = 0.15f;
+	m_materials["enemy_green"] = enemyGreenMaterial;
+
+	Material* enemyRedMaterial = new Material();
+	enemyRedMaterial->m_diffuseColor = glm::vec4(1, 0, 0, 1);
+	enemyRedMaterial->m_noiseStrength = 0.15f;
+	m_materials["enemy_red"] = enemyRedMaterial;
+
+	Material* enemyBlueMaterial = new Material();
+	enemyBlueMaterial->m_diffuseColor = glm::vec4(0, 0, 1, 1);
+	enemyBlueMaterial->m_noiseStrength = 0.15f;
+	m_materials["enemy_blue"] = enemyBlueMaterial;
+
+	Material* enemyYellowMaterial = new Material();
+	enemyYellowMaterial->m_diffuseColor = glm::vec4(1, 1, 0, 1);
+	enemyYellowMaterial->m_noiseStrength = 0.15f;
+	m_materials["enemy_yellow"] = enemyYellowMaterial;
 
     m_shaderHeader = Utils::loadFile("data/shaders/globals");
 }
@@ -71,7 +91,7 @@ DataManager::~DataManager()
 GLuint DataManager::loadTexture(void* data, const glm::uvec2& dimensions, const std::string& name)
 {
     // Return if it was loaded already
-    auto& foundTexture = m_textures.find(name);
+    auto foundTexture = m_textures.find(name);
     if (foundTexture != m_textures.end())
         return foundTexture->second;
 
@@ -91,7 +111,7 @@ GLuint DataManager::loadTexture(void* data, const glm::uvec2& dimensions, const 
 
 GLuint DataManager::getTexture(const std::string& name)
 {
-    auto& foundTexture = m_textures.find(name);
+    auto foundTexture = m_textures.find(name);
     if (foundTexture != m_textures.end())
         return foundTexture->second;
     else
@@ -100,7 +120,7 @@ GLuint DataManager::getTexture(const std::string& name)
 
 Material* DataManager::getMaterial(const std::string& name)
 {
-    auto& foundMaterial = m_materials.find(name);
+    auto foundMaterial = m_materials.find(name);
     if (foundMaterial != m_materials.end())
         return foundMaterial->second;
     else
@@ -109,36 +129,28 @@ Material* DataManager::getMaterial(const std::string& name)
 
 Material* DataManager::getMaterial(COLOR color)
 {
-	if (color == COLOR::STATIC)
-	{
-		return getMaterial("red");
-	}
-	else if (color == COLOR::RED)
-	{
-		return getMaterial("red");
-	}
-	else if (color == COLOR::BLUE)
-	{
-		return getMaterial("blue");
-	}
-	else if (color == COLOR::GREEN)
-	{
-		return getMaterial("green");
-	}
-	else if (color == COLOR::YELLOW)
-	{
-		return getMaterial("yellow");
-	}
-	else
-	{
-		return getMaterial("red");
-	}
+	if (color == COLOR::STATIC)	return getMaterial("red");
+	else if (color == COLOR::RED) return getMaterial("red");
+	else if (color == COLOR::BLUE) return getMaterial("blue");
+	else if (color == COLOR::GREEN) return getMaterial("green");
+	else if (color == COLOR::YELLOW) return getMaterial("yellow");
+	else return getMaterial("red");
 }
 
+Material* DataManager::getEnemyMaterial(COLOR color)
+{
+	// Copy the material
+	if (color == COLOR::STATIC)	return new Material(*getMaterial("enemy_red"));
+	else if (color == COLOR::RED) return new Material(*getMaterial("enemy_red"));
+	else if (color == COLOR::BLUE) return new Material(*getMaterial("enemy_blue"));
+	else if (color == COLOR::GREEN) return new Material(*getMaterial("enemy_green"));
+	else if (color == COLOR::YELLOW) return new Material(*getMaterial("enemy_yellow"));
+	else return new Material(*getMaterial("enemy_red"));
+}
 
 Mesh* DataManager::getMesh(const std::string& name)
 {
-    auto& foundMesh = m_meshes.find(name);
+    auto foundMesh = m_meshes.find(name);
     if (foundMesh != m_meshes.end())
         return foundMesh->second;
     else
@@ -165,7 +177,13 @@ GLuint DataManager::loadShaderProgram(const std::string& vertexShader, const std
 
 GLuint DataManager::createShader(GLenum Type, const std::string& filename)
 {
-    std::string shaderSource = m_shaderHeader + Utils::loadFile(filename);
+	#if defined(OS_WINDOWS)
+		std::string version = "#version 330\n";
+	#elif defined(OS_IOS)
+		std::string version = "#version 300 es\n";
+	#endif
+
+    std::string shaderSource = version + m_shaderHeader + Utils::loadFile(filename);
     const char* shaderSourceC = shaderSource.c_str();
     GLuint shader = glCreateShader(Type);
     glShaderSource(shader, 1, &shaderSourceC, 0);

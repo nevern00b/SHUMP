@@ -207,7 +207,7 @@ out float vNoise;
 
 void main() 
 {
-	float weight = 0.15;
+	float weight = uMaterial.noiseStrength;
 
 	vec3 evNormal = aNormal;
 	vec3 aniNormal = 2.0 * evNormal + uPerFrameData.time;

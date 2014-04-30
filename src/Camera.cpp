@@ -48,19 +48,19 @@ bool Camera::update()
     float newZoom = 0.0f;
 
     // Collect values
-    if (Globals::m_uiManager->isKeyDown(GLFW_KEY_A))
+    if (Globals::m_uiManager->isKeyDown(KEY_A))
     {
         newPanX = m_panSpeed;
     }
-    else if (Globals::m_uiManager->isKeyDown(GLFW_KEY_D)) // D
+    else if (Globals::m_uiManager->isKeyDown(KEY_D)) // D
     {
         newPanX = -m_panSpeed;
     }
-    else if (Globals::m_uiManager->isKeyDown(GLFW_KEY_W)) // W
+    else if (Globals::m_uiManager->isKeyDown(KEY_W)) // W
     {
         newZoom = m_panSpeed;
     }
-    else if (Globals::m_uiManager->isKeyDown(GLFW_KEY_S)) // S
+    else if (Globals::m_uiManager->isKeyDown(KEY_S)) // S
     {
         newZoom = -m_panSpeed;
     }

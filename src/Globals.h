@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Common.h"
+
 class UIManager;
 class RenderManager;
 class DataManager;
@@ -12,8 +14,10 @@ class Globals
 
 public:
 
-    static void init();
+	static void init(float time, uint screenWidth, uint screenHeight);
 	static void destroy();
+	static void update(float time);
+    static void render();
 
     static RenderManager* m_renderManager;
     static UIManager* m_uiManager;

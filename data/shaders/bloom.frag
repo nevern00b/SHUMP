@@ -1,6 +1,6 @@
 layout (location = 0) out vec4 fragColor;
 
-layout(binding = COLOR_FBO_TEXTURE) uniform sampler2D tColor;
+uniform sampler2D tColor;
 
 void main()
 {

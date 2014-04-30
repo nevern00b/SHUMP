@@ -5,10 +5,10 @@ in vec3 vNormal;
 in vec2 vUV;
 in float vNoise;
 
-layout(binding = DIFFUSE_TEXTURE) uniform sampler2D tDiffuse;
-layout(binding = NORMAL_TEXTURE) uniform sampler2D tNormal;
-layout(binding = SPECULAR_TEXTURE) uniform sampler2D tSpecular;
-layout(binding = REFLECT_TEXTURE) uniform samplerCube tReflect;
+uniform sampler2D tDiffuse;
+uniform sampler2D tNormal;
+uniform sampler2D tSpecular;
+uniform samplerCube tReflect;
 
 #define AMBIENT_TERM 0.5
 
@@ -44,7 +44,7 @@ mat3 getTangentMatrix(vec3 N, vec3 p, vec2 uv)
 void main()
 {
 	vec4 diffuse = uMaterial.diffuseColor;
-	if(uMaterial.useNoise == 1) diffuse.rgb *= vNoise;
+	if(uMaterial.noiseStrength > 0.01) diffuse.rgb *= vNoise;
     if(uMaterial.diffuseBlend > 0.0)
     {
         vec4 diffuseTexture = texture(tDiffuse, vUV);

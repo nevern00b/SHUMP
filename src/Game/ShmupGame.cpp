@@ -109,7 +109,7 @@ void ShmupGame::init()
 	Floor* floor = new Floor();
 
 	// Item
-	Item* item = new ImmunityItem(COLOR::YELLOW, 0.0f, -5.0f);
+	//Item* item = new ImmunityItem(COLOR::YELLOW, 0.0f, -3.0f);
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
@@ -138,7 +138,7 @@ void ShmupGame::update()
 		}
 	}
 
-	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_GRAVE_ACCENT))
+	if (Globals::m_uiManager->isKeyDown(KEY_Z))
 	{
 		m_player->gainLives(100);
 	}
