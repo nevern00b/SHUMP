@@ -40,7 +40,7 @@ Player::Player() : Entity(0),
 
 Player::~Player()
 {
-
+	Globals::m_shmupGame->m_player = 0;
 }
 
 bool Player::update()
@@ -97,6 +97,11 @@ bool Player::update()
 	return true;
 }
 
+b2Vec2 Player::getPosition2d(){
+	b2Vec2 pos = m_physics->m_body->GetPosition();
+	return pos;
+}
+
 void Player::onCollide(EventObject* collider)
 {
 	Bullet* bullet = dynamic_cast<Bullet*>(collider);
@@ -122,12 +127,14 @@ void Player::onCollide(EventObject* collider)
 	}
 	else if (immunityItem != 0)
 	{
+		Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 250;
 		COLOR color = immunityItem->m_color;
 		Globals::m_stateMachine->changePlayerState(color);
 		immunityItem->destroy();
 	}
 	else if (lifeItem != 0)
 	{
+		Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 1000;
 		m_lives++;
 		lifeItem->destroy();
 	}
@@ -140,8 +147,6 @@ void Player::changeColor()
 	m_render->m_materials[0]->setColor(immunState);
 }
 
-
-	
 
 void Player::shoot()
 {

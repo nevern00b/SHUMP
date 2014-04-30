@@ -130,7 +130,7 @@ void ShmupGame::update()
 {
 	m_enemyManager->update();
 
-	if (m_player->m_lives != 0)
+	if (m_player != 0)
 	{
 		if (m_scoreTimer->checkInterval())
 		{
