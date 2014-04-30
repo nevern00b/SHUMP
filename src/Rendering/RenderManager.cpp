@@ -24,7 +24,7 @@ RenderManager::RenderManager() :
 	m_background(0)
 {
     int defaultFBO;
-    glGetIntegerv(GL_DRAW_FRAMEBUFFER, &defaultFBO);
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
     m_defaultFBO = (GLuint)defaultFBO;
     
     // Init GL state

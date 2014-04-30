@@ -131,6 +131,7 @@ GLFW::GLFW()
 	}
 
 
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Put this here for cross-platform purposes
 	Globals::init(0.0, windowSize.x, windowSize.y);
 
 	// Set glfw window callbacks to UIManager
