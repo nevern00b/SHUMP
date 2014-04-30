@@ -91,8 +91,8 @@ RenderManager::RenderManager() :
 	glDrawBuffers(ShaderCommon::NUM_FBO_BINDINGS, m_fboAttachments);
 
 	// Bloom textures
-	m_bloomSizeX = 640;
-	m_bloomSizeY = 360;
+	m_bloomSizeX = windowWidth/2;
+	m_bloomSizeY = windowHeight/2;
 	m_bloomLevels = 4;
 	glGenTextures(2, m_bloomTextures);
 	for (uint i = 0; i < 2; i++)

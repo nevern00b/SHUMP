@@ -111,5 +111,4 @@ void main()
     }
 	
     fragColor = vec4(finalColor, diffuse.a);
-    //fragColor = vec4(1.0);
 }
