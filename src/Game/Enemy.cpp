@@ -133,6 +133,8 @@ void Enemy::onCollide(EventObject* collider)
 
 			if (m_health <= 0.0f)
 			{
+				Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 1000;
+
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 

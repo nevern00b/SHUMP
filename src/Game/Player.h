@@ -19,12 +19,13 @@ public:
 
 	void gainLives(uint lives);
 
+	uint m_lives;
+
 private:
 
 	void shoot();
 
 	Timer* m_shootTimer;
-	uint m_lives;
 	ShootComponent* m_shootComponent;
 
 };

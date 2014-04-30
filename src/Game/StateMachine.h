@@ -10,14 +10,35 @@ enum COLOR
 	YELLOW
 };
 
+enum WEAPON{
+	STANDARD,
+	WEAPON1,
+	WEAPON2,
+	WEAPON3,
+
+};
+
+
 class StateMachine{
 public:
-	COLOR getBState();
-	COLOR getIState();
 	void checkStates();
-	void changeBState(COLOR input);
-	void changeIState(COLOR input);
+
+	COLOR getPlayerState();
+	int getPlayerWeapon();
+	int getPlayerWeaponLVL();
+
+	void changePlayerState(COLOR input);
+	void changeWeapon(WEAPON input);
+	void upgradeWeapon();
+	void resetWeapon();
+	void addScore(int input);
+
+	int p_score = 0;
+
 private:
-	COLOR bulletST = COLOR::RED;
-	COLOR immunST = COLOR::RED;
+	//Player Attributes
+	COLOR p_state = COLOR::RED;
+	WEAPON p_weapon = WEAPON::STANDARD;
+	int p_weaponLVL = 1;
+	
 };
