@@ -4,6 +4,7 @@
 #include "Bullet.h"
 #include "Globals.h"
 #include "DataManager.h"
+#include "Player.h"
 #include "Physics/PhysicsManager.h"
 #include "Physics/PhysicsComponent.h"
 #include "Rendering/RenderComponent.h"
@@ -104,8 +105,18 @@ bool Enemy::update()
 		}
 		else if (m_color == COLOR::YELLOW)
 		{
-			vx = glm::linearRand(-5.0f, 5.0f);
-			vy = glm::linearRand(-5.0f, 5.0f);
+			if (Globals::m_shmupGame->m_player != 0)
+			{
+				b2Vec2 playerpos = Globals::m_shmupGame->m_player->getPosition2d();
+				b2Vec2 velocity = playerpos - pos;
+				velocity.Normalize();
+				vx = velocity.x * 5.0f;
+				vy = velocity.y * 5.0f;
+			}
+			
+
+			/*vx = glm::linearRand(-5.0f, 5.0f);
+			vy = glm::linearRand(-5.0f, 5.0f);*/
 		}
 		
 		if (glm::abs(vx) < 0.1) vx = -1.0f;
@@ -133,7 +144,7 @@ void Enemy::onCollide(EventObject* collider)
 
 			if (m_health <= 0.0f)
 			{
-				Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 1000;
+				Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 500;
 
 				b2Vec2 pos = m_physics->m_body->GetPosition();
 				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);

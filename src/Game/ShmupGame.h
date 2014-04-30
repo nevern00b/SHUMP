@@ -36,10 +36,10 @@ public:
 	BulletPool* m_enemyGBulletPool;
 	BulletPool* m_enemyYBulletPool;
 	ParticleSystem* m_particleSystem;
+	Player* m_player;
 
 private:
 
-    Player* m_player;
 	Timer* m_scoreTimer;
 	EnemyManager* m_enemyManager;
 

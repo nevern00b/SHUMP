@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "Globals.h"
 #include "UIManager.h"
+#include "Game/StateMachine.h"
 
 void glfwErrorCallback(int error, const char* description)
 {
@@ -167,7 +168,7 @@ GLFW::GLFW()
 			iss << "FPS: ";
 			iss << fpsAvg;
 			iss << " Score: ";
-			iss << 1000;// Globals::m_stateMachine->score;
+			iss << Globals::m_stateMachine->p_score;
 			glfwSetWindowTitle(window, iss.str().c_str());
 			fpsAvg = 0.0f;
 		}

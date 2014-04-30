@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Box2D/Box2D.h>
 #include "Common.h"
 #include "Entity.h"
 class BulletPool;
@@ -18,6 +18,8 @@ public:
 	void changeColor();
 
 	void gainLives(uint lives);
+
+	b2Vec2 getPosition2d();
 
 	uint m_lives;
 
