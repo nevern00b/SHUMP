@@ -15,13 +15,9 @@ StateMachine* Globals::m_stateMachine;
 
 void Globals::init(float time, uint screenWidth, uint screenHeight)
 {
-	
-
 	// Create all the global managers
 	m_uiManager = new UIManager(time, screenWidth, screenHeight);
-	m_uiManager->m_screenWidth = screenWidth;
-	m_uiManager->m_screenHeight = screenHeight;
-	m_uiManager->update(0.0f);
+	m_uiManager->update(time);
 
 	m_dataManager = new DataManager();
 	m_physicsManager = new PhysicsManager();

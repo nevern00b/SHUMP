@@ -6,6 +6,7 @@ layout(location = TRANSFORM_ATTR) in vec4 aTransform;
 out vec3 vPosition;
 out vec3 vNormal;
 out vec2 vUV;
+out float vNoise;
 
 void main() 
 {
@@ -23,4 +24,5 @@ void main()
     vPosition = vec3(position);
     vNormal = mat3(uTransform.modelMatrix) * aNormal;
     vUV = aUV;
+    vNoise = 0.0;
 }

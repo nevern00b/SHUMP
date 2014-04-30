@@ -60,7 +60,7 @@ DataManager::DataManager()
 	enemyYellowMaterial->m_diffuseColor = glm::vec4(1, 1, 0, 1);
 	enemyYellowMaterial->m_noiseStrength = 0.15f;
 	m_materials["enemy_yellow"] = enemyYellowMaterial;
-
+    
     m_shaderHeader = Utils::loadFile("data/shaders/globals");
 }
 

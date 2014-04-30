@@ -117,12 +117,12 @@ void Mesh::renderInstanced(const std::vector<Material*>& materials, uint count, 
 
 void Mesh::render()
 {
-	//// Set up the vao
-	//GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
-	//glBindVertexArray(m_vao);
-	//glDisableVertexAttribArray(ShaderCommon::TRANSFORM_ATTR);
-	//glDrawElements(m_drawType, m_numElements, type, 0);
-    //glBindVertexArray(0);
+	// Set up the vao
+	GLenum type = m_elementSize == 4 ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+	glBindVertexArray(m_vao);
+	glDisableVertexAttribArray(ShaderCommon::TRANSFORM_ATTR);
+	glDrawElements(m_drawType, m_numElements, type, 0);
+    glBindVertexArray(0);
 }
 
 void Mesh::renderInstanced(uint count, GLuint transformBuffer)

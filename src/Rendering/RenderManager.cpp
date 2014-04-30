@@ -23,8 +23,10 @@ RenderManager::RenderManager() :
 	m_floor(0),
 	m_background(0)
 {
-	//m_background = new Background();
-
+    int defaultFBO;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER, &defaultFBO);
+    m_defaultFBO = (GLuint)defaultFBO;
+    
     // Init GL state
     glClearColor(1, 1, 1, 1);
     glCullFace(GL_BACK);
@@ -49,7 +51,7 @@ RenderManager::RenderManager() :
 	m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = new Shader("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
-	m_backgroundShader = new Shader("data/shaders/background.vert", "data/shaders/background.frag");
+	//m_backgroundShader = new Shader("data/shaders/background.vert", "data/shaders/background.frag");
 
 	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
@@ -87,7 +89,6 @@ RenderManager::RenderManager() :
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, m_fboAttachments[ShaderCommon::COLOR_FBO_BINDING], GL_TEXTURE_2D, m_colorTexture, 0);
 	glDrawBuffers(ShaderCommon::NUM_FBO_BINDINGS, m_fboAttachments);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	// Bloom textures
 	m_bloomSizeX = 640;
@@ -109,7 +110,6 @@ RenderManager::RenderManager() :
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[i], 0);
 		GLenum bloomFBOAttachments[1] = { GL_COLOR_ATTACHMENT0 };
 		glDrawBuffers(1, bloomFBOAttachments);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 }
 
@@ -140,16 +140,8 @@ void RenderManager::resizeWindow(int width, int height)
 
 void RenderManager::render()
 {
-    //uint screenWidth = Globals::m_uiManager->m_screenWidth;
-    //uint screenHeight = Globals::m_uiManager->m_screenHeight;
-    //glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    //setViewportSize(screenWidth, screenHeight);
-    //setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
-    //clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(1, 0, 0, 1));
-    //clearDepthStencil();
-
-	bool bloomEnabled = true;
-
+	bool bloomEnabled = false;
+    
     uint screenWidth = Globals::m_uiManager->m_screenWidth;
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
     float aspectRatio = (float)screenWidth / screenHeight;
@@ -158,7 +150,7 @@ void RenderManager::render()
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
-    m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+    m_projMatrix = glm::perspective(fov, aspectRatio, 1.0f, 100.0f);
 	//float orthoSizeX = ShmupGame::WORLD_BOUND_X;
 	//float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
 	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
@@ -208,18 +200,17 @@ void RenderManager::render()
     }
 
     // Clear the framebuffer
-	GLuint fbo = bloomEnabled ? m_fbo : 0;
+	GLuint fbo = bloomEnabled ? m_fbo : m_defaultFBO;
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
     setViewportSize(screenWidth, screenHeight);
     setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
     clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
-    clearDepthStencil();
+    clearDepth();
 
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
 	
 	m_basicShader->render();
-
     for (auto& entity : m_entities)
     {
         entity->render();
@@ -315,7 +306,7 @@ void RenderManager::render()
         setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
 		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
 		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is the default fbo
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
 		setViewportSize(screenWidth, screenHeight);
 		setRenderState(RENDER_STATE::COLOR);
 		perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);

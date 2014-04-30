@@ -221,7 +221,7 @@ void main()
 
 	// range 0.3 to 0.8
 	//vNoise = -turbulence( 0.5 * evNormal );
-	vNoise = 2*(length(newPosition)-0.3);
+	vNoise = 2.0*(length(newPosition)-0.3);
 
 	vec4 position = uTransform.modelMatrix * vec4(newPosition, 1.0);
 	gl_Position = uPerFrameData.viewProjection * position;

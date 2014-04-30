@@ -75,6 +75,7 @@ private:
 	FullScreenQuad* m_fullScreenQuad;
 
 	// FBO stuff
+    GLuint m_defaultFBO;
 	GLenum m_fboAttachments[ShaderCommon::NUM_FBO_BINDINGS];
 	GLuint m_fbo;
 	GLuint m_colorTexture; // Screen sized
