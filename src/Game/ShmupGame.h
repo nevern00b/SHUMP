@@ -6,6 +6,7 @@ class BulletPool;
 class ParticleSystem;
 class Player;
 class EnemyManager;
+class Minion;
 
 class ShmupGame : public GameManager
 {
@@ -22,6 +23,7 @@ public:
     virtual void update();
 
 	BulletPool* getBulletPool(const std::string& color);
+	Player* getPlayer(); 
 
 	static const float WORLD_BOUND_X;
 	static const float WORLD_BOUND_Y;

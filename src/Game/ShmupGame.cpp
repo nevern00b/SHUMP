@@ -24,6 +24,7 @@
 #include "Rendering/Mesh.h"
 #include "Floor.h"
 #include "Item.h"
+#include "Minion.h"
 
 const float ShmupGame::WORLD_BOUND_X = 16.0f;
 const float ShmupGame::WORLD_BOUND_Y = 12.0f;
@@ -100,6 +101,9 @@ void ShmupGame::init()
 	m_player = new Player();
 	m_player->m_transform->setTranslation(-2, -5);
 
+	Minion* minion1 = new Minion(b2Vec2(-1.0f, -1.0f));
+	Minion* minion2 = new Minion(b2Vec2(1.0f, -1.0f));
+
 	m_enemyManager = new EnemyManager();
 
 	// Create floor
@@ -135,4 +139,9 @@ void ShmupGame::update()
 	GameManager::update();
 	//printf("===================");
 	//printf("Camera angleX: %f angleY: %f trans: %f %f %f\n", m_camera->m_angleHorizontal, m_camera->m_angleVertical, m_camera->m_transform->m_translation.x, m_camera->m_transform->m_translation.y, m_camera->m_transform->m_translation.z);
+}
+
+Player* ShmupGame::getPlayer()
+{
+	return m_player;
 }

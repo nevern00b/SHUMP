@@ -48,7 +48,7 @@ RenderManager::RenderManager() :
 	m_basicShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = Globals::m_dataManager->loadShaderProgram("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_floorShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/floor.frag");
-	m_backgroundShader = Globals::m_dataManager->loadShaderProgram("data/shaders/background.vert", "data/shaders/background.frag");
+	//m_backgroundShader = Globals::m_dataManager->loadShaderProgram("data/shaders/background.vert", "data/shaders/background.frag");
 
 	m_instancedShader = Globals::m_dataManager->loadShaderProgram("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");

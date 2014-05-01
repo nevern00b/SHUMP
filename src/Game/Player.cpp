@@ -1,6 +1,6 @@
 #include "Player.h"
 
-#include <Box2D/Box2D.h>
+
 #include "Rendering/Material.h"
 #include "Utils.h"
 #include "Globals.h"
@@ -15,6 +15,7 @@
 #include "BulletPool.h"
 #include "ShootComponent.h"
 #include "Item.h"
+#include "StateMachine.h"
 
 Player::Player() : Entity(0),
 	m_lives(3)
@@ -34,8 +35,7 @@ Player::Player() : Entity(0),
 
 	m_shootTimer = new Timer(0.2f);
 
-	changeColor(); // Sets color to default immunity state color
-	
+	changeColor(); // Sets color to default immunity state color	
 }
 
 Player::~Player()
@@ -181,4 +181,9 @@ void Player::shoot()
 void Player::gainLives(uint lives)
 {
 	m_lives += lives;
+}
+
+b2Vec2 Player::GetPosition()
+{
+	return m_physics->m_body->GetPosition();
 }
