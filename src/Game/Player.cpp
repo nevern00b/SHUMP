@@ -1,6 +1,6 @@
 #include "Player.h"
 
-#include <Box2D/Box2D.h>
+
 #include "Rendering/Material.h"
 #include "Utils.h"
 #include "Globals.h"
@@ -15,9 +15,11 @@
 #include "BulletPool.h"
 #include "ShootComponent.h"
 #include "Item.h"
+#include "StateMachine.h"
+#include <glm/gtc/random.hpp>
+#include "Minion.h"
 
-Player::Player() : Entity(0),
-	m_lives(3)
+Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 {
 	Material* material = new Material();
 	material->m_noiseStrength = 0.15f;
@@ -34,8 +36,7 @@ Player::Player() : Entity(0),
 
 	m_shootTimer = new Timer(0.2f);
 
-	changeColor(); // Sets color to default immunity state color
-	
+	changeColor(); // Sets color to default immunity state color	
 }
 
 Player::~Player()
@@ -196,4 +197,16 @@ void Player::shoot()
 void Player::gainLives(uint lives)
 {
 	m_lives += lives;
+}
+
+void Player::gainMinions(uint newMinions)
+{
+	int oldMinionCount = m_minionCount;
+	int newMinionCount = m_minionCount + newMinions;
+	m_minionCount = newMinionCount <= Max_Minion_Count ? newMinionCount : Max_Minion_Count;
+	for (int i = 0; i < m_minionCount - oldMinionCount; i++)
+	{
+		float x = glm::linearRand(-2.0f, 2.0f);
+		Minion* newMinion = new Minion(b2Vec2(x, -1.0f));
+	}
 }

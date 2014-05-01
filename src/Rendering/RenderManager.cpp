@@ -53,6 +53,7 @@ RenderManager::RenderManager() :
 	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
 	//m_backgroundShader = new Shader("data/shaders/background.vert", "data/shaders/background.frag");
 
+
 	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
