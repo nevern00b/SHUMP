@@ -44,8 +44,41 @@ namespace Utils
 		uint numLevels = 1 + (uint)glm::floor(glm::log2((float)textureSize));
 		return numLevels;
 	}
+
+	Ray getPickingRay()
+	{
+		uint mouseX = Globals::m_uiManager->m_mouseX;
+		uint mouseY = Globals::m_uiManager->m_mouseY;
+		return getPickingRay(mouseX, mouseY);
+	}
+
+	Ray getPickingRay(uint mouseX, uint mouseY)
+	{
+		uint screenWidth = Globals::m_uiManager->m_screenWidth;
+		uint screenHeight = Globals::m_uiManager->m_screenHeight;
+		glm::mat4 viewMatrix = Globals::m_renderManager->m_viewMatrix;
+		glm::mat4 projMatrix = Globals::m_renderManager->m_projMatrix;
+
+		glm::vec4 viewport(0.0f, 0.0f, screenWidth, screenHeight);
+		glm::vec3 windowPosClose(mouseX, mouseY, 0.0f);
+		glm::vec3 windowPosFar(mouseX, mouseY, 1.0f);
+
+		glm::vec3 nearPlanePoint = glm::unProject(windowPosClose, viewMatrix, projMatrix, viewport);
+		glm::vec3 farPlanePoint = glm::unProject(windowPosFar, viewMatrix, projMatrix, viewport);
+
+		glm::vec3 position = nearPlanePoint;
+		glm::vec3 direction = glm::normalize(farPlanePoint - nearPlanePoint);
+		Ray r(position, direction);
+		return r;
+	}
 }
 
+Ray::Ray(const glm::vec3& position, const glm::vec3& direction) :
+	m_position(position),
+	m_direction(direction)
+{
+
+}
 
 
 Timer::Timer(float interval)

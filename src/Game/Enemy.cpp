@@ -108,7 +108,7 @@ bool Enemy::update()
 		{
 			if (Globals::m_shmupGame->m_player != 0)
 			{
-				b2Vec2 playerpos = Globals::m_shmupGame->m_player->getPosition();
+				b2Vec2 playerpos = Globals::m_shmupGame->m_player->getPosition2d();
 				b2Vec2 velocity = playerpos - pos;
 				velocity.Normalize();
 				vx = velocity.x * 5.0f;

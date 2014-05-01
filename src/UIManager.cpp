@@ -30,22 +30,13 @@ void UIManager::update(float time)
     m_oldMouseX = m_mouseX;
     m_oldMouseY = m_mouseY;
     m_mousePressed = false;
+	m_mouseDown = false;
 	m_keyPressed = 0;
 }
 
-void UIManager::keyEvent(int key, int action, int modifiers)
+void UIManager::keyPressEvent(int key)
 {
-	#if defined(OS_WINDOWS)
-	if (action == GLFW_PRESS)
-	{
-		m_keyPressed = key;
-	}
-	#endif
-}
-
-bool UIManager::isKeyPressed(int key) const
-{
-	return m_keyPressed == key;
+	m_keyPressed = key;
 }
 
 bool UIManager::isKeyDown(int key) const
@@ -57,55 +48,27 @@ bool UIManager::isKeyDown(int key) const
 	#endif
 }
 
-bool UIManager::isShiftDown() const
+bool UIManager::isKeyPressed(int key) const
 {
-	#if defined(OS_WINDOWS)
-		return isKeyDown(GLFW_MOD_SHIFT);
-	#elif defined(OS_IOS)
-		return false;
-	#endif
+	return m_keyPressed == key;
 }
 
-bool UIManager::isControlDown() const
+void UIManager::mouseMoveEvent(int x, int y)
 {
-	#if defined(OS_WINDOWS)
-		return isKeyDown(GLFW_MOD_CONTROL);
-	#elif defined(OS_IOS)
-		return false;
-	#endif
+	m_oldMouseX = m_mouseX;
+	m_oldMouseY = m_mouseY;
+	m_mouseX = x;
+	m_mouseY = m_screenHeight - y;
 }
 
-bool UIManager::isAltDown() const
+void UIManager::mousePressEvent()
 {
-	#if defined(OS_WINDOWS)
-		return isKeyDown(GLFW_MOD_ALT);
-	#elif defined(OS_IOS)
-		return false;
-	#endif
+	m_mousePressed = true;
 }
 
-bool UIManager::isModifierDown() const
+void UIManager::mouseDownEvent()
 {
-    return isShiftDown() || isControlDown() || isAltDown();
-}
-
-void UIManager::mouseEvent(int button, int action, int modifiers)
-{
-	#if defined(OS_WINDOWS)
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		{
-			m_mousePressed = true;
-		}
-	#endif
-    
-}
-
-void UIManager::mouseMove(int x, int y)
-{
-    m_oldMouseX = m_mouseX;
-    m_oldMouseY = m_mouseY;
-    m_mouseX = x;
-    m_mouseY = m_screenHeight - y;
+	m_mouseDown = true;
 }
 
 int UIManager::getMouseMoveX() const
@@ -123,44 +86,12 @@ bool UIManager::isMouseMoving() const
     return getMouseMoveX() != 0 || getMouseMoveY() != 0;
 }
 
-bool UIManager::isMouseButtonDown(int button) const
+bool UIManager::isMouseDragging() const
 {
-	#if defined(OS_WINDOWS)
-		return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;
-	#elif defined(OS_IOS)
-		return false;
-	#endif
+	return m_mouseDown && isMouseMoving() && !m_mousePressed;
 }
 
-bool UIManager::isLeftMouseButtonDown() const
-{
-	#if defined(OS_WINDOWS)
-		return isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
-	#elif defined(OS_IOS)
-		return false;
-	#endif
-    
-}
-
-bool UIManager::isRightMouseButtonDown() const
-{
-	#if defined(OS_WINDOWS)
-		return isMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT);
-	#elif defined(OS_IOS)
-		return false;
-	#endif
-}
-
-bool UIManager::isMiddleMouseButtonDown() const
-{
-	#if defined(OS_WINDOWS)
-		return isMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE);
-	#elif defined(OS_IOS)
-		return false;
-	#endif
-}
-
-void UIManager::resizeWindow(int width, int height)
+void UIManager::resizeWindowEvent(int width, int height)
 {
     m_screenWidth = width;
     m_screenHeight = height;

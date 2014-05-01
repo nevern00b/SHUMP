@@ -46,7 +46,7 @@ bool Minion::update()
 	if (!Entity::update()) return false;
 
 	b2Vec2 pos = m_physics->m_body->GetPosition();
-	b2Vec2 targetPos = m_player->getPosition() + m_relativePos;
+	b2Vec2 targetPos = m_player->getPosition2d() + m_relativePos;
 
 	float speed = 10.0f;
 	float vx = targetPos.x - pos.x;

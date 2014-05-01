@@ -23,7 +23,7 @@ public:
 	void changeColor();
 	void gainLives(uint lives);
 	void gainMinions(uint newMinions);
-	b2Vec2 getPosition();
+	b2Vec2 getPosition2d();
 
 	uint m_lives;
 	uint m_minionCount;

@@ -15,9 +15,19 @@ namespace Utils
     std::string formatPath(const std::string& filename);
     void setDirectory(const std::string& directory);
 	uint getLevels(uint textureSize);
-    
+
+	Ray getPickingRay();
+	Ray getPickingRay(uint mouseX, uint mouseY);
+
     extern std::string m_directory;
 }
+
+struct Ray
+{
+	Ray(const glm::vec3& position, const glm::vec3& direction);
+	glm::vec3 m_position;
+	glm::vec3 m_direction;
+};
 
 class Timer
 {
