@@ -71,6 +71,24 @@ bool Player::update()
 	if (Globals::m_uiManager->isKeyDown(KEY_Y))
 		Globals::m_stateMachine->checkStates();
 	
+	// Check if the mouse dragged
+	if (Globals::m_uiManager->isMouseDragging())
+	{
+		uint oldMouseX = Globals::m_uiManager->m_oldMouseX;
+		uint oldMouseY = Globals::m_uiManager->m_oldMouseY;
+		uint newMouseX = Globals::m_uiManager->m_mouseX;
+		uint newMouseY = Globals::m_uiManager->m_mouseY;
+
+		Ray rOld = Utils::getPickingRay(oldMouseX, oldMouseY);
+		Ray rNew = Utils::getPickingRay(newMouseX, newMouseY);
+		glm::vec3 posOld = rOld.m_position + (-rOld.m_position.z / rOld.m_direction.z) * rOld.m_direction;
+		glm::vec3 posNew = rNew.m_position + (-rNew.m_position.z / rNew.m_direction.z) * rNew.m_direction;
+		glm::vec3 translation = posNew - posOld;
+		m_physics->translate(translation);
+	}
+
+	m_physics->applyVelocity(vx, vy);
+
 	//if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	//{
 	//	shoot();
@@ -91,13 +109,14 @@ bool Player::update()
 		shoot();
 	}
 
-	m_physics->applyVelocity(vx, vy);
+	
 	changeColor();
 
 	return true;
 }
 
-b2Vec2 Player::getPosition2d(){
+b2Vec2 Player::getPosition2d()
+{
 	b2Vec2 pos = m_physics->m_body->GetPosition();
 	return pos;
 }

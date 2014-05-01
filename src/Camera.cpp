@@ -65,7 +65,7 @@ bool Camera::update()
         newZoom = -m_panSpeed;
     }
 
-    if (Globals::m_uiManager->isMouseMoving() && Globals::m_uiManager->isLeftMouseButtonDown())
+    if (Globals::m_uiManager->isMouseDragging())
     {
         newRotationX = (float)-Globals::m_uiManager->getMouseMoveX();
         newRotationY = (float)Globals::m_uiManager->getMouseMoveY();

@@ -16,22 +16,36 @@ void glfwErrorCallback(int error, const char* description)
 
 void glfwKeyEvent(GLFWwindow* window, int key, int scancode, int action, int modifiers)
 {
-	Globals::m_uiManager->keyEvent(key, action, modifiers);
+	if (action == GLFW_PRESS)
+	{
+		Globals::m_uiManager->keyPressEvent(key);
+	}
 }
 
 void glfwMouseEvent(GLFWwindow* window, int button, int action, int modifiers)
 {
-	Globals::m_uiManager->mouseEvent(button, action, modifiers);
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		Globals::m_uiManager->mousePressEvent();
+	}
 }
 
 void glfwMouseMove(GLFWwindow* window, double x, double y)
 {
-	Globals::m_uiManager->mouseMove((int)glm::floor(x), (int)glm::floor(y));
+	Globals::m_uiManager->mouseMoveEvent((int)glm::floor(x), (int)glm::floor(y));
 }
 
 void glfwResizeWindow(GLFWwindow* window, int width, int height)
 {
-	Globals::m_uiManager->resizeWindow(width, height);
+	Globals::m_uiManager->resizeWindowEvent(width, height);
+}
+
+void updateUI()
+{
+	if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		Globals::m_uiManager->mouseDownEvent();
+	}
 }
 
 void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, GLvoid* userParam)
@@ -150,7 +164,10 @@ GLFW::GLFW()
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+		updateUI();
+		// TO-DO: send time to updateUI?
 		float time = (float)glfwGetTime();
+
         Globals::render();
 		Globals::update(time);
 		glfwSwapBuffers(window);

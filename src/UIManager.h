@@ -14,27 +14,21 @@ public:
     void update(float time);
 
     // Keyboard
-    void keyEvent(int key, int action, int modifiers);
+    void keyPressEvent(int key);
     bool isKeyDown(int key) const;
 	bool isKeyPressed(int key) const;
-    bool isShiftDown() const;
-    bool isControlDown() const;
-    bool isAltDown() const;
-    bool isModifierDown() const;
 
     // Mouse
-    void mouseEvent(int button, int action, int modifiers);
-    void mouseMove(int x, int y);
-    int getMouseMoveX() const;
+    void mouseMoveEvent(int x, int y);
+	void mousePressEvent();
+	void mouseDownEvent();
+	int getMouseMoveX() const;
     int getMouseMoveY() const;
     bool isMouseMoving() const;
-    bool isMouseButtonDown(int button) const;
-    bool isLeftMouseButtonDown() const;
-    bool isRightMouseButtonDown() const;
-    bool isMiddleMouseButtonDown() const;
+	bool isMouseDragging() const;
 
     // Window
-    void resizeWindow(int width, int height);
+    void resizeWindowEvent(int width, int height);
     float getAspectRatio() const;
 
     // Time
@@ -44,10 +38,14 @@ public:
     int m_mouseX;
     int m_mouseY;
 
+	int m_oldMouseX;
+	int m_oldMouseY;
+
     int m_screenWidth;
     int m_screenHeight;
 
     bool m_mousePressed;
+	bool m_mouseDown;
 
     float m_frameTime;
 	
@@ -57,9 +55,6 @@ protected:
 
     // All times are in seconds
     float m_oldFrameTime;
-
-    int m_oldMouseX;
-    int m_oldMouseY;
 
 	int m_keyPressed;
 };
