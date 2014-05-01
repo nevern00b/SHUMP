@@ -19,6 +19,7 @@ Minion::Minion(b2Vec2 relativePos) : Entity(0), m_lives(1)
 {
 	Material* material = new Material();
 	material->m_noiseStrength = 0.1f;
+	material->m_spawnTime = Globals::m_uiManager->getTime();
 	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape; 

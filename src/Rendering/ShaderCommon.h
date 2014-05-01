@@ -55,6 +55,7 @@ namespace ShaderCommon
         float specBlend;
         float normalIntensity;
 		float noiseStrength;
+		float timeSinceSpawn;
     };
 
     struct TransformGL

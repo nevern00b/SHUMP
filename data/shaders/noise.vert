@@ -210,7 +210,8 @@ void main()
 	float weight = uMaterial.noiseStrength;
 
 	vec3 evNormal = aNormal;
-	vec3 aniNormal = 2.0 * evNormal + uPerFrameData.time;
+	//vec3 aniNormal = 2.0 * evNormal + uPerFrameData.time uMaterial.timeSinceSpawn;
+	vec3 aniNormal = 2.0 * evNormal + uMaterial.timeSinceSpawn;
 	float f0 = weight * f( aniNormal );
 	float fx = weight * f( aniNormal + vec3( .0001, 0.0, 0.0 ) );
 	float fy = weight * f( aniNormal + vec3( 0.0, .0001, 0.0 ) );

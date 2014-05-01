@@ -183,7 +183,8 @@ void Player::gainMinions(uint newMinions)
 	for (int i = 0; i < m_minionCount - oldMinionCount; i++)
 	{
 		float x = glm::linearRand(-2.0f, 2.0f);
-		Minion* newMinion = new Minion(b2Vec2(x, -1.0f));
+		float y = glm::linearRand(-2.0f, 0.0f);
+		Minion* newMinion = new Minion(b2Vec2(x, y));
 	}
 }
 

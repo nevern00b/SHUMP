@@ -24,6 +24,7 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	m_shootTimer = new Timer(0.3f);
 	
 	Material* material = Globals::m_dataManager->getEnemyMaterial(color);
+	material->m_spawnTime = Globals::m_uiManager->getTime();
 	if (m_color == COLOR::RED)
 	{
 		m_health = 2.0f;

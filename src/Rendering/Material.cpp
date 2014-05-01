@@ -3,6 +3,7 @@
 #include "ShaderCommon.h"
 #include "Globals.h"
 #include "RenderManager.h"
+#include "UIManager.h"
 
 Material::Material() :
     m_transparent(false),
@@ -18,7 +19,8 @@ Material::Material() :
     m_reflectBlend(0.0),
     m_normalTexture(0),
     m_normalIntensity(0.0),
-	m_noiseStrength(0.0)
+	m_noiseStrength(0.0),
+	m_spawnTime(0.0)
 {
 
 }
@@ -39,6 +41,7 @@ void Material::render()
     materialGL.specBlend = m_specBlend;
     materialGL.normalIntensity = m_normalIntensity;
 	materialGL.noiseStrength = m_noiseStrength;
+	materialGL.timeSinceSpawn = Globals::m_uiManager->getTime() - m_spawnTime;
 
     Globals::m_renderManager->renderMaterial(materialGL);
 

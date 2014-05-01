@@ -28,5 +28,6 @@ public:
     GLuint m_normalTexture;
     float m_normalIntensity;
 	float m_noiseStrength;
+	float m_spawnTime;
 };
 
