@@ -57,14 +57,14 @@ private:
 
 	Background* m_background;
 
-    GLuint m_basicShader;
-	GLuint m_noiseShader;
-	GLuint m_floorShader;
-	GLuint m_backgroundShader;
-	GLuint m_instancedShader;
-	GLuint m_finalOutputShader;
-	GLuint m_bloomShader;
-	GLuint m_blurShaders[2];
+    Shader* m_basicShader;
+	Shader* m_noiseShader;
+	Shader* m_floorShader;
+	Shader* m_backgroundShader;
+	Shader* m_instancedShader;
+	Shader* m_finalOutputShader;
+	Shader* m_bloomShader;
+	Shader* m_blurShaders[2];
 
 	// Group things by rendering type
 	std::list<Entity*> m_noiseEntities;
@@ -75,6 +75,7 @@ private:
 	FullScreenQuad* m_fullScreenQuad;
 
 	// FBO stuff
+    GLuint m_defaultFBO;
 	GLenum m_fboAttachments[ShaderCommon::NUM_FBO_BINDINGS];
 	GLuint m_fbo;
 	GLuint m_colorTexture; // Screen sized

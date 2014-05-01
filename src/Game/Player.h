@@ -1,5 +1,5 @@
 #pragma once
-
+#include <Box2D/Box2D.h>
 #include "Common.h"
 #include "Entity.h"
 #include <Box2D/Box2D.h>
@@ -23,12 +23,15 @@ public:
 	void gainLives(uint lives);
 	b2Vec2 GetPosition();
 
+	b2Vec2 getPosition2d();
+
+	uint m_lives;
+
 private:
 
 	void shoot();
 
 	Timer* m_shootTimer;
-	uint m_lives;
 	ShootComponent* m_shootComponent;
 
 };

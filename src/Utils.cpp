@@ -14,6 +14,8 @@
 
 namespace Utils
 {
+    std::string m_directory = "";
+    
     bool checkBitfield(uint renderStateBitfield, uint renderStateEnum)
     {
         return (renderStateBitfield & renderStateEnum) > 0;
@@ -21,11 +23,22 @@ namespace Utils
 
     std::string loadFile(const std::string& filename)
     {
-        std::ifstream stream(filename.c_str(), std::ios::in);
+        std::string path = formatPath(filename);
+        std::ifstream stream(path.c_str(), std::ios::in);
         return std::string(std::istreambuf_iterator<char>(stream),
             std::istreambuf_iterator<char>());
     }
 
+    std::string formatPath(const std::string& filename)
+    {
+        return m_directory + filename;
+    }
+    
+    void setDirectory(const std::string& directory)
+    {
+        m_directory = directory;
+    }
+    
 	uint getLevels(uint textureSize)
 	{
 		uint numLevels = 1 + (uint)glm::floor(glm::log2((float)textureSize));

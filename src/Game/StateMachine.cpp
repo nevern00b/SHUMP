@@ -7,25 +7,44 @@
 
 
 void StateMachine::checkStates(){
-	printf("The Bullet State is: %d \n", bulletST);
-	printf("The Immunity State is: %d \n", immunST);
+	printf("The player state is: %d\n", p_state);
+	printf("The score is: %d\n", p_score);
 }
 
-COLOR StateMachine::getBState()
+//Return Methods
+COLOR StateMachine::getPlayerState()
 {
-	return bulletST;
+	return p_state;
 }
 
-COLOR StateMachine::getIState()
+int StateMachine::getPlayerWeapon()
 {
-	return immunST;
+	return p_weapon;
 }
 
-void StateMachine::changeBState(COLOR input)
+int StateMachine::getPlayerWeaponLVL()
 {
-	bulletST = input;
+	return p_weaponLVL;
 }
 
-void StateMachine::changeIState(COLOR input){
-	immunST = input;
+
+//Change Methods
+void StateMachine::changePlayerState(COLOR input)
+{
+	p_state = input;
+}
+
+void StateMachine::changeWeapon(WEAPON input)
+{
+	p_weapon = input;
+}
+
+void StateMachine::upgradeWeapon()
+{
+	p_weaponLVL++;
+}
+
+void StateMachine::resetWeapon()
+{
+	p_weaponLVL = 1;
 }

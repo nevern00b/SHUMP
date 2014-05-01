@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "Globals.h"
 #include "UIManager.h"
+#include "Game/StateMachine.h"
 
 void glfwErrorCallback(int error, const char* description)
 {
@@ -77,7 +78,7 @@ GLFW::GLFW()
 	// Set variables
 	std::string applicationName("SHUMP");
 	glm::uvec2 windowSize(1280, 720);
-	glm::uvec2 openGLVersion(3, 1);
+	glm::uvec2 openGLVersion(3, 3);
 	glm::uvec4 colorBits(8, 8, 8, 0); // We only use alpha on custom FBOs (default value is 8 bits)
 	glm::uvec2 depthStencilBits(24, 0);
 	bool vsync = false;
@@ -131,7 +132,8 @@ GLFW::GLFW()
 	}
 
 
-	Globals::init(windowSize.x, windowSize.y);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Put this here for cross-platform purposes
+	Globals::init(0.0, windowSize.x, windowSize.y);
 
 	// Set glfw window callbacks to UIManager
 	glfwSetKeyCallback(window, glfwKeyEvent);
@@ -149,6 +151,7 @@ GLFW::GLFW()
 	{
 		glfwPollEvents();
 		float time = (float)glfwGetTime();
+        Globals::render();
 		Globals::update(time);
 		glfwSwapBuffers(window);
 
@@ -165,7 +168,7 @@ GLFW::GLFW()
 			iss << "FPS: ";
 			iss << fpsAvg;
 			iss << " Score: ";
-			iss << 1000;// Globals::m_stateMachine->score;
+			iss << Globals::m_stateMachine->p_score;
 			glfwSetWindowTitle(window, iss.str().c_str());
 			fpsAvg = 0.0f;
 		}

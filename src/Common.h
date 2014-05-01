@@ -10,9 +10,12 @@
 #endif
 #endif
 
-#ifdef OS_WINDOWS
+#if defined(OS_WINDOWS)
 	#include <GL3/gl3w.h>
 	#include <GLFW/glfw3.h>
+#elif defined(OS_IOS)
+    #include <OpenGLES/ES3/gl.h>
+    //#include <GLES3/gl3.h>
 #endif
 
 typedef unsigned char uchar;

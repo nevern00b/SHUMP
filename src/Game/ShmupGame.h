@@ -6,7 +6,7 @@ class BulletPool;
 class ParticleSystem;
 class Player;
 class EnemyManager;
-class Minion;
+class Timer;
 
 class ShmupGame : public GameManager
 {
@@ -37,10 +37,11 @@ public:
 	BulletPool* m_enemyGBulletPool;
 	BulletPool* m_enemyYBulletPool;
 	ParticleSystem* m_particleSystem;
+	Player* m_player;
 
 private:
 
-    Player* m_player;
+	Timer* m_scoreTimer;
 	EnemyManager* m_enemyManager;
 
 };

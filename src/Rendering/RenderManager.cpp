@@ -16,21 +16,24 @@
 #include "FullScreenQuad.h"
 #include "RenderComponent.h"
 #include "Material.h"
+#include "Shader.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
 	m_floor(0),
 	m_background(0)
 {
-	//m_background = new Background();
-
+    int defaultFBO;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
+    m_defaultFBO = (GLuint)defaultFBO;
+    
     // Init GL state
     glClearColor(1, 1, 1, 1);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
-    glDepthRange(0.0f, 1.0f);
+    glDepthRangef(0.0f, 1.0f);
 
     // Init buffers
     m_materialBuffer = new Buffer<ShaderCommon::MaterialGL>(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, ShaderCommon::MATERIAL_UBO, 1, 0);
@@ -45,16 +48,17 @@ RenderManager::RenderManager() :
     setSamplerParams(m_linearSampler, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
 
     // Load shaders
-	m_basicShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/basic.frag");
-	m_noiseShader = Globals::m_dataManager->loadShaderProgram("data/shaders/noise.vert", "data/shaders/basic.frag");
-	m_floorShader = Globals::m_dataManager->loadShaderProgram("data/shaders/basic.vert", "data/shaders/floor.frag");
-	//m_backgroundShader = Globals::m_dataManager->loadShaderProgram("data/shaders/background.vert", "data/shaders/background.frag");
+	m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
+	m_noiseShader = new Shader("data/shaders/noise.vert", "data/shaders/basic.frag");
+	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
+	//m_backgroundShader = new Shader("data/shaders/background.vert", "data/shaders/background.frag");
 
-	m_instancedShader = Globals::m_dataManager->loadShaderProgram("data/shaders/instanced.vert", "data/shaders/basic.frag");
-	m_finalOutputShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
-	m_bloomShader = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
-	m_blurShaders[0] = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurX.frag");
-	m_blurShaders[1] = Globals::m_dataManager->loadShaderProgram("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
+
+	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
+	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
+	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
+	m_blurShaders[0] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurX.frag");
+	m_blurShaders[1] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
 
 	// Full screen quad
 	m_fullScreenQuad = new FullScreenQuad();
@@ -86,11 +90,10 @@ RenderManager::RenderManager() :
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, m_fboAttachments[ShaderCommon::COLOR_FBO_BINDING], GL_TEXTURE_2D, m_colorTexture, 0);
 	glDrawBuffers(ShaderCommon::NUM_FBO_BINDINGS, m_fboAttachments);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	// Bloom textures
-	m_bloomSizeX = 640;
-	m_bloomSizeY = 360;
+	m_bloomSizeX = windowWidth/2;
+	m_bloomSizeY = windowHeight/2;
 	m_bloomLevels = 4;
 	glGenTextures(2, m_bloomTextures);
 	for (uint i = 0; i < 2; i++)
@@ -108,7 +111,6 @@ RenderManager::RenderManager() :
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[i], 0);
 		GLenum bloomFBOAttachments[1] = { GL_COLOR_ATTACHMENT0 };
 		glDrawBuffers(1, bloomFBOAttachments);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 }
 
@@ -139,8 +141,8 @@ void RenderManager::resizeWindow(int width, int height)
 
 void RenderManager::render()
 {
-	bool bloomEnabled = true;
-
+	bool bloomEnabled = false;
+    
     uint screenWidth = Globals::m_uiManager->m_screenWidth;
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
     float aspectRatio = (float)screenWidth / screenHeight;
@@ -149,7 +151,7 @@ void RenderManager::render()
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
-    m_projMatrix = glm::perspective(fov, aspectRatio, 0.1f, 1000.0f);
+    m_projMatrix = glm::perspective(fov, aspectRatio, 1.0f, 100.0f);
 	//float orthoSizeX = ShmupGame::WORLD_BOUND_X;
 	//float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
 	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
@@ -199,31 +201,30 @@ void RenderManager::render()
     }
 
     // Clear the framebuffer
-	GLuint fbo = bloomEnabled ? m_fbo : 0;
+	GLuint fbo = bloomEnabled ? m_fbo : m_defaultFBO;
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
     setViewportSize(screenWidth, screenHeight);
     setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
     clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
-    clearDepthStencil();
+    clearDepth();
 
     // Render scene
-    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE | RENDER_STATE::FRAMEBUFFER_SRGB);
+    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
 	
-	glUseProgram(m_basicShader);
-
+	m_basicShader->render();
     for (auto& entity : m_entities)
     {
         entity->render();
     }
 
-	glUseProgram(m_noiseShader);
+	m_noiseShader->render();
 
 	for (auto& entity : m_noiseEntities)
 	{
 		entity->render();
 	}
 
-	glUseProgram(m_instancedShader);
+	m_instancedShader->render();
 
 	for (auto& objectPool : m_objectPools)
 	{
@@ -232,7 +233,7 @@ void RenderManager::render()
 
 	if (m_floor != 0)
 	{
-		glUseProgram(m_floorShader);
+		m_floorShader->render();
 		m_floor->render();
 	}
 
@@ -253,7 +254,7 @@ void RenderManager::render()
 		setRenderState(RENDER_STATE::COLOR | RENDER_STATE::LINEAR_SAMPLING_COLOR);
 		perFrame.invScreenSize = 1.0f / glm::vec2((float)m_bloomSizeX, (float)m_bloomSizeY);
 		m_perFrameBuffer->updateAll(&perFrame);
-		glUseProgram(m_bloomShader);
+		m_bloomShader->render();
 		m_fullScreenQuad->render();
 
 		// Generate mipmap for bloom texture
@@ -281,7 +282,7 @@ void RenderManager::render()
 			// Blur X into bloom texture 1
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[1]);
 			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[1], i);
-			glUseProgram(m_blurShaders[0]);
+			m_blurShaders[0]->render();
 			m_fullScreenQuad->render();
 
 			// Bind bloom texture 1, confine to ith mip level
@@ -292,7 +293,7 @@ void RenderManager::render()
 			// Blur Y into bloom texture 0
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_bloomFBOs[0]);
 			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_bloomTextures[0], i);
-			glUseProgram(m_blurShaders[1]);
+			m_blurShaders[1]->render();
 			m_fullScreenQuad->render();
 		}
 
@@ -303,14 +304,15 @@ void RenderManager::render()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_bloomLevels - 1);
 
 		// Output fbo to screen
+        setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
 		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
 		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // 0 is the default fbo
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
 		setViewportSize(screenWidth, screenHeight);
 		setRenderState(RENDER_STATE::COLOR);
 		perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
 		m_perFrameBuffer->updateAll(&perFrame);
-		glUseProgram(m_finalOutputShader);
+		m_finalOutputShader->render();
 		m_fullScreenQuad->render();
 	}
 
@@ -399,10 +401,13 @@ void RenderManager::setRenderState(uint renderStateBitfield)
     }
     else glDisable(GL_BLEND);
 
+    
     // sRGB conversion when writing to color buffer
-    if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::FRAMEBUFFER_SRGB))
-        glEnable(GL_FRAMEBUFFER_SRGB);
-    else glDisable(GL_FRAMEBUFFER_SRGB);
+    #if defined(OS_WINDOWS)
+        if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::FRAMEBUFFER_SRGB))
+            glEnable(GL_FRAMEBUFFER_SRGB);
+        else glDisable(GL_FRAMEBUFFER_SRGB);
+    #endif
 
     // Linear vs. Nearest sampling for FBO color texture
     if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::LINEAR_SAMPLING_COLOR))

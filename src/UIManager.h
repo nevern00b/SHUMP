@@ -1,13 +1,14 @@
 #pragma once
 
 #include <vector>
+#include "Common.h"
 
 class UIManager
 {
 
 public:
 
-    UIManager();
+    UIManager(float time, uint width, uint height);
     ~UIManager();
 
     void update(float time);

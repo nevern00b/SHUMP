@@ -66,6 +66,8 @@ project ( name )
     location ( build_location )                     	--this is where the project is built
     targetdir ( build_location )                    	--this is where the exe gets built
     debugdir ( project_location )                   	--this is where the debug exe gets built
+    --buildoptions { "-std=c++11", "-stdlib=libc++"}
+    --linkoptions { "-stdlib=libc++" }
 
     --Create debug and release modes
     local platform = _OPTIONS["platform"]

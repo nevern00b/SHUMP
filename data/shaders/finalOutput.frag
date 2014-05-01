@@ -1,7 +1,7 @@
 layout (location = 0) out vec4 fragColor;
 
-layout(binding = COLOR_FBO_TEXTURE) uniform sampler2D tColor;
-layout(binding = BLOOM_TEXTURE) uniform sampler2D tBloom;
+uniform sampler2D tColor;
+uniform sampler2D tBloom;
 
 void main()
 {

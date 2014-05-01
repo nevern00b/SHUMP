@@ -5,14 +5,14 @@
 #include "Globals.h"
 #include "Rendering/RenderManager.h"
 
-UIManager::UIManager() : 
+UIManager::UIManager(float time, uint width, uint height) :
     m_oldMouseX(0),
     m_oldMouseY(0),
     m_mouseX(0),
     m_mouseY(0),
-    m_screenWidth(0),
-    m_screenHeight(0),
-    m_oldFrameTime(0.0)
+    m_screenWidth(width),
+    m_screenHeight(height),
+    m_oldFrameTime(time)
 {
 
 }
@@ -35,7 +35,7 @@ void UIManager::update(float time)
 
 void UIManager::keyEvent(int key, int action, int modifiers)
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 	if (action == GLFW_PRESS)
 	{
 		m_keyPressed = key;
@@ -50,36 +50,36 @@ bool UIManager::isKeyPressed(int key) const
 
 bool UIManager::isKeyDown(int key) const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return glfwGetKey(glfwGetCurrentContext(), key) == GLFW_PRESS;
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
 
 bool UIManager::isShiftDown() const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return isKeyDown(GLFW_MOD_SHIFT);
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
 
 bool UIManager::isControlDown() const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return isKeyDown(GLFW_MOD_CONTROL);
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
 
 bool UIManager::isAltDown() const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return isKeyDown(GLFW_MOD_ALT);
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
@@ -91,7 +91,7 @@ bool UIManager::isModifierDown() const
 
 void UIManager::mouseEvent(int button, int action, int modifiers)
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 		{
 			m_mousePressed = true;
@@ -125,18 +125,18 @@ bool UIManager::isMouseMoving() const
 
 bool UIManager::isMouseButtonDown(int button) const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return glfwGetMouseButton(glfwGetCurrentContext(), button) == GLFW_PRESS;
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
 
 bool UIManager::isLeftMouseButtonDown() const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT);
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
     
@@ -144,18 +144,18 @@ bool UIManager::isLeftMouseButtonDown() const
 
 bool UIManager::isRightMouseButtonDown() const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return isMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT);
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
 
 bool UIManager::isMiddleMouseButtonDown() const
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return isMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE);
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return false;
 	#endif
 }
@@ -174,9 +174,9 @@ float UIManager::getAspectRatio() const
 
 float UIManager::getTime()
 {
-	#ifdef OS_WINDOWS
+	#if defined(OS_WINDOWS)
 		return (float)glfwGetTime();
-	#elif OS_IOS
+	#elif defined(OS_IOS)
 		return m_oldFrameTime;
 	#endif
 }
