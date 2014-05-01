@@ -16,9 +16,10 @@
 #include "ShootComponent.h"
 #include "Item.h"
 #include "StateMachine.h"
+#include <glm/gtc/random.hpp>
+#include "Minion.h"
 
-Player::Player() : Entity(0),
-	m_lives(3)
+Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 {
 	Material* material = new Material();
 	material->m_noiseStrength = 0.15f;
@@ -95,11 +96,6 @@ bool Player::update()
 	changeColor();
 
 	return true;
-}
-
-b2Vec2 Player::getPosition2d(){
-	b2Vec2 pos = m_physics->m_body->GetPosition();
-	return pos;
 }
 
 void Player::onCollide(EventObject* collider)
@@ -179,7 +175,19 @@ void Player::gainLives(uint lives)
 	m_lives += lives;
 }
 
-b2Vec2 Player::GetPosition()
+void Player::gainMinions(uint newMinions)
+{
+	int oldMinionCount = m_minionCount;
+	int newMinionCount = m_minionCount + newMinions;
+	m_minionCount = newMinionCount <= Max_Minion_Count ? newMinionCount : Max_Minion_Count;
+	for (int i = 0; i < m_minionCount - oldMinionCount; i++)
+	{
+		float x = glm::linearRand(-2.0f, 2.0f);
+		Minion* newMinion = new Minion(b2Vec2(x, -1.0f));
+	}
+}
+
+b2Vec2 Player::getPosition()
 {
 	return m_physics->m_body->GetPosition();
 }

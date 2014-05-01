@@ -2,13 +2,14 @@
 #include <Box2D/Box2D.h>
 #include "Common.h"
 #include "Entity.h"
-#include <Box2D/Box2D.h>
+
+#define Max_Minion_Count 10
 
 class BulletPool;
 class ShootComponent;
 class Timer;
 class Minion;
-class b2Vec2;
+struct b2Vec2;
 
 class Player : public Entity
 {
@@ -21,11 +22,11 @@ public:
 
 	void changeColor();
 	void gainLives(uint lives);
-	b2Vec2 GetPosition();
-
-	b2Vec2 getPosition2d();
+	void gainMinions(uint newMinions);
+	b2Vec2 getPosition();
 
 	uint m_lives;
+	uint m_minionCount;
 
 private:
 

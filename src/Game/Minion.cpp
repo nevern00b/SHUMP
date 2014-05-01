@@ -45,7 +45,7 @@ bool Minion::update()
 	if (!Entity::update()) return false;
 
 	b2Vec2 pos = m_physics->m_body->GetPosition();
-	b2Vec2 targetPos = m_player->GetPosition() + m_relativePos;
+	b2Vec2 targetPos = m_player->getPosition() + m_relativePos;
 
 	float speed = 10.0f;
 	float vx = targetPos.x - pos.x;
@@ -72,12 +72,13 @@ void Minion::onCollide(EventObject* collider)
 	{
 		bullet->destroy();
 
-		if (bullet->m_color != Globals::m_stateMachine->getIState())
+		if (bullet->m_color != Globals::m_stateMachine->getPlayerState())
 		{
 			m_lives--;
 			if (m_lives == 0)
 			{
 				destroy();
+				m_player->m_minionCount--;
 			}
 		}
 	}
@@ -99,7 +100,7 @@ void Minion::onCollide(EventObject* collider)
 
 void Minion::shoot()
 {
-	int bulletState = Globals::m_stateMachine->getBState();
+	int bulletState = Globals::m_stateMachine->getPlayerState();
 	if (bulletState == COLOR::RED)
 	{
 		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_redBulletPool;

@@ -104,8 +104,8 @@ void ShmupGame::init()
 	m_player = new Player();
 	m_player->m_transform->setTranslation(-2, -5);
 
-	Minion* minion1 = new Minion(b2Vec2(-1.0f, -1.0f));
-	Minion* minion2 = new Minion(b2Vec2(1.0f, -1.0f));
+	//Minion* minion1 = new Minion(b2Vec2(-1.0f, -1.0f));
+	//Minion* minion2 = new Minion(b2Vec2(1.0f, -1.0f));
 
 	m_enemyManager = new EnemyManager();
 
@@ -146,6 +146,12 @@ void ShmupGame::update()
 	{
 		m_player->gainLives(100);
 	}
+
+	if (Globals::m_uiManager->isKeyPressed(KEY_Q))
+	{
+		m_player->gainMinions(1);
+	}
+
 
 	GameManager::update();
 	//printf("===================");
