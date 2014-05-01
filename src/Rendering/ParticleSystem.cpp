@@ -44,10 +44,10 @@ Particle::~Particle()
 bool Particle::update()
 {
 	// Destroy particle if it goes off screen
-	if (m_y > ShmupGame::WORLD_BOUND_Y ||
-		m_y < -ShmupGame::WORLD_BOUND_Y ||
-		m_x > ShmupGame::WORLD_BOUND_X ||
-		m_x < -ShmupGame::WORLD_BOUND_X)
+	if (m_y > ShmupGame::WORLD_UPPER_BOUND_Y ||
+		m_y < ShmupGame::WORLD_LOWER_BOUND_Y ||
+		m_x > ShmupGame::WORLD_UPPER_BOUND_X ||
+		m_x < ShmupGame::WORLD_LOWER_BOUND_X)
 	{
 		destroy();
 		return false;

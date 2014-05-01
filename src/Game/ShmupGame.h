@@ -25,8 +25,10 @@ public:
 	BulletPool* getBulletPool(const std::string& color);
 	Player* getPlayer(); 
 
-	static const float WORLD_BOUND_X;
-	static const float WORLD_BOUND_Y;
+	static const float ShmupGame::WORLD_UPPER_BOUND_X;
+	static const float ShmupGame::WORLD_LOWER_BOUND_X;
+	static const float ShmupGame::WORLD_UPPER_BOUND_Y;
+	static const float ShmupGame::WORLD_LOWER_BOUND_Y;
 
 	BulletPool* m_yellowBulletPool;
 	BulletPool* m_greenBulletPool;

@@ -26,8 +26,10 @@
 #include "Item.h"
 #include "Minion.h"
 
-const float ShmupGame::WORLD_BOUND_X = 16.0f;
-const float ShmupGame::WORLD_BOUND_Y = 12.0f;
+const float ShmupGame::WORLD_UPPER_BOUND_X = 12.0f;
+const float ShmupGame::WORLD_LOWER_BOUND_X = -12.0f;
+const float ShmupGame::WORLD_UPPER_BOUND_Y = 32.0f;
+const float ShmupGame::WORLD_LOWER_BOUND_Y = -16.0f;
 
 ShmupGame::ShmupGame() : GameManager()
 {

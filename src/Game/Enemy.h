@@ -9,6 +9,7 @@ class Timer;
 
 enum ENEMY_PATTERN
 {
+	STATIONARY,
 	SIDE,
 	HOVER,
 	V_SHAPE,

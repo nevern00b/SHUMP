@@ -124,11 +124,11 @@ bool Enemy::update()
 		if (glm::abs(vy) < 0.1) vy = -1.0f;
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 
-		if (pos.x < -20 || pos.x > 20 || pos.y<-20 || pos.y >20)
+		if (pos.x < ShmupGame::WORLD_LOWER_BOUND_X || pos.x > ShmupGame::WORLD_UPPER_BOUND_X || pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
 			destroy();
 	}	
 
-	m_physics->applyVelocity(m_enemyDirection.x, -m_enemyDirection.y);
+	m_physics->applyVelocity(m_enemyDirection.x, m_enemyDirection.y);
 
 	return true;
 }
