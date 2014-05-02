@@ -51,7 +51,7 @@ RenderManager::RenderManager() :
 	m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = new Shader("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
-	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
+	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/shadeless.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_backgroundShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/background.frag");
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
@@ -70,13 +70,13 @@ RenderManager::RenderManager() :
 	// Create color textures
 	glGenTextures(1, &m_colorTexture);
 	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, windowWidth, windowHeight);
 	setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST, 1);
 
 	// Create depth texture
 	glGenTextures(1, &m_depthTexture);
 	glBindTexture(GL_TEXTURE_2D, m_depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, windowWidth, windowHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, windowWidth, windowHeight);
 	setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST, 1);
 
 	// Create framebuffer textures
@@ -141,15 +141,7 @@ RenderManager::~RenderManager()
 
 void RenderManager::resizeWindow(int width, int height)
 {
-	glActiveTexture(GL_TEXTURE0 + ShaderCommon::NON_USED_TEXTURE_BINDING);
-
-	// Color
-	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, 0);
-
-	// Depth
-	glBindTexture(GL_TEXTURE_2D, m_depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
+	// Nothing
 }
 
 void RenderManager::render()
@@ -210,7 +202,7 @@ void RenderManager::render()
         }
         m_lightingBuffer->updateAll(&lighting);
 
-		m_lightBufferDirty = false;
+		//m_lightBufferDirty = false;
     }
 
 	// Render half-size background

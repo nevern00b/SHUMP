@@ -119,7 +119,7 @@ void ShmupGame::init()
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);
-    light->m_transform->setTranslation(glm::vec3(5, 10, 0));
+    light->m_transform->setTranslation(glm::vec3(-3, -10, 0));
 	
     DirLight* dirlight = new DirLight(0, glm::vec3(1, 1, 1));
     dirlight->m_transform->rotate(30, glm::vec3(1, 0, 0));

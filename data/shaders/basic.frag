@@ -103,8 +103,9 @@ void main()
         float lightDistanceSqr = dot(lightDifference, lightDifference);
         vec3 lightDir = lightDifference * inversesqrt(lightDistanceSqr);
         
-        float lightAttenuation = max(0.0, 1.0 - lightDistanceSqr*pointLight.position.a);
-        lightAttenuation *= lightAttenuation;
+        //float lightAttenuation = max(0.0, 1.0 - lightDistanceSqr*pointLight.position.a);
+        //lightAttenuation *= lightAttenuation;
+		float lightAttenuation = 1.0;
         
         float visibility = 1.0;
         finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
