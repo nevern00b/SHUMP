@@ -48,8 +48,10 @@ float snoise(vec2 v)
 float fbm(vec2 p) {
     float f = 0.0;
     float w = 0.5;
-    for (int i = 0; i < 5; i ++) {
-            f += w * snoise(p);
+    for (int i = 0; i < 1; i ++) {
+            //Controls rate of noise. Omit GlobalTime param for constant noise level of tunnel
+            f += w * snoise(p*2.0);// * iGlobalTime/5.0);
+
             p *= 2.;
             w *= 0.5;
     }
@@ -78,8 +80,9 @@ vec4 tunneliter(vec2 texCoord,vec4 incol,float cx,float cy,float limita,float li
     return 0.5*outCol;
 } 
 
-void main(void)
+void main()
 {
+    fragColor = vec4(1.0);
 	vec2 uv = gl_FragCoord.xy * uPerFrameData.invScreenSize;
 	float time = uPerFrameData.time;
 	fragColor = vec4(uv,0.5+0.5*sin(time),1.0);
@@ -87,21 +90,22 @@ void main(void)
     vec4 finalCol;
     
     //float xa=(sin(time)*0.000004)+(sin((time*1.3)+0.5)*0.00000024);
+	//float ya=(cos(iGlobalTime)*0.45)+(cos((iGlobalTime*0.6)-0.7)*0.3);
+
 	float xa=0.0;
-	float ya=0.7;
-    //float ya=(cos(time)*0.45)+(cos((time*0.6)-0.7)*0.3);
+	float ya=0.0;
 
     finalCol=vec4(1.0,0.0,1.0,1.0);
+    finalCol=tunneliter(uv,vec4(1.0,1.0,1.0,1.0),0.5+(xa*0.80),0.85+(ya*0.80),0.01,0.9,vec4(0.1,0.3,0.2,1.0),9.1);    
+    finalCol=tunneliter(uv,finalCol,0.5+(xa*0.70),0.85+(ya*0.70),0.14,0.05,vec4(0.6,0.6,0.7,1.0),9.3);   
+	//finalCol=tunneliter(uv,finalCol,0.5+(xa*0.90),0.8+(ya*0.70),0.01,0.02,vec4(0.1,0.2,0.1,1.0),0.2);    
 
-    finalCol=tunneliter(uv,vec4(1.0,1.0,1.0,1.0),0.5+(xa*0.80),0.5+(ya*0.80),0.5,0.2,vec4(1.5,1.5,1.0,1.0),3.1);    
-    //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.90),0.5+(ya*0.70),0.01,0.02,vec4(0.7,0.7,0.8,1.0),7.2);    
-	//finalCol=tunneliter(uv,finalCol,0.5+(xa*0.70),0.5+(ya*0.70),0.14,0.05,vec4(0.6,0.6,0.7,1.0),9.3);    
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.58),0.5+(ya*0.58),0.18,0.10,vec4(0.5,0.5,0.6,1.0),4.4);    
-    //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.35),0.5+(ya*0.35),0.24,0.15,vec4(0.4,0.4,0.5,1.0),2.5);    
+    //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.35),0.5+(ya*0.35),0.24,0.15,vec4(0.4,0.4,0.5,1.0),2.5);
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.22),0.5+(ya*0.22),0.30,0.20,vec4(0.4,0.4,0.5,1.0),9.6);    
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.15),0.5+(ya*0.15),0.40,0.25,vec4(0.3,0.3,0.4,1.0),6.7);    
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.12),0.5+(ya*0.12),0.50,0.35,vec4(0.3,0.3,0.4,1.0),3.8);    
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.10),0.5+(ya*0.10),0.60,0.40,vec4(0.3,0.3,0.4,1.0),7.9);
 
-    fragColor = vec4(vec3(finalCol.xyz),10000.0);
+    fragColor = vec4(vec3(finalCol.xyz),10000.0)*vec4(1.0,0.02,0.0,1.0);
 }

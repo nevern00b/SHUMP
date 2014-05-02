@@ -51,13 +51,14 @@ void EnemyManager::update()
 		else if (type == ENEMY_TYPE::MISSILE)
 		{
 			float patternRand = glm::linearRand(0.0f, 1.0f);
-			if (patternRand < 0.4f) pattern = ENEMY_PATTERN::SIDE;
+			if (patternRand < 0.6f) pattern = ENEMY_PATTERN::STATIONARY;
 			else if (patternRand < 0.7f) pattern = ENEMY_PATTERN::HOVER;
+			else if (patternRand < 0.8f) pattern = ENEMY_PATTERN::SIDE;
 			else if (patternRand < 0.9f) pattern = ENEMY_PATTERN::V_SHAPE;
 			else if (patternRand <= 1.0f) pattern = ENEMY_PATTERN::CLUSTER_1;
 		}
 
-		pattern = ENEMY_PATTERN::STATIONARY;
+		//pattern = ENEMY_PATTERN::STATIONARY;
 
 		// Position
 		float x = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X, ShmupGame::WORLD_UPPER_BOUND_X);
@@ -183,7 +184,7 @@ void EnemyManager::update()
 		else if (pattern == ENEMY_PATTERN::STATIONARY)
 		{
 			Enemy* enemy = new Enemy(color, pattern, type, x);
-			enemy->m_transform->setTranslation(x, y);
+			enemy->m_transform->setTranslation(x, ShmupGame::WORLD_UPPER_BOUND_Y);
 			enemy->m_enemyDirection.x = 0;
 			enemy->m_enemyDirection.y = -20;
 		}

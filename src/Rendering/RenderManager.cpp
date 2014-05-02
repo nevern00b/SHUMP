@@ -53,7 +53,7 @@ RenderManager::RenderManager() :
 	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
 	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
-	m_backgroundShader = new Shader("data/shaders/fullscreen.vert", "data/shaders/background.frag");
+	m_backgroundShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/background.frag");
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
 	m_blurShaders[0] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurX.frag");
 	m_blurShaders[1] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
@@ -90,8 +90,8 @@ RenderManager::RenderManager() :
 	glDrawBuffers(ShaderCommon::NUM_FBO_BINDINGS, m_fboAttachments);
 
 	// Bloom textures
-	m_bloomSizeX = windowWidth << 1;
-	m_bloomSizeY = windowHeight << 1;
+	m_bloomSizeX = windowWidth >> 1;
+	m_bloomSizeY = windowHeight >> 1;
 	m_bloomLevels = 4;
 	glGenTextures(2, m_bloomTextures);
 	for (uint i = 0; i < 2; i++)
@@ -224,29 +224,22 @@ void RenderManager::render()
 	glActiveTexture(GL_TEXTURE0 + ShaderCommon::BACKGROUND_TEXTURE);
 	glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
 
-	// Clear the framebuffer
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
-	setViewportSize(screenWidth, screenHeight);
-	setRenderState(RENDER_STATE::DEPTH_WRITE);// | RENDER_STATE::COLOR);
-	//clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
-	clearDepth();
-
-	// Send background to default FBO
+	// Clear depth
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
 	setRenderState(RENDER_STATE::DEPTH_WRITE);
 	clearDepth();
+
+	// Render background to screen
 	setRenderState(RENDER_STATE::COLOR);
 	setViewportSize(screenWidth, screenHeight);
 	perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
 	m_perFrameBuffer->updateAll(&perFrame);
 	m_finalOutputShader->render();
 	m_fullScreenQuad->render();
-
     
-
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-	
+    
 	m_basicShader->render();
     for (auto& entity : m_entities)
     {
@@ -254,20 +247,17 @@ void RenderManager::render()
     }
 	
 	m_noiseShader->render();
-	
 	for (auto& entity : m_noiseEntities)
 	{
 		entity->render();
 	}
 	
 	m_instancedShader->render();
-	
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
 	}
 
-	
 
 	if (bloomEnabled)
 	{
