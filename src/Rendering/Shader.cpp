@@ -20,6 +20,7 @@ Shader::Shader(const std::string& vertexShader, const std::string& fragmentShade
 	m_colorFBOTextureBinding = glGetUniformLocation(m_program, "tColor");
 	m_bloomTextureBinding = glGetUniformLocation(m_program, "tBloom");
 	m_blurTextureBinding = glGetUniformLocation(m_program, "tBlur");
+	m_backgroundTextureBinding = glGetUniformLocation(m_program, "tBackground");
 
 	uint perFrameUBOBinding = glGetUniformBlockIndex(m_program, "PerFrameUBO");
 	glUniformBlockBinding(m_program, perFrameUBOBinding, ShaderCommon::PER_FRAME_UBO);
@@ -55,6 +56,7 @@ void Shader::render()
 	glUniform1i(m_colorFBOTextureBinding, ShaderCommon::COLOR_FBO_TEXTURE);
 	glUniform1i(m_bloomTextureBinding, ShaderCommon::BLOOM_TEXTURE);
 	glUniform1i(m_blurTextureBinding, ShaderCommon::BLUR_TEXTURE);
+	glUniform1i(m_backgroundTextureBinding, ShaderCommon::BACKGROUND_TEXTURE);
 
 
 	Globals::m_renderManager->m_materialBuffer->bindToShader();

@@ -104,5 +104,4 @@ void main(void)
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.10),0.5+(ya*0.10),0.60,0.40,vec4(0.3,0.3,0.4,1.0),7.9);
 
     fragColor = vec4(vec3(finalCol.xyz),10000.0);
-
 }

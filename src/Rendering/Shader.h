@@ -13,11 +13,12 @@ public:
 
 	GLuint m_program;
 	
-	GLuint m_diffuseTextureBinding;
-	GLuint m_reflectTextureBinding;
-	GLuint m_specularTextureBinding;
-	GLuint m_normalTextureBinding;
-	GLuint m_colorFBOTextureBinding;
-	GLuint m_bloomTextureBinding;
-	GLuint m_blurTextureBinding;
+	GLint m_diffuseTextureBinding;
+	GLint m_reflectTextureBinding;
+	GLint m_specularTextureBinding;
+	GLint m_normalTextureBinding;
+	GLint m_colorFBOTextureBinding;
+	GLint m_bloomTextureBinding;
+	GLint m_blurTextureBinding;
+	GLint m_backgroundTextureBinding;
 };

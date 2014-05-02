@@ -17,7 +17,8 @@ namespace ShaderCommon
     const uint COLOR_FBO_TEXTURE					= 4;
 	const uint BLOOM_TEXTURE						= 5;
 	const uint BLUR_TEXTURE							= 6;
-    const uint NON_USED_TEXTURE_BINDING             = 7; // Used for modifying textures that shouldn't be bound to a binding point
+	const uint BACKGROUND_TEXTURE					= 7;
+    const uint NON_USED_TEXTURE_BINDING             = 8; // Used for modifying textures that shouldn't be bound to a binding point
 
     // Vertex attribute indexes                                     
     const uint POSITION_ATTR                        = 0;

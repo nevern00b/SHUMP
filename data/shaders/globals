@@ -16,7 +16,8 @@ precision highp float;
 #define COLOR_FBO_TEXTURE				4
 #define BLOOM_TEXTURE					5
 #define BLUR_TEXTURE					6
-#define NON_USED_TEXTURE_BINDING        7
+#define BACKGROUND_TEXTURE				7
+#define NON_USED_TEXTURE_BINDING        8
 
 // Vertex attribute indexes                                     
 #define POSITION_ATTR                   0

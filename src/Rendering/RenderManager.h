@@ -87,6 +87,10 @@ private:
 	uint m_bloomSizeY;
 	uint m_bloomLevels;
 
+	GLuint m_backgroundFBO;
+	GLuint m_backgroundTexture;
+	uint m_backgroundSizeX;
+	uint m_backgroundSizeY;
 };
 
 namespace RENDER_STATE

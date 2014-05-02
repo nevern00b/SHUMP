@@ -70,7 +70,7 @@ RenderManager::RenderManager() :
 	// Create color textures
 	glGenTextures(1, &m_colorTexture);
 	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, windowWidth, windowHeight, 0, GL_RGB, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 	setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_NEAREST, GL_NEAREST, 1);
 
 	// Create depth texture
@@ -90,8 +90,8 @@ RenderManager::RenderManager() :
 	glDrawBuffers(ShaderCommon::NUM_FBO_BINDINGS, m_fboAttachments);
 
 	// Bloom textures
-	m_bloomSizeX = windowWidth/2;
-	m_bloomSizeY = windowHeight/2;
+	m_bloomSizeX = windowWidth << 1;
+	m_bloomSizeY = windowHeight << 1;
 	m_bloomLevels = 4;
 	glGenTextures(2, m_bloomTextures);
 	for (uint i = 0; i < 2; i++)
@@ -110,6 +110,21 @@ RenderManager::RenderManager() :
 		GLenum bloomFBOAttachments[1] = { GL_COLOR_ATTACHMENT0 };
 		glDrawBuffers(1, bloomFBOAttachments);
 	}
+
+	// Background texture
+	m_backgroundSizeX = windowWidth >> 1;
+	m_backgroundSizeY = windowHeight >> 1;
+	glGenTextures(1, &m_backgroundTexture);
+	glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, m_backgroundSizeX, m_backgroundSizeY);
+	setTextureParams(GL_TEXTURE_2D, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR, 1);
+
+	// Background FBO
+	glGenFramebuffers(1, &m_backgroundFBO);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_backgroundFBO);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_backgroundTexture, 0);
+	GLenum backgroundFBOAttachments[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, backgroundFBOAttachments);
 }
 
 RenderManager::~RenderManager()
@@ -198,13 +213,36 @@ void RenderManager::render()
 		m_lightBufferDirty = false;
     }
 
-    // Clear the framebuffer
-	GLuint fbo = bloomEnabled ? m_fbo : m_defaultFBO;
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-    setViewportSize(screenWidth, screenHeight);
-    setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::COLOR);
-    clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
-    clearDepth();
+	// Render half-size background
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_backgroundFBO);
+	setRenderState(RENDER_STATE::COLOR);
+	setViewportSize(m_backgroundSizeX, m_backgroundSizeY);
+	perFrame.invScreenSize = 1.0f / glm::vec2(m_backgroundSizeX, m_backgroundSizeY);
+	m_perFrameBuffer->updateAll(&perFrame);
+	m_backgroundShader->render();
+	m_fullScreenQuad->render();
+	glActiveTexture(GL_TEXTURE0 + ShaderCommon::BACKGROUND_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
+
+	// Clear the framebuffer
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
+	setViewportSize(screenWidth, screenHeight);
+	setRenderState(RENDER_STATE::DEPTH_WRITE);// | RENDER_STATE::COLOR);
+	//clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
+	clearDepth();
+
+	// Send background to default FBO
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
+	setRenderState(RENDER_STATE::DEPTH_WRITE);
+	clearDepth();
+	setRenderState(RENDER_STATE::COLOR);
+	setViewportSize(screenWidth, screenHeight);
+	perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
+	m_perFrameBuffer->updateAll(&perFrame);
+	m_finalOutputShader->render();
+	m_fullScreenQuad->render();
+
+    
 
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
@@ -214,30 +252,22 @@ void RenderManager::render()
     {
         entity->render();
     }
-
+	
 	m_noiseShader->render();
-
+	
 	for (auto& entity : m_noiseEntities)
 	{
 		entity->render();
 	}
-
+	
 	m_instancedShader->render();
-
+	
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
 	}
 
-	if (m_floor != 0)
-	{
-		m_floorShader->render();
-		m_floor->render();
-	}
-
-	// Background
-	m_backgroundShader->render();
-	m_fullScreenQuad->render();
+	
 
 	if (bloomEnabled)
 	{
@@ -298,19 +328,22 @@ void RenderManager::render()
 		glBindTexture(GL_TEXTURE_2D, m_bloomTextures[0]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_bloomLevels - 1);
-
-		// Output fbo to screen
-        setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
-		glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
-		glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
-		setViewportSize(screenWidth, screenHeight);
-		setRenderState(RENDER_STATE::COLOR);
-		perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
-		m_perFrameBuffer->updateAll(&perFrame);
-		m_finalOutputShader->render();
-		m_fullScreenQuad->render();
 	}
+
+	//// Output fbo to screen
+	//glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
+	//glBindTexture(GL_TEXTURE_2D, m_colorTexture);
+	//glActiveTexture(GL_TEXTURE0 + ShaderCommon::BACKGROUND_TEXTURE);
+	//glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
+	//
+	//setRenderState(RENDER_STATE::COLOR | RENDER_STATE::FRAMEBUFFER_SRGB);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
+	//setViewportSize(screenWidth, screenHeight);
+	//setRenderState(RENDER_STATE::COLOR);
+	//perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
+	//m_perFrameBuffer->updateAll(&perFrame);
+	//m_finalOutputShader->render();
+	//m_fullScreenQuad->render();
 
 }
 
