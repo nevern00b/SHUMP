@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		985F0FFE19113A4B0045AD1A /* data in Resources */ = {isa = PBXBuildFile; fileRef = 985F0FFD19113A4B0045AD1A /* data */; };
 		987840BC190EF26E00C4B9E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987840BB190EF26E00C4B9E0 /* Foundation.framework */; };
 		987840BE190EF26E00C4B9E0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987840BD190EF26E00C4B9E0 /* CoreGraphics.framework */; };
 		987840C0190EF26E00C4B9E0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 987840BF190EF26E00C4B9E0 /* UIKit.framework */; };
@@ -26,6 +25,7 @@
 		987840F0190EF26E00C4B9E0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 987840EE190EF26E00C4B9E0 /* InfoPlist.strings */; };
 		987840F2190EF26E00C4B9E0 /* SHMUPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 987840F1190EF26E00C4B9E0 /* SHMUPTests.m */; };
 		98B1E0C6190EF4C700DF9ED8 /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 98B1E0C5190EF4C700DF9ED8 /* libBox2D.a */; };
+		98B3709019140DFB009AA8C2 /* data in Resources */ = {isa = PBXBuildFile; fileRef = 98B3708F19140DFB009AA8C2 /* data */; };
 		98B7CAE71912B68E00853E4C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7CA9D1912B68E00853E4C /* Camera.cpp */; };
 		98B7CAE81912B68E00853E4C /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7CAA01912B68E00853E4C /* Component.cpp */; };
 		98B7CAE91912B68E00853E4C /* DataManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 98B7CAA21912B68E00853E4C /* DataManager.cpp */; };
@@ -72,7 +72,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		985F0FFD19113A4B0045AD1A /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../data; sourceTree = "<group>"; };
 		987840B8190EF26E00C4B9E0 /* SHMUP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SHMUP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		987840BB190EF26E00C4B9E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		987840BD190EF26E00C4B9E0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -96,6 +95,7 @@
 		987840EF190EF26E00C4B9E0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		987840F1190EF26E00C4B9E0 /* SHMUPTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHMUPTests.m; sourceTree = "<group>"; };
 		98B1E0C5190EF4C700DF9ED8 /* libBox2D.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBox2D.a; path = "../external/box2d-2.3.1/lib/macosx/x64/Debug/libBox2D.a"; sourceTree = "<group>"; };
+		98B3708F19140DFB009AA8C2 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../data; sourceTree = "<group>"; };
 		98B7CA9D1912B68E00853E4C /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		98B7CA9E1912B68E00853E4C /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		98B7CA9F1912B68E00853E4C /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
@@ -196,8 +196,8 @@
 		987840AF190EF26E00C4B9E0 = {
 			isa = PBXGroup;
 			children = (
+				98B3708F19140DFB009AA8C2 /* data */,
 				98B7CA9C1912B68E00853E4C /* src */,
-				985F0FFD19113A4B0045AD1A /* data */,
 				987840C5190EF26E00C4B9E0 /* SHMUP */,
 				987840EB190EF26E00C4B9E0 /* SHMUPTests */,
 				987840BA190EF26E00C4B9E0 /* Frameworks */,
@@ -448,7 +448,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				985F0FFE19113A4B0045AD1A /* data in Resources */,
+				98B3709019140DFB009AA8C2 /* data in Resources */,
 				987840D6190EF26E00C4B9E0 /* Main_iPad.storyboard in Resources */,
 				987840D3190EF26E00C4B9E0 /* Main_iPhone.storyboard in Resources */,
 				987840DF190EF26E00C4B9E0 /* Images.xcassets in Resources */,

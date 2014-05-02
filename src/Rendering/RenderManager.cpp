@@ -26,7 +26,7 @@ RenderManager::RenderManager() :
     int defaultFBO;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
     m_defaultFBO = (GLuint)defaultFBO;
-    
+
     // Init GL state
     glClearColor(1, 1, 1, 1);
     glCullFace(GL_BACK);
@@ -51,11 +51,9 @@ RenderManager::RenderManager() :
 	m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = new Shader("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
-	//m_backgroundShader = new Shader("data/shaders/background.vert", "data/shaders/background.frag");
-
-
 	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/basic.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
+	m_backgroundShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/background.frag");
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
 	m_blurShaders[0] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurX.frag");
 	m_blurShaders[1] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
@@ -208,9 +206,16 @@ void RenderManager::render()
     clearColor(ShaderCommon::COLOR_FBO_BINDING, glm::vec4(0, 0, 0, 0));
     clearDepth();
 
+    
+    
+    // Background
+    setRenderState(RENDER_STATE::COLOR);
+	m_backgroundShader->render();
+	m_fullScreenQuad->render();
+    
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-	
+    
 	m_basicShader->render();
     for (auto& entity : m_entities)
     {
@@ -231,17 +236,13 @@ void RenderManager::render()
 		objectPool->render();
 	}
 
-	if (m_floor != 0)
-	{
-		m_floorShader->render();
-		m_floor->render();
-	}
+//	if (m_floor != 0)
+//	{
+//		m_floorShader->render();
+//		m_floor->render();
+//	}
 
-	//if (m_background)
-	//{
-	//	glUseProgram(m_backgroundShader);
-	//	m_background->render();
-	//}
+
 
 	if (bloomEnabled)
 	{

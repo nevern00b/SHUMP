@@ -8,7 +8,7 @@ in float vNoise;
 void main()
 {
 	vec3 color = vec3(0.0);
-	float value = fract(fract(vUV.y + uPerFrameData.time*0.2)*10.0);
+	float value = fract(fract(vUV.y + uPerFrameData.time*0.1)*10.0);
 	if(value < 0.05)
 	{
 		color = value * vec3(1.0)*10.0;

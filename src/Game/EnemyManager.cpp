@@ -57,11 +57,11 @@ void EnemyManager::update()
 			else if (patternRand <= 1.0f) pattern = ENEMY_PATTERN::CLUSTER_1;
 		}
 
-		pattern = ENEMY_PATTERN::SIDE;
+		pattern = ENEMY_PATTERN::STATIONARY;
 
 		// Position
-		float x = glm::linearRand(-15.0f, 15.0f);
-		float y = glm::linearRand(0.0f, 10.0f);
+		float x = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X, ShmupGame::WORLD_UPPER_BOUND_X);
+		float y = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_Y, ShmupGame::WORLD_UPPER_BOUND_Y);
 
 		if (pattern == ENEMY_PATTERN::SIDE)
 		{
@@ -69,7 +69,7 @@ void EnemyManager::update()
 			Enemy* enemy = new Enemy(color,pattern,type,x);
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_enemyDirection.x = glm::linearRand(-1.0f, 1.0f);
-			enemy->m_enemyDirection.y = 1.0f;
+			enemy->m_enemyDirection.y = -1.0f;
 		}
 		else if (pattern == ENEMY_PATTERN::HOVER)
 		{
@@ -120,31 +120,31 @@ void EnemyManager::update()
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_enemyDirection.x = xV;
 			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
-			enemy->m_enemyDirection.y = 10;
+			enemy->m_enemyDirection.y = -10;
 
 			Enemy* enemy1 = new Enemy(color,pattern,type,x);
 			enemy1->m_transform->setTranslation(x + 2, y + 2);
 			enemy1->m_enemyDirection.x = xV;
 			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
-			enemy1->m_enemyDirection.y = 10;
+			enemy1->m_enemyDirection.y = -10;
 
 			Enemy* enemy2 = new Enemy(color,pattern,type,x);
 			enemy2->m_transform->setTranslation(x - 2, y + 2);
 			enemy2->m_enemyDirection.x = xV;
 			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
-			enemy2->m_enemyDirection.y = 10;
+			enemy2->m_enemyDirection.y = -10;
 
 			Enemy* enemy3 = new Enemy(color,pattern,type,x);
 			enemy3->m_transform->setTranslation(x + 4, y + 4);
 			enemy3->m_enemyDirection.x = xV;
 			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
-			enemy3->m_enemyDirection.y = 10;
+			enemy3->m_enemyDirection.y = -10;
 
 			Enemy* enemy5 = new Enemy(color,pattern,type,x);
 			enemy5->m_transform->setTranslation(x - 4, y + 4);
 			enemy5->m_enemyDirection.x = xV;
 			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
-			enemy5->m_enemyDirection.y = 10;
+			enemy5->m_enemyDirection.y = -10;
 		}
 		else if (pattern == ENEMY_PATTERN::CLUSTER_2)
 		{
@@ -154,31 +154,38 @@ void EnemyManager::update()
 			enemy->m_transform->setTranslation(x, y);
 			enemy->m_enemyDirection.x = xV;
 			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
-			enemy->m_enemyDirection.y = 10;
+			enemy->m_enemyDirection.y = -10;
 
 			Enemy* enemy1 = new Enemy(getEnemyColor(), pattern, type, x);
 			enemy1->m_transform->setTranslation(x + 1, y);
 			enemy1->m_enemyDirection.x = xV;
 			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
-			enemy1->m_enemyDirection.y = 10;
+			enemy1->m_enemyDirection.y = -10;
 
 			Enemy* enemy2 = new Enemy(getEnemyColor(), pattern, type, x);
 			enemy2->m_transform->setTranslation(x - 1, y);
 			enemy2->m_enemyDirection.x = xV;
 			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
-			enemy2->m_enemyDirection.y = 10;
+			enemy2->m_enemyDirection.y = -10;
 
 			Enemy* enemy3 = new Enemy(getEnemyColor(), pattern, type, x);
 			enemy3->m_transform->setTranslation(x, y - 1);
 			enemy3->m_enemyDirection.x = xV;
 			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
-			enemy3->m_enemyDirection.y = 10;
+			enemy3->m_enemyDirection.y = -10;
 
 			Enemy* enemy5 = new Enemy(getEnemyColor(), pattern, type, x);
 			enemy5->m_transform->setTranslation(x, y + 1);
 			enemy5->m_enemyDirection.x = xV;
 			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
-			enemy5->m_enemyDirection.y = 10;
+			enemy5->m_enemyDirection.y = -10;
+		}
+		else if (pattern == ENEMY_PATTERN::STATIONARY)
+		{
+			Enemy* enemy = new Enemy(color, pattern, type, x);
+			enemy->m_transform->setTranslation(x, y);
+			enemy->m_enemyDirection.x = 0;
+			enemy->m_enemyDirection.y = -20;
 		}
 	}
 }

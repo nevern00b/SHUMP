@@ -26,10 +26,10 @@ Bullet::~Bullet()
 bool Bullet::update()
 {
 	b2Vec2 pos = m_body->GetPosition();
-	if (pos.y > ShmupGame::WORLD_BOUND_Y ||
-		pos.y < -ShmupGame::WORLD_BOUND_Y ||
-		pos.x > ShmupGame::WORLD_BOUND_X ||
-		pos.x < -ShmupGame::WORLD_BOUND_X )
+	if (pos.y > ShmupGame::WORLD_UPPER_BOUND_Y ||
+		pos.y < ShmupGame::WORLD_LOWER_BOUND_Y ||
+		pos.x > ShmupGame::WORLD_UPPER_BOUND_X ||
+		pos.x < ShmupGame::WORLD_LOWER_BOUND_X )
 	{
 		destroy();
 		return false;
