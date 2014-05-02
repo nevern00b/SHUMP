@@ -114,7 +114,7 @@
     }
     
     Globals::m_uiManager->mouseDownEvent();
-    Globals::m_uiManager->mouseMoveEvent(translate.x*2, translate.y*2);
+    Globals::m_uiManager->mouseMoveEvent(translate.x*2.0, translate.y*2.0);
 }
 
 @end
