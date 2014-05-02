@@ -48,7 +48,7 @@ float snoise(vec2 v)
 float fbm(vec2 p) {
     float f = 0.0;
     float w = 0.5;
-    for (int i = 0; i < 3; i ++) {
+    for (int i = 0; i < 1; i ++) {
             f += w * snoise(p);
 		    //f += w * 0.05*p;
 
