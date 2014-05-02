@@ -49,8 +49,8 @@ float fbm(vec2 p) {
     float f = 0.0;
     float w = 0.5;
     for (int i = 0; i < 3; i ++) {
-            f += w * snoise(p);
-		    //f += w * 0.05*p;
+            //Controls rate of noise. Omit GlobalTime param for constant noise level of tunnel
+            f += w * snoise(p * iGlobalTime/5.0);
 
             p *= 2.;
             w *= 0.5;
@@ -89,14 +89,14 @@ void main(void)
     vec4 finalCol;
     
     //float xa=(sin(time)*0.000004)+(sin((time*1.3)+0.5)*0.00000024);
+	//float ya=(cos(iGlobalTime)*0.45)+(cos((iGlobalTime*0.6)-0.7)*0.3);
+
 	float xa=0.0;
 	float ya=0.0;
-    //float ya=(cos(iGlobalTime)*0.45)+(cos((iGlobalTime*0.6)-0.7)*0.3);
 
     finalCol=vec4(1.0,0.0,1.0,1.0);
-
-    finalCol=tunneliter(uv,vec4(1.0,1.0,1.0,1.0),0.5+(xa*0.80),0.85+(ya*0.80),0.05,0.2,vec4(0.1,0.3,0.4,1.0),3.1);    
-    finalCol=tunneliter(uv,finalCol,0.5+(xa*0.70),0.85+(ya*0.70),0.14,0.05,vec4(0.6,0.6,0.7,1.0),9.3);    
+    finalCol=tunneliter(uv,vec4(1.0,1.0,1.0,1.0),0.5+(xa*0.80),0.85+(ya*0.80),0.01,0.9,vec4(0.1,0.3,0.2,1.0),9.1);    
+    finalCol=tunneliter(uv,finalCol,0.5+(xa*0.70),0.85+(ya*0.70),0.14,0.05,vec4(0.6,0.6,0.7,1.0),9.3);   
 	//finalCol=tunneliter(uv,finalCol,0.5+(xa*0.90),0.8+(ya*0.70),0.01,0.02,vec4(0.1,0.2,0.1,1.0),0.2);    
 
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.58),0.5+(ya*0.58),0.18,0.10,vec4(0.5,0.5,0.6,1.0),4.4);    
