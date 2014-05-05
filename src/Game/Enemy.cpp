@@ -21,7 +21,8 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	m_type(type),
 	m_x(pos_x)
 {
-	m_shootTimer = new Timer(0.3f);
+	m_shootTimer = new Timer();
+	m_shootTimer->start(0.3f, true);
 	
 	Material* material = Globals::m_dataManager->getEnemyMaterial(color);
 	material->m_spawnTime = Globals::m_uiManager->getTime();

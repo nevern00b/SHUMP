@@ -81,9 +81,10 @@ Ray::Ray(const glm::vec3& position, const glm::vec3& direction) :
 }
 
 
-Timer::Timer(float interval)
+Timer::Timer() :
+	m_running(false)
 {
-	setInterval(interval);
+
 }
 
 Timer::~Timer()
@@ -91,26 +92,56 @@ Timer::~Timer()
 
 }
 
-void Timer::start()
+void Timer::start(float interval, bool repeat)
 {
+	m_interval = interval;
 	m_startTime = Globals::m_uiManager->getTime();
+	m_running = true;
+	m_repeat = repeat;
+}
+
+void Timer::stop()
+{
+	m_running = false;
 }
 
 float Timer::getTimeElapsed()
 {
-	return Globals::m_uiManager->getTime() - m_startTime;
+	if (!m_running)
+	{
+		return 0.0f;
+	}
+	else
+	{
+		return Globals::m_uiManager->getTime() - m_startTime;
+	}
 }
 
-void Timer::setInterval(float interval)
+float Timer::getTimeLeft()
 {
-	m_interval = interval;
+	if (!m_running)
+	{
+		return 0.0f;
+	}
+	else
+	{
+		return m_startTime + m_interval - Globals::m_uiManager->getTime();
+	}
 }
 
 bool Timer::checkInterval()
 {
 	if (getTimeElapsed() > m_interval)
 	{
-		start();
+		if (m_repeat)
+		{
+			start(m_interval, m_repeat);
+		}
+		else
+		{
+			stop();
+		}
+		
 		return true;
 	}
 

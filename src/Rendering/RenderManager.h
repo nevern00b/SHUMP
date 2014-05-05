@@ -5,12 +5,14 @@
 #include "Common.h"
 #include "Buffer.h"
 #include "ShaderCommon.h"
+#include "Game/StateMachine.h"
 
 class Entity;
 class Shader;
 class ObjectPool;
 class FullScreenQuad;
 class Background;
+class Timer;
 
 class RenderManager
 {
@@ -56,6 +58,9 @@ public:
 private:
 
 	Background* m_background;
+
+	COLOR m_oldColor;
+	Timer* m_colorTimer;
 
     Shader* m_basicShader;
 	Shader* m_noiseShader;

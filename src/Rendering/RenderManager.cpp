@@ -21,8 +21,12 @@
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
 	m_floor(0),
-	m_background(0)
+	m_background(0),
+	m_oldColor(COLOR::RED)
 {
+	m_colorTimer = new Timer();
+	m_colorTimer->start(1.0f, true);
+
     int defaultFBO;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
     m_defaultFBO = (GLuint)defaultFBO;
@@ -161,6 +165,16 @@ void RenderManager::render()
 	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
     glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
 
+	// Get background color
+	COLOR playerColor = Globals::m_stateMachine->getPlayerState();
+	glm::vec3 backgroundColor = glm::vec3(Globals::m_dataManager->getMaterial(playerColor)->m_diffuseColor);
+	//m_colorTimer->checkInterval();
+	//if (m_colorTimer->getTimeElapsed() > 0.8f)
+	//{
+	//	backgroundColor = glm::vec3(1.0);
+	//}
+
+
     // Update the per frame buffer
     ShaderCommon::PerFrameGL perFrame;
     perFrame.cameraPos = cameraPos;
@@ -169,6 +183,7 @@ void RenderManager::render()
 	perFrame.invBackgroundSize = 1.0f / glm::vec2(m_backgroundSizeX, m_backgroundSizeY);
 	perFrame.invBlurSize = 1.0f / glm::vec2(m_bloomSizeX, m_bloomSizeY);
 	perFrame.time = Globals::m_uiManager->getTime();
+	perFrame.backgroundColor = backgroundColor;
     m_perFrameBuffer->updateAll(&perFrame);
 
     // Update lighting buffer

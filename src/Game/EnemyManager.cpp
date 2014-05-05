@@ -15,7 +15,8 @@
 
 EnemyManager::EnemyManager() 
 {	
-	m_timer = new Timer(5.0f);
+	m_timer = new Timer();
+	m_timer->start(5.0f, true);
 }
 
 EnemyManager::~EnemyManager()

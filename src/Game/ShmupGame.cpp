@@ -97,7 +97,8 @@ void ShmupGame::init()
 	m_enemyYBulletPool = new BulletPool(50, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	//Score System
-	m_scoreTimer = new Timer(0.1f);
+	m_scoreTimer = new Timer();
+	m_scoreTimer->start(0.1f, true);
 
 	
 	// Create particle system
@@ -115,7 +116,7 @@ void ShmupGame::init()
 	Floor* floor = new Floor();
 
 	// Item
-	//Item* item = new ImmunityItem(COLOR::YELLOW, 0.0f, -3.0f);
+	Item* item = new ImmunityItem(COLOR::YELLOW, 0.0f, -3.0f);
 
     // Create lights
     PointLight* light = new PointLight(0, glm::vec3(1, 1, 1), 40);

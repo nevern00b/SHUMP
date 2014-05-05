@@ -32,14 +32,19 @@ struct Ray
 class Timer
 {
 public:
-	Timer(float interval);
+	Timer();
 	~Timer();
-	void start();
+	void start(float interval, bool repeat);
+	void stop();
 	float getTimeElapsed();
-	void setInterval(float interval);
+	float getTimeLeft();
 	bool checkInterval();
+
+	float m_interval;
+	bool m_running;
 
 private:
 	float m_startTime;
-	float m_interval;
+	bool m_repeat;
+	
 };
