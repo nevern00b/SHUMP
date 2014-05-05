@@ -34,7 +34,7 @@ Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 	RenderComponent* render = new RenderComponent(this, mesh, material);
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_redBulletPool);
 
-	m_shootTimer = new Timer(0.2f);
+	m_shootTimer = new Timer(0.1f);
 
 	changeColor(); // Sets color to default immunity state color	
 }
@@ -190,8 +190,11 @@ void Player::shoot()
 
 	b2Vec2 pos = m_physics->m_body->GetPosition();
 	float vx = 0.0f;
-	float vy = 15.0f;
-	m_shootComponent->shoot(pos.x, pos.y, vx, vy);	
+	float vy = 30.0f;
+	m_shootComponent->shoot(pos.x, pos.y, vx, vy);
+	m_shootComponent->shoot(pos.x, pos.y, -1.0f, vy);
+	m_shootComponent->shoot(pos.x, pos.y, 1.0f, vy);
+
 }
 
 void Player::gainLives(uint lives)

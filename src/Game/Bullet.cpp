@@ -44,7 +44,7 @@ void Bullet::create(float x, float y, float vx, float vy)
 
 	m_body->SetActive(true);
 
-	float angle = glm::atan(vy, vx);
+	float angle = 0.0f;// glm::atan(vy, vx);
 	m_body->SetTransform(b2Vec2(x, y), angle);
 	m_body->SetLinearVelocity(b2Vec2(vx, vy));
 }

@@ -145,7 +145,7 @@ void RenderManager::resizeWindow(int width, int height)
 
 void RenderManager::render()
 {
-	bool bloomEnabled = true;
+	bool bloomEnabled = false;
     
     uint screenWidth = Globals::m_uiManager->m_screenWidth;
     uint screenHeight = Globals::m_uiManager->m_screenHeight;
@@ -208,16 +208,24 @@ void RenderManager::render()
 
 	// Render half-size background
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_backgroundFBO);
-	setRenderState(RENDER_STATE::COLOR);
 	setViewportSize(m_backgroundSizeX, m_backgroundSizeY);
+	setRenderState(RENDER_STATE::COLOR);
 	m_backgroundShader->render();
 	m_fullScreenQuad->render();
+	glActiveTexture(GL_TEXTURE0 + ShaderCommon::BACKGROUND_TEXTURE);
+	glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
 
-	// Clear color and depth
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
-	setRenderState(RENDER_STATE::COLOR | RENDER_STATE::DEPTH_WRITE);
+	// Render background to screen
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
 	setViewportSize(screenWidth, screenHeight);
-	clearColor(0, glm::vec4(0, 0, 0, 0));
+	setRenderState(RENDER_STATE::COLOR);
+	m_finalOutputShader->render();
+	m_fullScreenQuad->render();
+
+	// Clear depth
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
+	setRenderState(RENDER_STATE::DEPTH_WRITE);
+	setViewportSize(screenWidth, screenHeight);
 	clearDepth();	
     
     // Render scene
@@ -260,19 +268,7 @@ void RenderManager::render()
 		m_fullScreenQuad->render();
 	}
 
-	// Combine background, scene, and bloom in final output to screen
-	glActiveTexture(GL_TEXTURE0 + ShaderCommon::COLOR_FBO_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, m_colorTexture);
-	glActiveTexture(GL_TEXTURE0 + ShaderCommon::BACKGROUND_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, m_backgroundTexture);
-	glActiveTexture(GL_TEXTURE0 + ShaderCommon::BLOOM_TEXTURE);
-	glBindTexture(GL_TEXTURE_2D, m_bloomTextures[1]);
-
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
-	setViewportSize(screenWidth, screenHeight);
-	setRenderState(RENDER_STATE::COLOR);
-	m_finalOutputShader->render();
-	m_fullScreenQuad->render();
+	
 }
 
 void RenderManager::renderMaterial(const ShaderCommon::MaterialGL& material)
