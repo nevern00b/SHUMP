@@ -43,6 +43,8 @@ namespace ShaderCommon
         glm::vec3 cameraPos;
 		float padding;
 		glm::vec2 invScreenSize;
+		glm::vec2 invBackgroundSize;
+		glm::vec2 invBlurSize;
 		float time;
     };
 

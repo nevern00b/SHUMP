@@ -41,6 +41,8 @@ struct PerFrameGL
     mat4 viewProjection;
     vec3 cameraPos;
 	vec2 invScreenSize;
+	vec2 invBackgroundSize;
+	vec2 invBlurSize;
 	float time;
 };
 

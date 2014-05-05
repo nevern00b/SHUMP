@@ -4,7 +4,7 @@ uniform sampler2D tColor;
 
 void main()
 {
-	vec2 uv = gl_FragCoord.xy*uPerFrameData.invScreenSize;
+	vec2 uv = gl_FragCoord.xy*uPerFrameData.invBlurSize;
 	vec3 color = texture(tColor, uv).rgb;
     fragColor = vec4(color, 0.0);
 }

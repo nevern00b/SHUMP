@@ -85,7 +85,6 @@ private:
 	GLuint m_bloomTextures[2];
 	uint m_bloomSizeX;
 	uint m_bloomSizeY;
-	uint m_bloomLevels;
 
 	GLuint m_backgroundFBO;
 	GLuint m_backgroundTexture;

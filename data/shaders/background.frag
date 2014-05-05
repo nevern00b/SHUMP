@@ -83,7 +83,7 @@ vec4 tunneliter(vec2 texCoord,vec4 incol,float cx,float cy,float limita,float li
 void main()
 {
     fragColor = vec4(1.0);
-	vec2 uv = gl_FragCoord.xy * uPerFrameData.invScreenSize;
+	vec2 uv = gl_FragCoord.xy * uPerFrameData.invBackgroundSize;
 	float time = uPerFrameData.time;
 	fragColor = vec4(uv,0.5+0.5*sin(time),1.0);
 
@@ -107,5 +107,5 @@ void main()
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.12),0.5+(ya*0.12),0.50,0.35,vec4(0.3,0.3,0.4,1.0),3.8);    
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.10),0.5+(ya*0.10),0.60,0.40,vec4(0.3,0.3,0.4,1.0),7.9);
 
-    fragColor = vec4(vec3(finalCol.xyz),10000.0)*vec4(1.0,0.02,0.0,1.0);
+    fragColor = vec4(finalCol.xyz, 1.0)*vec4(1.0,0.02,0.0,1.0);
 }
