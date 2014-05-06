@@ -59,9 +59,6 @@ private:
 
 	Background* m_background;
 
-	COLOR m_oldColor;
-	Timer* m_colorTimer;
-
     Shader* m_basicShader;
 	Shader* m_noiseShader;
 	Shader* m_floorShader;

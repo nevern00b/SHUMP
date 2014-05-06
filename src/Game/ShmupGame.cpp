@@ -123,7 +123,7 @@ void ShmupGame::init()
     light->m_transform->setTranslation(glm::vec3(-3, -10, 0));
 	
     DirLight* dirlight = new DirLight(0, glm::vec3(1, 1, 1));
-    dirlight->m_transform->rotate(30, glm::vec3(1, 0, 0));
+    dirlight->m_transform->rotate(140, glm::vec3(1, 0, 0));
 	
     Camera* camera = new Camera(0, 45.0f);
 	//camera->setPan(0, 5);

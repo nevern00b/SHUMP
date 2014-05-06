@@ -21,11 +21,8 @@
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
 	m_floor(0),
-	m_background(0),
-	m_oldColor(COLOR::RED)
+	m_background(0)
 {
-	m_colorTimer = new Timer();
-	m_colorTimer->start(1.0f, true);
 
     int defaultFBO;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
@@ -166,14 +163,7 @@ void RenderManager::render()
     glm::mat4 viewProjectionMatrix = m_projMatrix * m_viewMatrix;
 
 	// Get background color
-	COLOR playerColor = Globals::m_stateMachine->getPlayerState();
-	glm::vec3 backgroundColor = glm::vec3(Globals::m_dataManager->getMaterial(playerColor)->m_diffuseColor);
-	//m_colorTimer->checkInterval();
-	//if (m_colorTimer->getTimeElapsed() > 0.8f)
-	//{
-	//	backgroundColor = glm::vec3(1.0);
-	//}
-
+	glm::vec3 backgroundColor = glm::vec3(1.0, 0.0, 0.0);
 
     // Update the per frame buffer
     ShaderCommon::PerFrameGL perFrame;
