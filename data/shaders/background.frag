@@ -68,7 +68,7 @@ vec4 tunneliter(vec2 texCoord,vec4 incol,float cx,float cy,float limita,float li
     float disty;
     
     texc=(texCoord-vec2(cx,cy));
-    disty= 5.0 * distance(texc,vec2(0.0,0.0));
+    disty= 5.0 * distance(texc,vec2(0.0,0.0)); // Changing 5.0 makes it go faster or slower
     tex.x=(abs(atan(texc.x,texc.y)))/6.2830;
     tex.y=0.5/disty;  
     tex.y+=(uPerFrameData.time*0.9)+tadd;
@@ -97,7 +97,7 @@ void main()
 	float ya=0.0;
 
     finalCol=vec4(1.0,1.0,1.0,1.0);
-    finalCol=tunneliter(uv,vec4(1.0,1.0,1.0,1.0),0.5+(xa*0.80),0.85+(ya*0.80),0.01,0.9,vec4(0.1,0.3,0.2,1.0),9.1);    
+    //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.80),0.85+(ya*0.80),0.01,0.9,vec4(0.1,0.3,0.2,1.0),9.1);    
     finalCol=tunneliter(uv,finalCol,0.5+(xa*0.70),0.85+(ya*0.70),0.14,0.05,vec4(1.0,1.0,1.0,1.0),9.3);   
 
 	
