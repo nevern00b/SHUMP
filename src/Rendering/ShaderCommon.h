@@ -40,6 +40,7 @@ namespace ShaderCommon
     struct PerFrameGL
     {
         glm::mat4 viewProjection;
+		glm::mat4 shadowMatrix;
         glm::vec3 cameraPos;
 		float padding;
 		glm::vec3 backgroundColor;

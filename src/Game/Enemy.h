@@ -33,6 +33,7 @@ public:
 	virtual void onCollide(EventObject* collider);
 
 	glm::vec2 m_enemyDirection;
+	float m_brightness; // For animation;
 
 private:
 	float m_health;

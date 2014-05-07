@@ -38,6 +38,7 @@ Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 	m_shootTimer->start(0.1f, true);
 
 	changeColor(); // Sets color to default immunity state color	
+
 }
 
 Player::~Player()
@@ -208,7 +209,7 @@ void Player::gainMinions(uint newMinions)
 	int oldMinionCount = m_minionCount;
 	int newMinionCount = m_minionCount + newMinions;
 	m_minionCount = newMinionCount <= Max_Minion_Count ? newMinionCount : Max_Minion_Count;
-	for (int i = 0; i < m_minionCount - oldMinionCount; i++)
+	for (uint i = 0; i < m_minionCount - oldMinionCount; i++)
 	{
 		float x = glm::linearRand(-2.0f, 2.0f);
 		float y = glm::linearRand(-2.0f, 0.0f);

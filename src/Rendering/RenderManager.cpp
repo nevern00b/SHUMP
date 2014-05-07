@@ -17,6 +17,7 @@
 #include "RenderComponent.h"
 #include "Material.h"
 #include "Shader.h"
+#include "Game/Floor.h"
 
 RenderManager::RenderManager() :
     m_lightBufferDirty(false),
@@ -27,6 +28,8 @@ RenderManager::RenderManager() :
     int defaultFBO;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
     m_defaultFBO = (GLuint)defaultFBO;
+
+	m_floor = new Floor();
 
     // Init GL state
     glClearColor(1, 1, 1, 1);
@@ -58,6 +61,11 @@ RenderManager::RenderManager() :
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
 	m_blurShaders[0] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurX.frag");
 	m_blurShaders[1] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
+
+	m_basicShadowShader = new Shader("data/shaders/basicShadow.vert", "data/shaders/empty.frag");
+	m_instancedShadowShader = new Shader("data/shaders/instancedShadow.vert", "data/shaders/empty.frag");
+	m_noiseShadowShader = new Shader("data/shaders/noiseShadow.vert", "data/shaders/empty.frag");
+
 
 	// Full screen quad
 	m_fullScreenQuad = new FullScreenQuad();
@@ -156,7 +164,7 @@ void RenderManager::render()
     glm::vec3 cameraPos = camera->getPosition();
     float fov = glm::radians(camera->m_fov);
     m_viewMatrix = camera->getViewMatrix();
-    m_projMatrix = glm::perspective(fov, aspectRatio, 1.0f, 100.0f);
+    m_projMatrix = glm::perspective(fov, aspectRatio, 1.0f, 300.0f);
 	//float orthoSizeX = ShmupGame::WORLD_BOUND_X;
 	//float orthoSizeY = ShmupGame::WORLD_BOUND_Y;
 	//m_projMatrix = glm::ortho(-orthoSizeX, orthoSizeX, -orthoSizeY, orthoSizeY, 0.1f, 1000.0f);
@@ -169,6 +177,7 @@ void RenderManager::render()
     ShaderCommon::PerFrameGL perFrame;
     perFrame.cameraPos = cameraPos;
     perFrame.viewProjection = viewProjectionMatrix;
+	perFrame.shadowMatrix = viewProjectionMatrix * getShadowMatrix();
 	perFrame.invScreenSize = 1.0f / glm::vec2(screenWidth, screenHeight);
 	perFrame.invBackgroundSize = 1.0f / glm::vec2(m_backgroundSizeX, m_backgroundSizeY);
 	perFrame.invBlurSize = 1.0f / glm::vec2(m_bloomSizeX, m_bloomSizeY);
@@ -226,12 +235,7 @@ void RenderManager::render()
 	setRenderState(RENDER_STATE::COLOR);
 	m_finalOutputShader->render();
 	m_fullScreenQuad->render();
-
-	// Clear depth
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_defaultFBO);
-	setRenderState(RENDER_STATE::DEPTH_WRITE);
-	setViewportSize(screenWidth, screenHeight);
-	clearDepth();	
+	clearDepthStencil(); // Clear depth and stencil each frame before rendering the scene
     
     // Render scene
     setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
@@ -249,6 +253,34 @@ void RenderManager::render()
 	}
 	
 	m_instancedShader->render();
+	for (auto& objectPool : m_objectPools)
+	{
+		objectPool->render();
+	}
+
+	// Render shadows
+
+	setRenderState(RENDER_STATE::COLOR | RENDER_STATE::ALPHA_BLEND | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST);
+
+	// When fragment passes this test, set the stencil buffer value to 1, which prevents further shadow fragments from being rendered. 
+	glEnable(GL_STENCIL_TEST);
+	glStencilMask(0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+
+	m_basicShadowShader->render();
+	for (auto& entity : m_entities)
+	{
+		entity->render();
+	}
+
+	m_noiseShadowShader->render();
+	for (auto& entity : m_noiseEntities)
+	{
+		entity->render();
+	}
+
+	m_instancedShadowShader->render();
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
@@ -274,6 +306,41 @@ void RenderManager::render()
 	}
 
 	
+}
+
+glm::mat4 RenderManager::getShadowMatrix()
+{
+	glm::mat4 shadowMat;
+	glm::vec4 lightpos(0.0f, -0.5f, 1.0f, 0.0f);
+	glm::vec4 groundplane = glm::vec4(0.0f, 0.0f, 1.0f, 2.0f);
+
+	/* Find dot product between light position vector and ground plane normal. */
+	float dot = groundplane.x * lightpos.x +
+		groundplane.y * lightpos.y +
+		groundplane.z * lightpos.z +
+		groundplane.w * lightpos.w;
+
+	shadowMat[0][0] = dot - lightpos.x * groundplane.x;
+	shadowMat[1][0] = 0.f - lightpos.x * groundplane.y;
+	shadowMat[2][0] = 0.f - lightpos.x * groundplane.z;
+	shadowMat[3][0] = 0.f - lightpos.x * groundplane.w;
+
+	shadowMat[0][1] = 0.f - lightpos.y * groundplane.x;
+	shadowMat[1][1] = dot - lightpos.y * groundplane.y;
+	shadowMat[2][1] = 0.f - lightpos.y * groundplane.z;
+	shadowMat[3][1] = 0.f - lightpos.y * groundplane.w;
+
+	shadowMat[0][2] = 0.f - lightpos.z * groundplane.x;
+	shadowMat[1][2] = 0.f - lightpos.z * groundplane.y;
+	shadowMat[2][2] = dot - lightpos.z * groundplane.z;
+	shadowMat[3][2] = 0.f - lightpos.z * groundplane.w;
+
+	shadowMat[0][3] = 0.f - lightpos.w * groundplane.x;
+	shadowMat[1][3] = 0.f - lightpos.w * groundplane.y;
+	shadowMat[2][3] = 0.f - lightpos.w * groundplane.z;
+	shadowMat[3][3] = dot - lightpos.w * groundplane.w;
+
+	return shadowMat;
 }
 
 void RenderManager::renderMaterial(const ShaderCommon::MaterialGL& material)
@@ -319,12 +386,6 @@ void RenderManager::removeEntity(Entity* entity)
 	{
 		m_entities.remove(entity);
 	}
-}
-
-void RenderManager::setFloor(Entity* floor)
-{
-	removeEntity(floor);
-	m_floor = floor;
 }
 
 void RenderManager::setRenderState(uint renderStateBitfield)
@@ -373,7 +434,8 @@ void RenderManager::setRenderState(uint renderStateBitfield)
     else glBindSampler(ShaderCommon::COLOR_FBO_TEXTURE, m_nearestSampler);
 
     // Stencil (stencil value is embedded in the lower 16 bits of the bitfield)
-    uint stencilValue = renderStateBitfield & 0xFFFF;
+	uint stencilValue = renderStateBitfield & 0xFFFF;
+
     if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_WRITE))
     {
         // When fragment passes depth test, replace stencil value with 0xFF,
@@ -406,12 +468,14 @@ void RenderManager::setViewportSize(uint width, uint height)
 
 void RenderManager::clearColor(int index, const glm::vec4& color)
 {
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glClearBufferfv(GL_COLOR, index, &color[0]);
 }
 
 void RenderManager::clearDepth()
 {
     float clearDepth = 1.0f;
+	glDepthMask(GL_TRUE);
     glClearBufferfv(GL_DEPTH, 0, &clearDepth);
 }
 
@@ -419,6 +483,8 @@ void RenderManager::clearDepthStencil()
 {
     float clearDepth = 1.0f;
     int clearStencil = 0x00;
+	glStencilMask(0xFF);
+	glDepthMask(GL_TRUE);
     glClearBufferfi(GL_DEPTH_STENCIL, 0, clearDepth, clearStencil);
 }
 

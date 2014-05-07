@@ -14,12 +14,14 @@
 #include "Rendering/ParticleSystem.h"
 #include "Item.h"
 #include "Rendering/Material.h"
+#include "AnimationManager.h"
 
 Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) : Entity(0),
 	m_color(color), 
 	m_pattern(pattern), 
 	m_type(type),
-	m_x(pos_x)
+	m_x(pos_x),
+	m_brightness(0.0f)
 {
 	m_shootTimer = new Timer();
 	m_shootTimer->start(0.3f, true);
@@ -62,7 +64,6 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 
 	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
 	RenderComponent* render = new RenderComponent(this, mesh, material);
-
 }
 
 Enemy::~Enemy()
@@ -131,6 +132,11 @@ bool Enemy::update()
 
 	m_physics->applyVelocity(m_enemyDirection.x, m_enemyDirection.y);
 
+	glm::vec3 color = glm::vec3(Globals::m_dataManager->getMaterial(m_color)->m_diffuseColor);
+	color += m_brightness;
+	color = glm::min(color, glm::vec3(1.0));
+	m_render->m_materials[0]->m_diffuseColor = glm::vec4(color, 1.0);
+
 	return true;
 }
 
@@ -165,6 +171,10 @@ void Enemy::onCollide(EventObject* collider)
 				}
 
 				destroy();
+			}
+			else
+			{
+				new Animation(this, m_brightness, 1.0f, 0.0f, 0.1f, 0.0f, false);
 			}
 		}
 	}

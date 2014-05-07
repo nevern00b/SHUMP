@@ -13,6 +13,7 @@ class ObjectPool;
 class FullScreenQuad;
 class Background;
 class Timer;
+class Floor;
 
 class RenderManager
 {
@@ -23,11 +24,11 @@ public:
 
 	void resizeWindow(int width, int height);
     void render();
+	glm::mat4 getShadowMatrix();
 	void addObjectPool(ObjectPool* objectPool);
 	void removeObjectPool(ObjectPool* objectPool);
     void addEntity(Entity* entity);
     void removeEntity(Entity* entity);
-	void setFloor(Entity* floor);
 
     void renderMaterial(const ShaderCommon::MaterialGL& material);
     void renderTransform(const ShaderCommon::TransformGL& transform);
@@ -68,11 +69,15 @@ private:
 	Shader* m_bloomShader;
 	Shader* m_blurShaders[2];
 
+	Shader* m_basicShadowShader;
+	Shader* m_instancedShadowShader;
+	Shader* m_noiseShadowShader;
+
 	// Group things by rendering type
 	std::list<Entity*> m_noiseEntities;
     std::list<Entity*> m_entities;
 	std::list<ObjectPool*> m_objectPools;
-	Entity* m_floor; // Floor is rendered differently
+	Floor* m_floor;
 
 	FullScreenQuad* m_fullScreenQuad;
 

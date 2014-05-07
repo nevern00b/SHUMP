@@ -12,7 +12,7 @@ void main()
 	//vec3 bloom = texture(tBloom, uv).rgb;
 
 	
-	
+	//vec2 offset = noise2(uv.x + uv.y + uPerFrameData.time);
 	//vec2 offset = (uv*10.0 - round(uv*10.0))/10.0 + fract(uPerFrameData.time*0.5);
 	//uv+= offset;
 	vec3 background = texture(tBackground, uv).rgb;
@@ -22,10 +22,14 @@ void main()
 	//finalColor += color.rgb;
 	//finalColor += bloom*0.7;
 
-	// Vignette effect
+	// Vignette effect for edge
 	vec2 center = vec2(0.5, 0.5);
 	float d = distance(uv+vec2(0.0,-0.1), center);
 	finalColor *= 1.2-d*2.0;
+
+	// Darken near the end of the tunnel
+	//float dc = distance(uv, vec2(0.0, 0.8));
+	//finalColor *= -dc
 
     fragColor = vec4(finalColor, 0.0);
 }

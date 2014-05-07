@@ -10,6 +10,7 @@
 #include "Physics/PhysicsComponent.h"
 #include "Rendering/RenderComponent.h"
 #include "Game/ShmupGame.h"
+#include "AnimationManager.h"
 
 Entity::Entity(Entity* parent) : EventObject(),
     m_render(0),
@@ -39,6 +40,8 @@ Entity::~Entity()
 	{
 		delete m_components.front();
 	}
+
+	Globals::m_animationManager->removeTarget((void*)this);
 }
 
 void Entity::destroy()

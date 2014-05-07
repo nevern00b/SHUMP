@@ -39,6 +39,7 @@ precision highp float;
 struct PerFrameGL
 {
     mat4 viewProjection;
+	mat4 shadowMatrix;
     vec3 cameraPos;
 	vec3 backgroundColor;
 	vec2 invScreenSize;

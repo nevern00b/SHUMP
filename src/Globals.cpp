@@ -5,6 +5,7 @@
 #include "Physics/PhysicsManager.h"
 #include "Rendering/RenderManager.h"
 #include "Game/ShmupGame.h"
+#include "AnimationManager.h"
 
 RenderManager* Globals::m_renderManager;
 UIManager* Globals::m_uiManager;
@@ -12,6 +13,7 @@ DataManager* Globals::m_dataManager;
 ShmupGame* Globals::m_shmupGame;
 PhysicsManager* Globals::m_physicsManager;
 StateMachine* Globals::m_stateMachine;
+AnimationManager* Globals::m_animationManager;
 
 void Globals::init(float time, uint screenWidth, uint screenHeight)
 {
@@ -23,13 +25,16 @@ void Globals::init(float time, uint screenWidth, uint screenHeight)
 	m_physicsManager = new PhysicsManager();
 	m_renderManager = new RenderManager();
 	m_stateMachine = new StateMachine();
+	m_animationManager = new AnimationManager();
 	m_shmupGame = new ShmupGame();
 	m_shmupGame->init();
+
 }
 
 void Globals::update(float time)
 {	
 	m_physicsManager->update();
+	m_animationManager->update();
 	m_shmupGame->update();
     m_uiManager->update(time);
 }

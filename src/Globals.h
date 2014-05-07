@@ -8,6 +8,7 @@ class DataManager;
 class ShmupGame;
 class PhysicsManager;
 class StateMachine;
+class AnimationManager;
 
 class Globals
 {
@@ -25,5 +26,6 @@ public:
     static ShmupGame* m_shmupGame;
     static PhysicsManager* m_physicsManager;
 	static StateMachine* m_stateMachine;
+	static AnimationManager* m_animationManager;
 
 };
