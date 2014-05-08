@@ -13,8 +13,9 @@ public:
 	virtual bool update();
 
 protected:
-	Entity* m_visual;
-	float m_scaleDir;
+	Entity* m_rotator;
+	Entity* m_atom1;
+	Entity* m_atom2;
 };
 
 class ImmunityItem : public Item
