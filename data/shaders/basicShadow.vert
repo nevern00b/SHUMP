@@ -1,6 +1,9 @@
 layout(location = POSITION_ATTR) in vec3 aPosition;
+layout(location = NORMAL_ATTR) in vec3 aNormal;
 
 void main() 
 {
-    gl_Position = uPerFrameData.shadowMatrix * uTransform.modelMatrix * vec4(aPosition, 1.0);    
+	vec3 newPosition = aPosition + 0.1 * aNormal;
+
+    gl_Position = uPerFrameData.shadowMatrix * uTransform.modelMatrix * vec4(newPosition, 1.0);    
 }

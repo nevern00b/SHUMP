@@ -36,6 +36,8 @@ precision highp float;
 #define MATERIAL_UBO                    2
 #define TRANSFORM_UBO                   3
 
+#define OUTLINE							0.05
+
 struct PerFrameGL
 {
     mat4 viewProjection;

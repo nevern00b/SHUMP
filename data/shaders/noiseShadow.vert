@@ -212,7 +212,7 @@ void main()
 	float fz = weight * f( aniNormal + vec3( 0.0, 0.0, .0001 ) );
 	vec3 modifiedNormal = normalize( evNormal - vec3( (fx - f0) / .0001, (fy - f0) / .0001, (fz - f0) / .0001 ) );
 
-	vec3 newPosition = aPosition + f0 * evNormal;
+	vec3 newPosition = aPosition + (f0 + OUTLINE) * evNormal;
 
 	gl_Position = uPerFrameData.shadowMatrix * uTransform.modelMatrix * vec4(newPosition, 1.0);
 }

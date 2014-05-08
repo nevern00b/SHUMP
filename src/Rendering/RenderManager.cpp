@@ -252,7 +252,8 @@ void RenderManager::render()
 		entity->render();
 	}
 
-	// Render bullets (+ outlines)
+	// Render bullets (they are spheres, so the outline is done in the shader)
+	// Alpha blend enabled so that bullets that are far away fade out
 	setRenderState(RENDER_STATE::ALPHA_BLEND | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
 	m_instancedShader->render();
 	for (auto& objectPool : m_objectPools)
@@ -260,14 +261,10 @@ void RenderManager::render()
 		objectPool->render();
 	}
 
-	// Render outlines for non-bullets
+	// Render outlines for non-bullets (use the shadow shader bc its simple, but change the matrix)
 	setRenderState(STENCIL_VALUE::SOLID | RENDER_STATE::STENCIL_TEST_NEQUAL | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-
 	perFrame.shadowMatrix = viewProjectionMatrix;
 	m_perFrameBuffer->updateAll(&perFrame);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glPolygonOffset(1.0f, 1.0f);
-	glLineWidth(5.0f);
 	
 	m_basicShadowShader->render();
 	for (auto& entity : m_entities)
@@ -281,9 +278,6 @@ void RenderManager::render()
 		entity->render();
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glPolygonOffset(0.0f, 0.0f);
-	glLineWidth(1.0f);
 	perFrame.shadowMatrix = viewProjectionMatrix * getShadowMatrix();
 	m_perFrameBuffer->updateAll(&perFrame);
 

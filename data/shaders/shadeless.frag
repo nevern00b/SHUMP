@@ -81,7 +81,7 @@ void main()
 	//finalColor += vary;
 
 	float specular = max(dot(viewDir, -normal), 0.0);
-	if(specular < 0.6) finalColor = vec3(0.0);
+	if(specular < 0.65) finalColor = vec3(0.0);
 
     fragColor = vec4(finalColor, diffuse.a);
 }
