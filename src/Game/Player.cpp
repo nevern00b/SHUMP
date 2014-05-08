@@ -23,6 +23,9 @@ Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 {
 	Material* material = new Material();
 	material->m_noiseStrength = 0.15f;
+	material->m_specPower = 10.0f;
+	material->m_specIntensity = 0.5f;
+	//material->m_diffuseColor.a = 0.5;
     Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
 	b2PolygonShape shape;
@@ -54,15 +57,15 @@ bool Player::update()
 	float vx = 0.0f;
 	float vy = 0.0f;
 
-    // Get keyboard input
-    if (Globals::m_uiManager->isKeyDown(KEY_A))
-        vx -= speed;
-    if (Globals::m_uiManager->isKeyDown(KEY_D))
-        vx += speed;
-    if (Globals::m_uiManager->isKeyDown(KEY_W))
-        vy += speed;
-    if (Globals::m_uiManager->isKeyDown(KEY_S))
-        vy -= speed;
+	// Get keyboard input
+	if (Globals::m_uiManager->isKeyDown(KEY_A))
+		vx -= speed;
+	if (Globals::m_uiManager->isKeyDown(KEY_D))
+		vx += speed;
+	if (Globals::m_uiManager->isKeyDown(KEY_W))
+		vy += speed;
+	if (Globals::m_uiManager->isKeyDown(KEY_S))
+		vy -= speed;
 	if (Globals::m_uiManager->isKeyDown(KEY_U))//Keyboard to take bullet change
 		Globals::m_stateMachine->changePlayerState(COLOR::RED);
 	if (Globals::m_uiManager->isKeyDown(KEY_I))
@@ -73,7 +76,7 @@ bool Player::update()
 		Globals::m_stateMachine->changePlayerState(COLOR::YELLOW);
 	if (Globals::m_uiManager->isKeyDown(KEY_Y))
 		Globals::m_stateMachine->checkStates();
-	
+
 	// Check if the mouse dragged
 	if (Globals::m_uiManager->isMouseDragging())
 	{
@@ -91,6 +94,8 @@ bool Player::update()
 	}
 
 	m_physics->applyVelocity(vx, vy);
+
+	checkBounds();
 
 	//if (Globals::m_uiManager->isKeyPressed(GLFW_KEY_SPACE))
 	//{
@@ -116,6 +121,37 @@ bool Player::update()
 	changeColor();
 
 	return true;
+}
+
+bool Player::checkBounds()
+{
+	bool inBounds = true;
+	glm::vec3 translation = m_physics->m_translation;
+
+	if (translation.x < ShmupGame::WORLD_LOWER_BOUND_X)
+	{
+		inBounds = false;
+		m_physics->setTranslation(glm::vec3(ShmupGame::WORLD_LOWER_BOUND_X, translation.y, translation.z));
+		//m_physics->setVelocity(0.0, 0.0);
+	}
+	else if (translation.x > ShmupGame::WORLD_UPPER_BOUND_X)
+	{
+		inBounds = false;
+		m_physics->setTranslation(glm::vec3(ShmupGame::WORLD_UPPER_BOUND_X, translation.y, translation.z));
+	}
+
+	if (translation.y < ShmupGame::WORLD_LOWER_BOUND_Y)
+	{
+		inBounds = false;
+		m_physics->setTranslation(glm::vec3(translation.x, ShmupGame::WORLD_LOWER_BOUND_Y, translation.z));
+	}
+	else if (translation.y > ShmupGame::WORLD_UPPER_BOUND_Y)
+	{
+		inBounds = false;
+		m_physics->setTranslation(glm::vec3(translation.x, ShmupGame::WORLD_UPPER_BOUND_Y, translation.z));
+	}
+
+	return false;
 }
 
 b2Vec2 Player::getPosition2d()

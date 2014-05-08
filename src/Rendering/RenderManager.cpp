@@ -238,35 +238,57 @@ void RenderManager::render()
 	clearDepthStencil(); // Clear depth and stencil each frame before rendering the scene
     
     // Render scene
-    setRenderState(RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-    
+	setRenderState(STENCIL_VALUE::SOLID | RENDER_STATE::STENCIL_WRITE | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
+
 	m_basicShader->render();
     for (auto& entity : m_entities)
     {
         entity->render();
     }
-	
+
 	m_noiseShader->render();
 	for (auto& entity : m_noiseEntities)
 	{
 		entity->render();
 	}
-	
+
+	// Render bullets (+ outlines)
+	setRenderState(RENDER_STATE::ALPHA_BLEND | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
 	m_instancedShader->render();
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
 	}
 
+	// Render outlines for non-bullets
+	setRenderState(STENCIL_VALUE::SOLID | RENDER_STATE::STENCIL_TEST_NEQUAL | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
+
+	perFrame.shadowMatrix = viewProjectionMatrix;
+	m_perFrameBuffer->updateAll(&perFrame);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonOffset(1.0f, 1.0f);
+	glLineWidth(5.0f);
+	
+	m_basicShadowShader->render();
+	for (auto& entity : m_entities)
+	{
+		entity->render();
+	}
+
+	m_noiseShadowShader->render();
+	for (auto& entity : m_noiseEntities)
+	{
+		entity->render();
+	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonOffset(0.0f, 0.0f);
+	glLineWidth(1.0f);
+	perFrame.shadowMatrix = viewProjectionMatrix * getShadowMatrix();
+	m_perFrameBuffer->updateAll(&perFrame);
+
 	// Render shadows
-
-	setRenderState(RENDER_STATE::COLOR | RENDER_STATE::ALPHA_BLEND | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST);
-
-	// When fragment passes this test, set the stencil buffer value to 1, which prevents further shadow fragments from being rendered. 
-	glEnable(GL_STENCIL_TEST);
-	glStencilMask(0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	setRenderState(STENCIL_VALUE::SHADOW | RENDER_STATE::STENCIL_TEST_NEQUAL | RENDER_STATE::STENCIL_WRITE | RENDER_STATE::COLOR | RENDER_STATE::ALPHA_BLEND | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST);
 
 	m_basicShadowShader->render();
 	for (auto& entity : m_entities)
@@ -311,7 +333,7 @@ void RenderManager::render()
 glm::mat4 RenderManager::getShadowMatrix()
 {
 	glm::mat4 shadowMat;
-	glm::vec4 lightpos(0.0f, -0.5f, 1.0f, 0.0f);
+	glm::vec4 lightpos(0.0f, -1.0f, 1.0f, 0.0f);
 	glm::vec4 groundplane = glm::vec4(0.0f, 0.0f, 1.0f, 2.0f);
 
 	/* Find dot product between light position vector and ground plane normal. */
@@ -434,31 +456,56 @@ void RenderManager::setRenderState(uint renderStateBitfield)
     else glBindSampler(ShaderCommon::COLOR_FBO_TEXTURE, m_nearestSampler);
 
     // Stencil (stencil value is embedded in the lower 16 bits of the bitfield)
-	uint stencilValue = renderStateBitfield & 0xFFFF;
+	bool stencilWrite = Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_WRITE);
+	bool stencilTestEqual = Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_TEST_EQUAL);
+	bool stencilTestNEqual = Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_TEST_NEQUAL);
+	bool stencilTestEnabled = stencilWrite || stencilTestEqual || stencilTestNEqual;
 
-    if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_WRITE))
-    {
-        // When fragment passes depth test, replace stencil value with 0xFF,
-        // which is then masked to place 1 in the 'bitMask' bit
-        glEnable(GL_STENCIL_TEST);
-        glStencilMask(stencilValue);
-        glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    }
-    else if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_TEST))
-    {
-        // Fragment passes stencil test if the stencil buffer value ANDed with the transparent bit
-        // equals 0xFF ANDed with the transparent bit, meaning both bits are 1.
-        // No modifaction is made to the stencil buffer, but a failure means the fragment is not processed
-        glEnable(GL_STENCIL_TEST);
-        glStencilMask(0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-        glStencilFunc(GL_EQUAL, 0xFF, stencilValue);
-    }
-    else
-    {
-        glDisable(GL_STENCIL_TEST);
-    }
+	if (stencilTestEnabled)
+	{
+		uint stencilValue = renderStateBitfield & 0xFFFF;
+		glEnable(GL_STENCIL_TEST);
+		glStencilMask(0xFF);
+
+		GLenum zPass = stencilWrite ? GL_REPLACE : GL_KEEP;
+
+		// Order of if's matters
+		GLenum func;
+		if (stencilTestEqual) func = GL_EQUAL;
+		else if (stencilTestNEqual) func = GL_NOTEQUAL;
+		else if (stencilWrite) func = GL_ALWAYS;
+
+		glStencilOp(GL_KEEP, GL_KEEP, zPass);
+		glStencilFunc(func, stencilValue, 0xFF);
+	}
+	else
+	{
+		glDisable(GL_STENCIL_TEST);
+	}
+
+    //if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_WRITE))
+    //{
+    //    // When fragment passes depth test, replace stencil value with 0xFF,
+    //    // which is then masked to place 1 in the 'bitMask' bit
+    //    glEnable(GL_STENCIL_TEST);
+    //    glStencilMask(stencilValue);
+    //    glStencilFunc(GL_ALWAYS, 0xFF, 0xFF);
+    //    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    //}
+    //else if (Utils::checkBitfield(renderStateBitfield, RENDER_STATE::STENCIL_TEST))
+    //{
+    //    // Fragment passes stencil test if the stencil buffer value ANDed with the transparent bit
+    //    // equals 0xFF ANDed with the transparent bit, meaning both bits are 1.
+    //    // No modifaction is made to the stencil buffer, but a failure means the fragment is not processed
+    //    glEnable(GL_STENCIL_TEST);
+    //    glStencilMask(0xFF);
+    //    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    //    glStencilFunc(GL_EQUAL, 0xFF, stencilValue);
+    //}
+    //else
+    //{
+    //    glDisable(GL_STENCIL_TEST);
+    //}
 }
 
 void RenderManager::setViewportSize(uint width, uint height)

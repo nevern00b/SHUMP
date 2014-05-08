@@ -106,8 +106,16 @@ namespace RENDER_STATE
     const uint DEPTH_WRITE = 1 << 18;
     const uint COLOR = 1 << 19;
     const uint ALPHA_BLEND = 1 << 20;
-    const uint STENCIL_TEST = 1 << 21;
-    const uint STENCIL_WRITE = 1 << 22;
-    const uint FRAMEBUFFER_SRGB = 1 << 23;
-    const uint LINEAR_SAMPLING_COLOR = 1 << 24;
+    const uint STENCIL_TEST_EQUAL = 1 << 21;
+	const uint STENCIL_TEST_NEQUAL = 1 << 22;
+    const uint STENCIL_WRITE = 1 << 23;
+    const uint FRAMEBUFFER_SRGB = 1 << 24;
+    const uint LINEAR_SAMPLING_COLOR = 1 << 25;
+}
+
+namespace STENCIL_VALUE
+{
+	const uint SHADOW = 1 << 0;
+	const uint SOLID = 1 << 1;
+	//const uint REFLECTION = 1 << 2;
 }

@@ -95,7 +95,7 @@ GLFW::GLFW()
 	glm::uvec2 openGLVersion(3, 3);
 	glm::uvec4 colorBits(8, 8, 8, 0); // We only use alpha on custom FBOs (default value is 8 bits)
 	glm::uvec2 depthStencilBits(24, 8);
-	bool vsync = false;
+	bool vsync = true;
 	bool showDebugOutput = false;
 	bool resizable = true;
 	srand((uint)time(NULL));

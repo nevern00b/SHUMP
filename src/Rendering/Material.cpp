@@ -73,20 +73,21 @@ void Material::render()
 
 void Material::setColor(COLOR color)
 {
+	float a = m_diffuseColor.a;
 	if (color == RED)
 	{
-		m_diffuseColor = glm::vec4(1, 0, 0, 1);
+		m_diffuseColor = glm::vec4(1, 0, 0, a);
 	}
 	else if (color == BLUE)
 	{
-		m_diffuseColor = glm::vec4(0, 0, 1, 1);
+		m_diffuseColor = glm::vec4(0, 0, 1, a);
 	}
 	else if (color == GREEN)
 	{
-		m_diffuseColor = glm::vec4(0, 1, 0, 1);
+		m_diffuseColor = glm::vec4(0, 1, 0, a);
 	}
 	else if (color == YELLOW)
 	{
-		m_diffuseColor = glm::vec4(1, 1, 0, 1);
+		m_diffuseColor = glm::vec4(1, 1, 0, a);
 	}
 }

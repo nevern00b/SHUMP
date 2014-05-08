@@ -28,6 +28,9 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	
 	Material* material = Globals::m_dataManager->getEnemyMaterial(color);
 	material->m_spawnTime = Globals::m_uiManager->getTime();
+	material->m_specPower = 10.0f;
+	material->m_specIntensity = 0.5f;
+
 	if (m_color == COLOR::RED)
 	{
 		m_health = 2.0f;

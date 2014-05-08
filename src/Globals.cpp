@@ -52,4 +52,5 @@ void Globals::destroy()
 	delete m_renderManager;
 	delete m_physicsManager;
 	delete m_stateMachine;
+	delete m_animationManager;
 }

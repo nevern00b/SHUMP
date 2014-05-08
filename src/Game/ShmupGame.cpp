@@ -26,10 +26,10 @@
 #include "Item.h"
 #include "Minion.h"
 
-const float ShmupGame::WORLD_UPPER_BOUND_X = 12.0f;
-const float ShmupGame::WORLD_LOWER_BOUND_X = -12.0f;
-const float ShmupGame::WORLD_UPPER_BOUND_Y = 32.0f;
-const float ShmupGame::WORLD_LOWER_BOUND_Y = -16.0f;
+const float ShmupGame::WORLD_UPPER_BOUND_X = 7.0f;
+const float ShmupGame::WORLD_LOWER_BOUND_X = -7.0f;
+const float ShmupGame::WORLD_UPPER_BOUND_Y = 50.0f;
+const float ShmupGame::WORLD_LOWER_BOUND_Y = -10.0f;
 
 ShmupGame::ShmupGame() : GameManager()
 {
@@ -131,6 +131,9 @@ void ShmupGame::init()
 	camera->setRotation(0, 70.0f);
 	camera->setPan(0.0f, -17.15f);
 	camera->setZoom(20.0f);
+
+	// Create walls that the player can't pass
+	
 }
 
 void ShmupGame::update()

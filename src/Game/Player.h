@@ -31,6 +31,7 @@ public:
 private:
 
 	void shoot();
+	bool checkBounds();
 
 	Timer* m_shootTimer;
 	ShootComponent* m_shootComponent;

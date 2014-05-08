@@ -50,7 +50,7 @@ void main()
         vec4 diffuseTexture = texture(tDiffuse, vUV);
         diffuse = mix(diffuse, diffuseTexture, uMaterial.diffuseBlend); 
     }
-    
+
     if(diffuse.a < 0.1) discard; // For alpha cutout
     
     vec3 viewDir = normalize(vPosition - uPerFrameData.cameraPos);

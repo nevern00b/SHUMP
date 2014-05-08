@@ -39,6 +39,7 @@ vec3 computeLighting(vec3 viewDir, vec3 lightDir, float lightAttenuation, vec3 l
 void main()
 {
 	vec4 diffuse = uMaterial.diffuseColor;
+
     vec3 viewDir = normalize(vPosition - uPerFrameData.cameraPos);
     float specIntensity = uMaterial.specIntensity;
     vec3 normal = normalize(vNormal);
@@ -68,6 +69,17 @@ void main()
         finalColor += visibility * computeLighting(viewDir, lightDir, lightAttenuation, lightColor, diffuse.rgb, specIntensity, uMaterial.specPower, normal);
     }
 	
+	
+	// Fade to dark once you get close to the end
+	float bounds = 50.0;
+	float range = 20.0f;
+	float fadeOut = (min(bounds - vPosition.y, range))/range;
+	diffuse.a *= fadeOut;
+
+	//float t = fract(uPerFrameData.time);
+	//float vary = abs(0.5-t)*1.2;// + 0.5;
+	//finalColor += vary;
+
 	float specular = max(dot(viewDir, -normal), 0.0);
 	if(specular < 0.6) finalColor = vec3(0.0);
 
