@@ -14,6 +14,7 @@ class FullScreenQuad;
 class Background;
 class Timer;
 class Floor;
+class Mesh;
 
 class RenderManager
 {
@@ -56,9 +57,11 @@ public:
 	Buffer<ShaderCommon::PerFrameGL>* m_perFrameBuffer;
 	Buffer<ShaderCommon::LightingGL>* m_lightingBuffer;
 
+	float m_floorDepth = -2.0f;
+
 private:
 
-	Background* m_background;
+	
 
     Shader* m_basicShader;
 	Shader* m_noiseShader;
@@ -77,7 +80,8 @@ private:
 	std::list<Entity*> m_noiseEntities;
     std::list<Entity*> m_entities;
 	std::list<ObjectPool*> m_objectPools;
-	Floor* m_floor;
+
+	Mesh* m_floor;
 
 	FullScreenQuad* m_fullScreenQuad;
 

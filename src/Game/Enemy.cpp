@@ -15,21 +15,30 @@
 #include "Item.h"
 #include "Rendering/Material.h"
 #include "AnimationManager.h"
+#include "Rendering/RenderManager.h"
 
 Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) : Entity(0),
 	m_color(color), 
 	m_pattern(pattern), 
 	m_type(type),
 	m_x(pos_x),
-	m_brightness(0.0f)
+	m_brightness(0.0f),
+	m_intro(true)
 {
-	m_shootTimer = new Timer();
-	m_shootTimer->start(0.3f, true);
-	
+	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
+
+	b2PolygonShape shape;
+	shape.SetAsBox(0.5f, 0.5f);
+	PhysicsData physicsData(shape);
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+
 	Material* material = Globals::m_dataManager->getEnemyMaterial(color);
 	material->m_spawnTime = Globals::m_uiManager->getTime();
 	material->m_specPower = 10.0f;
 	material->m_specIntensity = 0.5f;
+
+	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
+	RenderComponent* render = new RenderComponent(this, mesh, material);
 
 	if (m_color == COLOR::RED)
 	{
@@ -57,16 +66,17 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 		material->m_noiseStrength = 0.3f;
 	}
 
+	m_shootTimer = new Timer();
+	m_shootTimer->start(0.3f, true);
 
-	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
-	b2PolygonShape shape;
-	shape.SetAsBox(0.5f, 0.5f);
-	PhysicsData physicsData(shape);
-	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	float introTime = 0.5f;
 
-	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
-	RenderComponent* render = new RenderComponent(this, mesh, material);
+	// Rise from the floor
+	auto endIntro = [&]() {m_intro = false; };
+	float floorDepth = Globals::m_renderManager->m_floorDepth;
+	Animation* introAnimation = new Animation(this, m_transform->m_translation.z, floorDepth - 1.0f, 0.0f, 0.5f, 0.0f, false);
+	introAnimation->m_callback = endIntro;
 }
 
 Enemy::~Enemy()
@@ -77,6 +87,7 @@ Enemy::~Enemy()
 bool Enemy::update()
 {
 	if(!Entity::update()) return false;
+	if (m_intro) return true;
 
 	if (m_shootTimer->checkInterval())
 	{

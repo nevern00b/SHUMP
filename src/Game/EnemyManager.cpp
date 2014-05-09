@@ -16,7 +16,7 @@
 EnemyManager::EnemyManager() 
 {	
 	m_timer = new Timer();
-	m_timer->start(5.0f, true);
+	m_timer->start(3.0f, true);
 }
 
 EnemyManager::~EnemyManager()
@@ -63,7 +63,7 @@ void EnemyManager::update()
 
 		// Position
 		float x = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X, ShmupGame::WORLD_UPPER_BOUND_X);
-		float y = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_Y, ShmupGame::WORLD_UPPER_BOUND_Y);
+		float y = glm::linearRand(0.0f, ShmupGame::WORLD_UPPER_BOUND_Y);
 
 		if (pattern == ENEMY_PATTERN::SIDE)
 		{

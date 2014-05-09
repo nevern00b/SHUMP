@@ -27,9 +27,9 @@ bool Bullet::update()
 {
 	b2Vec2 pos = m_body->GetPosition();
 	if (pos.y > ShmupGame::WORLD_UPPER_BOUND_Y ||
-		pos.y < ShmupGame::WORLD_LOWER_BOUND_Y ||
-		pos.x > ShmupGame::WORLD_UPPER_BOUND_X ||
-		pos.x < ShmupGame::WORLD_LOWER_BOUND_X )
+		pos.y < ShmupGame::WORLD_LOWER_BOUND_Y-5.0 ||
+		pos.x > ShmupGame::WORLD_UPPER_BOUND_X+5.0 ||
+		pos.x < ShmupGame::WORLD_LOWER_BOUND_X-5.0 )
 	{
 		destroy();
 		return false;

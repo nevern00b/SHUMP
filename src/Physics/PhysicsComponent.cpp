@@ -70,6 +70,7 @@ void PhysicsComponent::setTranslation(const glm::vec3& translation)
 	//float vy = translation.y - pos.y;
 	//setVelocity(vx, vy);
     // TO-DO: is this safe to do, or should we apply temporary linear velocity instead (above)
+	m_translation.z = translation.z;
     m_body->SetTransform(b2Vec2(translation.x,translation.y), m_body->GetAngle());
 }
 
