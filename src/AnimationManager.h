@@ -22,8 +22,8 @@ public:
 
 struct Animation
 {
-	Animation(void* target, float& property, float startValue, float endValue, float duration, float delay, bool repeat);
-	Animation(void* target, std::function<void()>& callback, float duration, float delay, bool repeat);
+	Animation(void* target, float& property, float startValue, float endValue, float duration, float delay, bool repeat, std::function<void()> callback);
+	Animation(void* target, std::function<void()> callback, float duration, float delay, bool repeat);
 
 	~Animation();
 	bool update();

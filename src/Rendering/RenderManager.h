@@ -67,13 +67,13 @@ private:
 	Shader* m_noiseShader;
 	Shader* m_floorShader;
 	Shader* m_backgroundShader;
-	Shader* m_instancedShader;
+	Shader* m_bulletShader;
 	Shader* m_finalOutputShader;
 	Shader* m_bloomShader;
 	Shader* m_blurShaders[2];
 
 	Shader* m_basicShadowShader;
-	Shader* m_instancedShadowShader;
+	Shader* m_bulletShadowShader;
 	Shader* m_noiseShadowShader;
 
 	// Group things by rendering type

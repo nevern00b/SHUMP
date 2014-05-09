@@ -57,7 +57,7 @@ void AnimationManager::removeTarget(void* target)
 
 }
 
-Animation::Animation(void* target, float& property, float startValue, float endValue, float duration, float delay, bool repeat) :
+Animation::Animation(void* target, float& property, float startValue, float endValue, float duration, float delay, bool repeat, std::function<void()> callback) :
 	m_target(target),
 	m_property(&property),
 	m_startValue(startValue),
@@ -66,14 +66,14 @@ Animation::Animation(void* target, float& property, float startValue, float endV
 	m_duration(duration),
 	m_delay(delay),
 	m_repeat(repeat),
-	m_callback(nullptr)
+	m_callback(callback)
 {
 	Globals::m_animationManager->m_animations.push_back(this);
 	update(); // Update right away
 
 }
 
-Animation::Animation(void* target, std::function<void()>& callback, float duration, float delay, bool repeat) :
+Animation::Animation(void* target, std::function<void()> callback, float duration, float delay, bool repeat) :
 	m_target(target),
 	m_callback(callback),
 	m_time(0.0f),

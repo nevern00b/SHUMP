@@ -71,7 +71,7 @@ void Minion::onCollide(EventObject* collider)
 
 	if (bullet != 0)
 	{
-		bullet->destroy();
+		bullet->collide();
 
 		if (bullet->m_color != Globals::m_stateMachine->getPlayerState())
 		{

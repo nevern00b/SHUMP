@@ -63,7 +63,7 @@ RenderManager::RenderManager() :
 	m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = new Shader("data/shaders/noise.vert", "data/shaders/basic.frag");
 	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/empty.frag");
-	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/shadeless.frag");
+	m_bulletShader = new Shader("data/shaders/bullet.vert", "data/shaders/bullet.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_backgroundShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/background.frag");
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
@@ -71,7 +71,7 @@ RenderManager::RenderManager() :
 	m_blurShaders[1] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
 
 	m_basicShadowShader = new Shader("data/shaders/basicShadow.vert", "data/shaders/empty.frag");
-	m_instancedShadowShader = new Shader("data/shaders/instancedShadow.vert", "data/shaders/empty.frag");
+	m_bulletShadowShader = new Shader("data/shaders/bulletShadow.vert", "data/shaders/empty.frag");
 	m_noiseShadowShader = new Shader("data/shaders/noiseShadow.vert", "data/shaders/empty.frag");
 
 
@@ -272,7 +272,7 @@ void RenderManager::render()
 	// Render bullets (they are spheres, so the outline is done in the shader)
 	// Alpha blend enabled so that bullets that are far away fade out
 	setRenderState(RENDER_STATE::ALPHA_BLEND | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-	m_instancedShader->render();
+	m_bulletShader->render();
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
@@ -317,7 +317,7 @@ void RenderManager::render()
 		
 	}
 
-	m_instancedShadowShader->render();
+	m_bulletShadowShader->render();
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();

@@ -73,10 +73,9 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	float introTime = 0.5f;
 
 	// Rise from the floor
-	auto endIntro = [&]() {m_intro = false; };
+	std::function<void()> callback = [&]() {m_intro = false; };
 	float floorDepth = Globals::m_renderManager->m_floorDepth;
-	Animation* introAnimation = new Animation(this, m_transform->m_translation.z, floorDepth - 1.0f, 0.0f, 0.5f, 0.0f, false);
-	introAnimation->m_callback = endIntro;
+	Animation* introAnimation = new Animation(this, m_transform->m_translation.z, floorDepth - 1.0f, 0.0f, 0.5f, 0.0f, false, callback);
 }
 
 Enemy::~Enemy()
@@ -93,11 +92,11 @@ bool Enemy::update()
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 
-		if (m_pattern == ENEMY_PATTERN::HOVER)
-		{
-			if (pos.x < (m_x - 3)) m_enemyDirection.x = -m_enemyDirection.x;
-			else if (pos.x > (m_x + 3)) m_enemyDirection.x = -m_enemyDirection.x;
-		}
+		//if (m_pattern == ENEMY_PATTERN::HOVER)
+		//{
+		//	if (pos.x < (m_x - 3)) m_enemyDirection.x = -m_enemyDirection.x;
+		//	else if (pos.x > (m_x + 3)) m_enemyDirection.x = -m_enemyDirection.x;
+		//}
 
 		float vx;
 		float vy;
@@ -140,8 +139,18 @@ bool Enemy::update()
 		if (glm::abs(vy) < 0.1) vy = -1.0f;
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 
-		if (pos.x < ShmupGame::WORLD_LOWER_BOUND_X || pos.x > ShmupGame::WORLD_UPPER_BOUND_X || pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
+
+		// Reverse direction when it hits a wall
+		if (pos.x < ShmupGame::WORLD_LOWER_BOUND_X || pos.x > ShmupGame::WORLD_UPPER_BOUND_X)
+		{
+			m_enemyDirection.x *= -1.0f;
+		}
+
+		// Destroy if it goes past the screen
+		if (pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
+		{
 			destroy();
+		}
 	}	
 
 	m_physics->applyVelocity(m_enemyDirection.x, m_enemyDirection.y);
@@ -159,7 +168,7 @@ void Enemy::onCollide(EventObject* collider)
 	Bullet* bullet = dynamic_cast<Bullet*>(m_collider);
 	if (bullet != 0)
 	{
-		bullet->destroy();
+		bullet->collide();
 		if (bullet->m_color != m_color)
 		{
 			m_health -= bullet->m_damage;
@@ -169,7 +178,7 @@ void Enemy::onCollide(EventObject* collider)
 				Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 500;
 
 				b2Vec2 pos = m_physics->m_body->GetPosition();
-				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
+				//Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 
 				// Drop immunity item
 				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
@@ -188,7 +197,7 @@ void Enemy::onCollide(EventObject* collider)
 			}
 			else
 			{
-				new Animation(this, m_brightness, 1.0f, 0.0f, 0.1f, 0.0f, false);
+				new Animation(this, m_brightness, 1.0f, 0.0f, 0.1f, 0.0f, false, nullptr);
 			}
 		}
 	}
