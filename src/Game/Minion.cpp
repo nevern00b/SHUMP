@@ -31,6 +31,7 @@ Minion::Minion(b2Vec2 relativePos) : Entity(0), m_lives(1)
 	RenderComponent* render = new RenderComponent(this, mesh, material);
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_redBulletPool);
 
+	m_shootTimer = new Timer();
 	m_shootTimer->start(0.2f, true);
 	m_player = Globals::m_shmupGame->getPlayer();
 	m_relativePos = relativePos;
