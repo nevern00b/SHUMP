@@ -73,16 +73,16 @@ void ShmupGame::init()
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 	
 	Material* yellowMaterial = Globals::m_dataManager->getMaterial("yellow");
-	m_yellowBulletPool = new BulletPool(50, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
+	m_yellowBulletPool = new BulletPool(200, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	Material* redMaterial = Globals::m_dataManager->getMaterial("red");
-	m_redBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
+	m_redBulletPool = new BulletPool(200, sphereMesh, redMaterial, physicsData, COLOR::RED);
 	
 	Material* greenMaterial = Globals::m_dataManager->getMaterial("green");
-	m_greenBulletPool = new BulletPool(50, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
+	m_greenBulletPool = new BulletPool(200, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
 	
 	Material* blueMaterial = Globals::m_dataManager->getMaterial("blue");
-	m_blueBulletPool = new BulletPool(50, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
+	m_blueBulletPool = new BulletPool(200, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
 	m_enemyRBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
@@ -146,19 +146,25 @@ void ShmupGame::update()
 		{
 			Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 10;
 		}
+
+
+		if (Globals::m_uiManager->isKeyDown(KEY_Z))
+		{
+			m_player->gainLives(100);
+		}
+
+		if (Globals::m_uiManager->isKeyPressed(KEY_Q))
+		{
+			m_player->gainMinions(1);
+		}
+
 	}
 
-	if (Globals::m_uiManager->isKeyDown(KEY_Z))
+	else if (Globals::m_uiManager->isKeyPressed(KEY_A))
 	{
-		m_player->gainLives(100);
+		m_player = new Player();
+		m_player->m_transform->setTranslation(-2, -5);
 	}
-
-	if (Globals::m_uiManager->isKeyPressed(KEY_Q))
-	{
-		m_player->gainMinions(1);
-	}
-
-
 	GameManager::update();
 	//printf("===================");
 	//printf("Camera angleX: %f angleY: %f trans: %f %f %f\n", m_camera->m_angleHorizontal, m_camera->m_angleVertical, m_camera->m_transform->m_translation.x, m_camera->m_transform->m_translation.y, m_camera->m_transform->m_translation.z);
