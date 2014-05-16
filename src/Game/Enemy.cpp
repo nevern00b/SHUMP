@@ -15,21 +15,30 @@
 #include "Item.h"
 #include "Rendering/Material.h"
 #include "AnimationManager.h"
+#include "Rendering/RenderManager.h"
 
 Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) : Entity(0),
 	m_color(color), 
 	m_pattern(pattern), 
 	m_type(type),
 	m_x(pos_x),
-	m_brightness(0.0f)
+	m_brightness(0.0f),
+	m_intro(true)
 {
-	m_shootTimer = new Timer();
-	m_shootTimer->start(0.3f, true);
-	
+	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
+
+	b2PolygonShape shape;
+	shape.SetAsBox(0.5f, 0.5f);
+	PhysicsData physicsData(shape);
+	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+
 	Material* material = Globals::m_dataManager->getEnemyMaterial(color);
 	material->m_spawnTime = Globals::m_uiManager->getTime();
 	material->m_specPower = 10.0f;
 	material->m_specIntensity = 0.5f;
+
+	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
+	RenderComponent* render = new RenderComponent(this, mesh, material);
 
 	if (m_color == COLOR::RED)
 	{
@@ -57,16 +66,16 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 		material->m_noiseStrength = 0.3f;
 	}
 
+	m_shootTimer = new Timer();
+	m_shootTimer->start(0.3f, true);
 
-	Mesh* mesh = Globals::m_dataManager->getMesh("sphere");
 
-	b2PolygonShape shape;
-	shape.SetAsBox(0.5f, 0.5f);
-	PhysicsData physicsData(shape);
-	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
+	float introTime = 0.5f;
 
-	PhysicsComponent* physics = new PhysicsComponent(this, physicsData);
-	RenderComponent* render = new RenderComponent(this, mesh, material);
+	// Rise from the floor
+	std::function<void()> callback = [&]() {m_intro = false; };
+	float floorDepth = Globals::m_renderManager->m_floorDepth;
+	Animation* introAnimation = new Animation(this, m_transform->m_translation.z, floorDepth - 1.0f, 0.0f, 0.5f, 0.0f, false, callback);
 }
 
 Enemy::~Enemy()
@@ -77,16 +86,17 @@ Enemy::~Enemy()
 bool Enemy::update()
 {
 	if(!Entity::update()) return false;
+	if (m_intro) return true;
 
 	if (m_shootTimer->checkInterval())
 	{
 		b2Vec2 pos = m_physics->m_body->GetPosition();
 
-		if (m_pattern == ENEMY_PATTERN::HOVER)
-		{
-			if (pos.x < (m_x - 3)) m_enemyDirection.x = -m_enemyDirection.x;
-			else if (pos.x > (m_x + 3)) m_enemyDirection.x = -m_enemyDirection.x;
-		}
+		//if (m_pattern == ENEMY_PATTERN::HOVER)
+		//{
+		//	if (pos.x < (m_x - 3)) m_enemyDirection.x = -m_enemyDirection.x;
+		//	else if (pos.x > (m_x + 3)) m_enemyDirection.x = -m_enemyDirection.x;
+		//}
 
 		float vx;
 		float vy;
@@ -129,8 +139,18 @@ bool Enemy::update()
 		if (glm::abs(vy) < 0.1) vy = -1.0f;
 		m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 
-		if (pos.x < ShmupGame::WORLD_LOWER_BOUND_X || pos.x > ShmupGame::WORLD_UPPER_BOUND_X || pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
+
+		// Reverse direction when it hits a wall
+		if (pos.x < ShmupGame::WORLD_LOWER_BOUND_X || pos.x > ShmupGame::WORLD_UPPER_BOUND_X)
+		{
+			m_enemyDirection.x *= -1.0f;
+		}
+
+		// Destroy if it goes past the screen
+		if (pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
+		{
 			destroy();
+		}
 	}	
 
 	m_physics->applyVelocity(m_enemyDirection.x, m_enemyDirection.y);
@@ -148,7 +168,7 @@ void Enemy::onCollide(EventObject* collider)
 	Bullet* bullet = dynamic_cast<Bullet*>(m_collider);
 	if (bullet != 0)
 	{
-		bullet->destroy();
+		bullet->collide();
 		if (bullet->m_color != m_color)
 		{
 			m_health -= bullet->m_damage;
@@ -158,7 +178,7 @@ void Enemy::onCollide(EventObject* collider)
 				Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 500;
 
 				b2Vec2 pos = m_physics->m_body->GetPosition();
-				Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
+				//Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 
 				// Drop immunity item
 				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
@@ -177,7 +197,7 @@ void Enemy::onCollide(EventObject* collider)
 			}
 			else
 			{
-				new Animation(this, m_brightness, 1.0f, 0.0f, 0.1f, 0.0f, false);
+				new Animation(this, m_brightness, 1.0f, 0.0f, 0.1f, 0.0f, false, nullptr);
 			}
 		}
 	}

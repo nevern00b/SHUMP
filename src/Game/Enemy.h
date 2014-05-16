@@ -36,6 +36,10 @@ public:
 	float m_brightness; // For animation;
 
 private:
+
+	void endIntro();
+
+	bool m_intro;
 	float m_health;
 	ShootComponent* m_shootComponent;
 	Timer* m_shootTimer;

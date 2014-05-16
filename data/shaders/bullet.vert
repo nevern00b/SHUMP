@@ -6,12 +6,12 @@ layout(location = TRANSFORM_ATTR) in vec4 aTransform;
 out vec3 vPosition;
 out vec3 vNormal;
 out vec2 vUV;
+out float vLifetime;
 
 void main() 
 {
 	// Calculate transform from translation and 2d angle
 	//float angle = uPerFrameData.time*20.0f;
-
 	//mat3 transform = mat3(1.0);
 	//transform[0][0] = cos(angle);
 	//transform[0][1] = -sin(angle);
@@ -24,4 +24,5 @@ void main()
     vPosition = vec3(position);
     vNormal = aNormal;
     vUV = aUV;
+	vLifetime = aTransform.w;
 }

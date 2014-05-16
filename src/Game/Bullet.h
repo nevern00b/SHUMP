@@ -25,9 +25,12 @@ public:
 	virtual void destroy();
 	virtual glm::vec4 getTransform();
 
+	void collide();
 
 	b2Body* m_body;
 	float m_damage;
 	COLOR m_color;
+
+	float m_lifetime;
 
 };

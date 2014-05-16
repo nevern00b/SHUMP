@@ -18,18 +18,26 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Game/Floor.h"
+#include "Entity.h"
+#include "Transform.h"
 
 RenderManager::RenderManager() :
-    m_lightBufferDirty(false),
-	m_floor(0),
-	m_background(0)
+    m_lightBufferDirty(false)
 {
 
     int defaultFBO;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &defaultFBO);
     m_defaultFBO = (GLuint)defaultFBO;
 
-	m_floor = new Floor();
+
+	float vertexData[32] = { -10.0f, -100.0f, m_floorDepth-0.01f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+							  10.0f, -100.0f, m_floorDepth-0.01f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+							  10.0f, 100.0f, m_floorDepth-0.01f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+							 -10.0f, 100.0f, m_floorDepth-0.01f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f };
+
+	ushort elementArrayData[6] = { 0, 1, 2, 2, 3, 0 };
+
+	m_floor = new Mesh(vertexData, elementArrayData, 32, 6);
 
     // Init GL state
     glClearColor(1, 1, 1, 1);
@@ -54,8 +62,8 @@ RenderManager::RenderManager() :
     // Load shaders
 	m_basicShader = new Shader("data/shaders/basic.vert", "data/shaders/basic.frag");
 	m_noiseShader = new Shader("data/shaders/noise.vert", "data/shaders/basic.frag");
-	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/floor.frag");
-	m_instancedShader = new Shader("data/shaders/instanced.vert", "data/shaders/shadeless.frag");
+	m_floorShader = new Shader("data/shaders/basic.vert", "data/shaders/empty.frag");
+	m_bulletShader = new Shader("data/shaders/bullet.vert", "data/shaders/bullet.frag");
 	m_finalOutputShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/finalOutput.frag");
 	m_backgroundShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/background.frag");
 	m_bloomShader = new Shader("data/shaders/fullScreen.vert", "data/shaders/bloom.frag");
@@ -63,7 +71,7 @@ RenderManager::RenderManager() :
 	m_blurShaders[1] = new Shader("data/shaders/fullScreen.vert", "data/shaders/gaussianBlurY.frag");
 
 	m_basicShadowShader = new Shader("data/shaders/basicShadow.vert", "data/shaders/empty.frag");
-	m_instancedShadowShader = new Shader("data/shaders/instancedShadow.vert", "data/shaders/empty.frag");
+	m_bulletShadowShader = new Shader("data/shaders/bulletShadow.vert", "data/shaders/empty.frag");
 	m_noiseShadowShader = new Shader("data/shaders/noiseShadow.vert", "data/shaders/empty.frag");
 
 
@@ -237,6 +245,15 @@ void RenderManager::render()
 	m_fullScreenQuad->render();
 	clearDepthStencil(); // Clear depth and stencil each frame before rendering the scene
     
+
+	// Render fake floor that enemies appear from
+	setRenderState(RENDER_STATE::DEPTH_WRITE | RENDER_STATE::DEPTH_TEST);
+	ShaderCommon::TransformGL transform;
+	transform.modelMatrix = glm::mat4(1.0);
+	renderTransform(transform);
+	m_floorShader->render();
+	m_floor->render();
+
     // Render scene
 	setRenderState(STENCIL_VALUE::SOLID | RENDER_STATE::STENCIL_WRITE | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
 
@@ -255,7 +272,7 @@ void RenderManager::render()
 	// Render bullets (they are spheres, so the outline is done in the shader)
 	// Alpha blend enabled so that bullets that are far away fade out
 	setRenderState(RENDER_STATE::ALPHA_BLEND | RENDER_STATE::COLOR | RENDER_STATE::CULLING | RENDER_STATE::DEPTH_TEST | RENDER_STATE::DEPTH_WRITE);
-	m_instancedShader->render();
+	m_bulletShader->render();
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
@@ -293,10 +310,14 @@ void RenderManager::render()
 	m_noiseShadowShader->render();
 	for (auto& entity : m_noiseEntities)
 	{
-		entity->render();
+		if (entity->m_transform->m_translation.z >= m_floorDepth)
+		{
+			entity->render();
+		}
+		
 	}
 
-	m_instancedShadowShader->render();
+	m_bulletShadowShader->render();
 	for (auto& objectPool : m_objectPools)
 	{
 		objectPool->render();
@@ -328,7 +349,7 @@ glm::mat4 RenderManager::getShadowMatrix()
 {
 	glm::mat4 shadowMat;
 	glm::vec4 lightpos(0.0f, -1.0f, 1.0f, 0.0f);
-	glm::vec4 groundplane = glm::vec4(0.0f, 0.0f, 1.0f, 2.0f);
+	glm::vec4 groundplane = glm::vec4(0.0f, 0.0f, 1.0f, -m_floorDepth);
 
 	/* Find dot product between light position vector and ground plane normal. */
 	float dot = groundplane.x * lightpos.x +

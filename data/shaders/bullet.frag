@@ -3,6 +3,7 @@ layout (location = 0) out vec4 fragColor;
 in vec3 vPosition;
 in vec3 vNormal;
 in vec2 vUV;
+in float vLifetime;
 
 //void main()
 //{
@@ -80,8 +81,15 @@ void main()
 	//float vary = abs(0.5-t)*1.2;// + 0.5;
 	//finalColor += vary;
 
+	// Outline
 	float specular = max(dot(viewDir, -normal), 0.0);
 	if(specular < 0.65) finalColor = vec3(0.0);
+
+	if(vLifetime > 0.0)
+	{
+		finalColor.rgb = vec3(1.0);
+		diffuse.a = 1.0-vLifetime;
+	}
 
     fragColor = vec4(finalColor, diffuse.a);
 }
