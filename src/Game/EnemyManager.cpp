@@ -226,7 +226,7 @@ void EnemyManager::update()
 			setSpawnRate(1.00f);
 		}
 
-		std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
+		//std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
 	}
 }
 

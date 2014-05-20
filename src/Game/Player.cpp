@@ -139,16 +139,18 @@ bool Player::update()
 
 	if (Globals::m_stateMachine->getPlayerWeaponLVL() == 1) 
 	{
-		m_shootTimer->setInterval(0.5f);
+		shootRate = 0.5f;
 	}
 	else if (Globals::m_stateMachine->getPlayerWeaponLVL() == 2) 
 	{
-		m_shootTimer->setInterval(0.25f);
+		shootRate = 0.25f;
 	}
 	else
 	{
-		m_shootTimer->setInterval(0.1f);
+		shootRate = 0.1f;
 	}
+
+	m_shootTimer->setInterval(shootRate);
 
 	// Auto shoot
 	if (m_shootTimer->checkInterval())
@@ -156,7 +158,6 @@ bool Player::update()
 		shoot();
 	}
 
-	
 	changeColor();
 
 	return true;

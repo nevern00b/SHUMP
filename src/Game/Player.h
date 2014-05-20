@@ -28,6 +28,7 @@ public:
 	uint m_lives;
 	uint m_minionCount;
 
+	float shootRate;
 private:
 
 	void shoot();
