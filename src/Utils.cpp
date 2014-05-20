@@ -147,3 +147,8 @@ bool Timer::checkInterval()
 
 	return false;
 }
+
+void Timer::setInterval(float interval)
+{
+	m_interval = interval;
+}

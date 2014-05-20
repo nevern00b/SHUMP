@@ -67,7 +67,7 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	}
 
 	m_shootTimer = new Timer();
-	m_shootTimer->start(0.3f, true);
+	m_shootTimer->start(0.5f, true);
 
 
 	float introTime = 0.5f;

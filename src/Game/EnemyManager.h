@@ -11,8 +11,9 @@ class EnemyManager
 public:
 	EnemyManager();
 	~EnemyManager();
-	void update();	
+	void update();
 	
+	void setSpawnRate(float m_interval);
 	COLOR getEnemyColor();
 
 private:

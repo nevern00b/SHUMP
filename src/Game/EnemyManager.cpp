@@ -12,6 +12,7 @@
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
 #include "Enemy.h"
+#include <iostream>
 
 EnemyManager::EnemyManager() 
 {	
@@ -190,6 +191,41 @@ void EnemyManager::update()
 			enemy->m_enemyDirection.x = 0;
 			enemy->m_enemyDirection.y = -20;
 		}
+
+		//change enemy spawn rate
+		int current_score = Globals::m_stateMachine->p_score;
+
+		//score 100 = 1 second of gameplay
+		if (current_score < 1500) 
+		{
+			setSpawnRate(3.00f);
+		}
+		else if (current_score > 1500 && current_score < 2000) 
+		{
+			setSpawnRate(2.75f);
+		} 
+		else if (current_score > 2000 && current_score < 3000)
+		{
+			setSpawnRate(2.50f);
+		}
+		else if (current_score > 3000 && current_score < 6000)
+		{
+			setSpawnRate(2.25f);
+		}
+		else if (current_score > 6000 && current_score < 15000)
+		{
+			setSpawnRate(2.00f);
+		}
+		else if (current_score > 15000 && current_score < 18000)
+		{
+			setSpawnRate(1.50f);
+		}
+		else
+		{
+			setSpawnRate(1.00f);
+		}
+
+		//std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
 	}
 }
 
@@ -202,4 +238,10 @@ COLOR EnemyManager::getEnemyColor()
 	else if (rand < 0.9f) return COLOR::BLUE;
 	else if (rand <= 1.0f) return COLOR::YELLOW;
 	else return COLOR::RED;
+}
+
+void EnemyManager::setSpawnRate(float m_interval)
+{
+	m_timer->start(m_interval, true);
+	//m_timer->setInterval(m_interval);
 }

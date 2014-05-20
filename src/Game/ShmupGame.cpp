@@ -45,8 +45,6 @@ void ShmupGame::init()
 {
 	GameManager::init();
 
-
-
 	// Test out noise
 	const uint noiseSize = 256;
 
@@ -73,28 +71,28 @@ void ShmupGame::init()
 	physicsData.m_groupIndex = ShmupGame::PLAYER_GROUP;
 	
 	Material* yellowMaterial = Globals::m_dataManager->getMaterial("yellow");
-	m_yellowBulletPool = new BulletPool(200, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
+	m_yellowBulletPool = new BulletPool(100, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	Material* redMaterial = Globals::m_dataManager->getMaterial("red");
-	m_redBulletPool = new BulletPool(200, sphereMesh, redMaterial, physicsData, COLOR::RED);
+	m_redBulletPool = new BulletPool(100, sphereMesh, redMaterial, physicsData, COLOR::RED);
 	
 	Material* greenMaterial = Globals::m_dataManager->getMaterial("green");
-	m_greenBulletPool = new BulletPool(200, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
+	m_greenBulletPool = new BulletPool(100, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
 	
 	Material* blueMaterial = Globals::m_dataManager->getMaterial("blue");
-	m_blueBulletPool = new BulletPool(200, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
+	m_blueBulletPool = new BulletPool(100, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyRBulletPool = new BulletPool(50, sphereMesh, redMaterial, physicsData, COLOR::RED);
+	m_enemyRBulletPool = new BulletPool(25, sphereMesh, redMaterial, physicsData, COLOR::RED);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBBulletPool = new BulletPool(50, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
+	m_enemyBBulletPool = new BulletPool(25, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyGBulletPool = new BulletPool(50, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
+	m_enemyGBulletPool = new BulletPool(25, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyYBulletPool = new BulletPool(50, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
+	m_enemyYBulletPool = new BulletPool(25, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	//Score System
 	m_scoreTimer = new Timer();
@@ -146,7 +144,6 @@ void ShmupGame::update()
 		{
 			Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 10;
 		}
-
 
 		if (Globals::m_uiManager->isKeyDown(KEY_Z))
 		{

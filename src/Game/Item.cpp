@@ -21,8 +21,6 @@ Item::Item(float vx, float vy) : Entity(0)
 	m_transform->setScale(0.3f);
 
 	
-
-
 	m_rotator = new Entity(this);
 
 	m_atom1 = new Entity(m_rotator);

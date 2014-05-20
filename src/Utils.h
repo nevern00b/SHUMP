@@ -39,6 +39,7 @@ public:
 	float getTimeElapsed();
 	float getTimeLeft();
 	bool checkInterval();
+	void setInterval(float interval);
 
 	float m_interval;
 	bool m_running;
