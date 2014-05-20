@@ -27,8 +27,8 @@ public:
 
 	uint m_lives;
 	uint m_minionCount;
-
-	float shootRate;
+	bool m_shootRadial;
+	float m_shootRate;
 private:
 
 	void shoot();

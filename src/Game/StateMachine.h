@@ -40,5 +40,4 @@ private:
 	COLOR p_state = COLOR::RED;
 	WEAPON p_weapon = WEAPON::STANDARD;
 	int p_weaponLVL = 1;
-	
 };

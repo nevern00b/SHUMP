@@ -33,7 +33,7 @@ Minion::Minion(b2Vec2 relativePos) : Entity(0), m_lives(1)
 
 	m_player = Globals::m_shmupGame->getPlayer();
 	m_shootTimer = new Timer();
-	m_shootTimer->start(m_player->shootRate, true);
+	m_shootTimer->start(m_player->m_shootRate, true);
 	m_relativePos = relativePos;
 }
 
