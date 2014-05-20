@@ -29,7 +29,7 @@ public:
 
 	void changePlayerState(COLOR input);
 	void changeWeapon(WEAPON input);
-	void upgradeWeapon();
+	void upgradeWeapon(int level);
 	void resetWeapon();
 	void addScore(int input);
 

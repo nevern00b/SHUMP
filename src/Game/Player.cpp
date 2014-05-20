@@ -38,7 +38,7 @@ Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 	m_shootComponent = new ShootComponent(this, Globals::m_shmupGame->m_redBulletPool);
 
 	m_shootTimer = new Timer();
-	m_shootTimer->start(0.1f, true);
+	m_shootTimer->start(0.25f, true);
 
 	changeColor(); // Sets color to default immunity state color	
 
@@ -77,6 +77,19 @@ bool Player::update()
 	if (Globals::m_uiManager->isKeyDown(KEY_Y))
 		Globals::m_stateMachine->checkStates();
 
+	//Change bullet stream width with number keys
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_1))
+		Globals::m_stateMachine->changeWeapon(WEAPON::STANDARD);
+
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_2))
+		Globals::m_stateMachine->changeWeapon(WEAPON::WEAPON1);
+
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_3))
+		Globals::m_stateMachine->changeWeapon(WEAPON::WEAPON2);
+	
+	if (Globals::m_uiManager->isKeyDown(GLFW_KEY_4))
+		Globals::m_stateMachine->changeWeapon(WEAPON::WEAPON3);
+
 	// Check if the mouse dragged
 	if (Globals::m_uiManager->isMouseDragging())
 	{
@@ -110,6 +123,32 @@ bool Player::update()
 	//		shoot();
 	//	}
     //}
+
+
+	//check shoot rate
+	//Again, these numbers are subject to change
+	int current_score = Globals::m_stateMachine->p_score;
+	if (current_score > 5000 && current_score < 10000)
+	{
+		Globals::m_stateMachine->upgradeWeapon(2);
+	} 
+	else if (current_score > 10000)
+	{
+		Globals::m_stateMachine->upgradeWeapon(3);
+	}
+
+	if (Globals::m_stateMachine->getPlayerWeaponLVL() == 1) 
+	{
+		m_shootTimer->setInterval(0.5f);
+	}
+	else if (Globals::m_stateMachine->getPlayerWeaponLVL() == 2) 
+	{
+		m_shootTimer->setInterval(0.25f);
+	}
+	else
+	{
+		m_shootTimer->setInterval(0.1f);
+	}
 
 	// Auto shoot
 	if (m_shootTimer->checkInterval())
@@ -229,9 +268,36 @@ void Player::shoot()
 	b2Vec2 pos = m_physics->m_body->GetPosition();
 	float vx = 0.0f;
 	float vy = 30.0f;
+
+	//bullet velocities
+	float b2x, b3x;
+
+	//bullet spread; based on velocity vector
+	switch (Globals::m_stateMachine->getPlayerWeapon()) {
+		case WEAPON::STANDARD:
+			b2x = -1.0f;
+			b3x = 1.0f;
+			break;
+		case WEAPON::WEAPON1:
+			b2x = -2.0f;
+			b3x = 2.0;
+			break;
+		case WEAPON::WEAPON2:
+			b2x = -3.0f;
+			b3x = 3.0f;
+			break;
+		case WEAPON::WEAPON3:
+			b2x = -4.0f;
+			b3x = 4.0f;
+			break;
+		default:
+			b2x = -1.0f;
+			b3x = 1.0f;
+	}
+	//3 bullet streams
 	m_shootComponent->shoot(pos.x, pos.y, vx, vy);
-	m_shootComponent->shoot(pos.x, pos.y, -1.0f, vy);
-	m_shootComponent->shoot(pos.x, pos.y, 1.0f, vy);
+	m_shootComponent->shoot(pos.x, pos.y, b2x, vy);
+	m_shootComponent->shoot(pos.x, pos.y, b3x, vy);
 
 }
 

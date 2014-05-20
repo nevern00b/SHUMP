@@ -196,6 +196,7 @@ void EnemyManager::update()
 		int current_score = Globals::m_stateMachine->p_score;
 
 		//score 100 = 1 second of gameplay
+		//NOTE: score is based on things other than gameplay time. Should adjust these numbers below as necessary
 		if (current_score < 1500) 
 		{
 			setSpawnRate(3.00f);
@@ -225,7 +226,7 @@ void EnemyManager::update()
 			setSpawnRate(1.00f);
 		}
 
-		//std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
+		std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
 	}
 }
 
@@ -240,8 +241,9 @@ COLOR EnemyManager::getEnemyColor()
 	else return COLOR::RED;
 }
 
+//NOTE: setSpawnRate starts this timer every update 
+// ... manually setting the timer to another interval in lieu of restarting it a different interval was not working
 void EnemyManager::setSpawnRate(float m_interval)
 {
 	m_timer->start(m_interval, true);
-	//m_timer->setInterval(m_interval);
 }

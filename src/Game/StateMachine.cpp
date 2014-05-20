@@ -39,9 +39,9 @@ void StateMachine::changeWeapon(WEAPON input)
 	p_weapon = input;
 }
 
-void StateMachine::upgradeWeapon()
+void StateMachine::upgradeWeapon(int level)
 {
-	p_weaponLVL++;
+	p_weaponLVL = level;
 }
 
 void StateMachine::resetWeapon()
