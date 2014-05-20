@@ -233,17 +233,16 @@ void EnemyManager::update()
 COLOR EnemyManager::getEnemyColor()
 {
 	// Get the enemy color based off percent chance
+	// Before red == 0.4, green = 0.7, blue = 0.9. Was there a reason to make them have unequal probabilities?
 	float rand = glm::linearRand(0.0f, 1.0f);
-	if (rand < 0.4f) return COLOR::RED;
-	else if (rand < 0.7f) return COLOR::GREEN;
-	else if (rand < 0.9f) return COLOR::BLUE;
+	if (rand < 0.25f) return COLOR::RED;
+	else if (rand < 0.50f) return COLOR::GREEN;
+	else if (rand < 0.75f) return COLOR::BLUE;
 	else if (rand <= 1.0f) return COLOR::YELLOW;
 	else return COLOR::RED;
 }
 
-//NOTE: setSpawnRate starts this timer every update 
-// ... manually setting the timer to another interval in lieu of restarting it a different interval was not working
 void EnemyManager::setSpawnRate(float m_interval)
 {
-	m_timer->start(m_interval, true);
+	m_timer->setInterval(m_interval);
 }

@@ -83,16 +83,16 @@ void ShmupGame::init()
 	m_blueBulletPool = new BulletPool(100, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyRBulletPool = new BulletPool(25, sphereMesh, redMaterial, physicsData, COLOR::RED);
+	m_enemyRBulletPool = new BulletPool(7, sphereMesh, redMaterial, physicsData, COLOR::RED);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyBBulletPool = new BulletPool(25, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
+	m_enemyBBulletPool = new BulletPool(7, sphereMesh, blueMaterial, physicsData, COLOR::BLUE);
 
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyGBulletPool = new BulletPool(25, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
+	m_enemyGBulletPool = new BulletPool(7, sphereMesh, greenMaterial, physicsData, COLOR::GREEN);
 	
 	physicsData.m_groupIndex = ShmupGame::ENEMY_GROUP;
-	m_enemyYBulletPool = new BulletPool(25, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
+	m_enemyYBulletPool = new BulletPool(7, sphereMesh, yellowMaterial, physicsData, COLOR::YELLOW);
 	
 	//Score System
 	m_scoreTimer = new Timer();
