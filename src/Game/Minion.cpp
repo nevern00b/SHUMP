@@ -102,23 +102,24 @@ void Minion::onCollide(EventObject* collider)
 
 void Minion::shoot()
 {
-	int bulletState = Globals::m_stateMachine->getPlayerState();
-	if (bulletState == COLOR::RED)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_redBulletPool;
-	}
-	else if (bulletState == COLOR::BLUE)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_blueBulletPool;
-	}
-	else if (bulletState == COLOR::GREEN)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_greenBulletPool;
-	}
-	else if (bulletState == COLOR::YELLOW)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_yellowBulletPool;
-	}
+	m_shootComponent = m_player->getShootComponent();
+	//int bulletstate = globals::m_statemachine->getplayerstate();
+	//if (bulletstate == color::red)
+	//{
+	//	m_shootcomponent->m_bulletpool = globals::m_shmupgame->m_redbulletpool;
+	//}
+	//else if (bulletstate == color::blue)
+	//{
+	//	m_shootcomponent->m_bulletpool = globals::m_shmupgame->m_bluebulletpool;
+	//}
+	//else if (bulletstate == color::green)
+	//{
+	//	m_shootcomponent->m_bulletpool = globals::m_shmupgame->m_greenbulletpool;
+	//}
+	//else if (bulletstate == color::yellow)
+	//{
+	//	m_shootcomponent->m_bulletpool = globals::m_shmupgame->m_yellowbulletpool;
+	//}
 
 	b2Vec2 pos = m_physics->m_body->GetPosition();
 	float vx = 0.0f;

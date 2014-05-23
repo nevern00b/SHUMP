@@ -10,6 +10,23 @@ class PhysicsManager;
 class StateMachine;
 class AnimationManager;
 
+enum COLOR
+{
+	STATIC,
+	RED,
+	BLUE,
+	GREEN,
+	YELLOW
+};
+
+enum WEAPON{
+	STANDARD,
+	WEAPON1,
+	WEAPON2,
+	WEAPON3,
+
+};
+
 class Globals
 {
 

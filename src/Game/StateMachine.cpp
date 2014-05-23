@@ -17,7 +17,7 @@ COLOR StateMachine::getPlayerState()
 	return p_state;
 }
 
-int StateMachine::getPlayerWeapon()
+WEAPON StateMachine::getPlayerWeapon()
 {
 	return p_weapon;
 }
@@ -28,7 +28,7 @@ int StateMachine::getPlayerWeaponLVL()
 }
 
 
-//Change Methods
+//Transition methods: Player
 void StateMachine::changePlayerState(COLOR input)
 {
 	p_state = input;
@@ -39,12 +39,106 @@ void StateMachine::changeWeapon(WEAPON input)
 	p_weapon = input;
 }
 
-void StateMachine::upgradeWeapon(int level)
+void StateMachine::upgradeWeapon(int score)
 {
-	p_weaponLVL = level;
+	if (score < 5000)
+	{
+		p_weaponLVL = 1;
+	}
+	else if (score > 5000 && score < 10000)
+	{
+		p_weaponLVL = 2;
+	}
+	else if (score > 10000 && score < 20000)
+	{
+		p_weaponLVL = 3;
+	}
+	else
+	{
+		p_weaponLVL = 4;
+	}
 }
 
 void StateMachine::resetWeapon()
 {
 	p_weaponLVL = 1;
+}
+
+float StateMachine::changeShootRate()
+{
+	float m_shootRate = 0.5f;
+	if (p_weaponLVL == 1)
+	{
+		m_shootRate = 0.5f;
+	}
+	else if (p_weaponLVL == 2)
+	{
+		m_shootRate = 0.25f;
+	}
+	else if (p_weaponLVL == 3)
+	{
+		m_shootRate = 0.1f;
+	}
+	else if (p_weaponLVL == 4)
+	{
+		m_shootRate = 0.1f;
+		///m_shootRadial = true;
+	}
+	else
+	{
+		m_shootRate = 0.5f;
+	}
+	return m_shootRate;
+}
+
+
+//Transition methods: Bullet
+BulletPool* StateMachine::changeBulletPool(int playerState)
+{
+	BulletPool* finalPool = Globals::m_shmupGame->m_redBulletPool;
+	if (playerState == COLOR::RED)
+	{
+		finalPool = Globals::m_shmupGame->m_redBulletPool;
+	}
+	else if (playerState == COLOR::BLUE)
+	{
+		finalPool = Globals::m_shmupGame->m_blueBulletPool;
+	}
+	else if (playerState == COLOR::GREEN)
+	{
+		finalPool = Globals::m_shmupGame->m_greenBulletPool;
+	}
+	else if (playerState == COLOR::YELLOW)
+	{
+		finalPool = Globals::m_shmupGame->m_yellowBulletPool;
+	}
+	return finalPool;
+}
+
+std::pair<float, float> StateMachine::changeBulletSpread(WEAPON wp)
+{
+	float b2x, b3x;
+	switch (wp) {
+		case WEAPON::STANDARD:
+			b2x = -1.0f;
+			b3x = 1.0f;
+			break;
+		case WEAPON::WEAPON1:
+			b2x = -2.0f;
+			b3x = 2.0;
+			break;
+		case WEAPON::WEAPON2:
+			b2x = -3.0f;
+			b3x = 3.0f;
+			break;
+		case WEAPON::WEAPON3:
+			b2x = -4.0f;
+			b3x = 4.0f;
+			break;
+		default:
+			b2x = -1.0f;
+			b3x = 1.0f;
+	}
+	std::pair<float, float> vel(b2x, b3x);
+	return vel;
 }

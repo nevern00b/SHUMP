@@ -126,51 +126,15 @@ bool Player::update()
 	//	}
     //}
 
-
-	//check shoot rate
-	//Again, these numbers are subject to change
+	//change weapon level. Right now weapon level is only controlling shoot rate...
 	int current_score = Globals::m_stateMachine->p_score;
-	if (current_score < 5000) 
-	{
-		Globals::m_stateMachine->upgradeWeapon(1);
-	}
-	else if (current_score > 5000 && current_score < 10000)
-	{
-		Globals::m_stateMachine->upgradeWeapon(2);
-	} 
-	else if (current_score > 10000 && current_score < 20000)
-	{
-		Globals::m_stateMachine->upgradeWeapon(3);
-	}
-	else
-	{
-		Globals::m_stateMachine->upgradeWeapon(4);
-	}
-
-
 	int weaponLvl = Globals::m_stateMachine->getPlayerWeaponLVL();
+	Globals::m_stateMachine->upgradeWeapon(current_score);
+
+
+	//change shoot rate. Again, these numbers are subject to change
+	m_shootRate = Globals::m_stateMachine->changeShootRate();
 	//std::cout << "WEAPON LEVEL: " << weaponLvl << std::endl;
-	if (weaponLvl == 1) 
-	{
-		m_shootRate = 0.5f;
-	}
-	else if (weaponLvl == 2) 
-	{
-		m_shootRate = 0.25f;
-	}
-	else if (weaponLvl == 3)
-	{
-		m_shootRate = 0.1f;
-	}
-	else if (weaponLvl == 4)
-	{
-		m_shootRate = 0.1f;
-		m_shootRadial = true;
-	}
-	else 
-	{
-		m_shootRate = 0.5f;
-	}
 
 	m_shootTimer->setInterval(m_shootRate);
 
@@ -267,63 +231,28 @@ void Player::changeColor()
 	m_render->m_materials[0]->setColor(immunState);
 }
 
-
 void Player::shoot()
 {
+	//bullet color
 	int bulletState = Globals::m_stateMachine->getPlayerState();
-	if (bulletState == COLOR::RED)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_redBulletPool;
-	}
-	else if (bulletState == COLOR::BLUE)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_blueBulletPool;
-	}
-	else if (bulletState == COLOR::GREEN)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_greenBulletPool;
-	}
-	else if (bulletState == COLOR::YELLOW)
-	{
-		m_shootComponent->m_bulletPool = Globals::m_shmupGame->m_yellowBulletPool;
-	}
+	m_shootComponent->m_bulletPool = Globals::m_stateMachine->changeBulletPool(bulletState);
 
 	b2Vec2 pos = m_physics->m_body->GetPosition();
 	float vx = 0.0f;
 	float vy = 30.0f;
 
-	//bullet velocities
-	float b2x, b3x;
-
 	//bullet spread; based on velocity vector
-	switch (Globals::m_stateMachine->getPlayerWeapon()) {
-	case WEAPON::STANDARD:
-		b2x = -1.0f;
-		b3x = 1.0f;
-		break;
-	case WEAPON::WEAPON1:
-		b2x = -2.0f;
-		b3x = 2.0;
-		break;
-	case WEAPON::WEAPON2:
-		b2x = -3.0f;
-		b3x = 3.0f;
-		break;
-	case WEAPON::WEAPON3:
-		b2x = -4.0f;
-		b3x = 4.0f;
-		break;
-	default:
-		b2x = -1.0f;
-		b3x = 1.0f;
-	}
+	float b2x, b3x;
+	bulletVelocity = Globals::m_stateMachine->changeBulletSpread(Globals::m_stateMachine->getPlayerWeapon());
+	b2x = bulletVelocity.first;
+	b3x = bulletVelocity.second;
+	
 	//3 bullet streams
-
 	m_shootComponent->shoot(pos.x, pos.y, vx, vy);
 	m_shootComponent->shoot(pos.x, pos.y, b2x, vy);
 	m_shootComponent->shoot(pos.x, pos.y, b3x, vy);
 
-	//radial shoot
+	//radial shoot...disabled for now.
 	if (m_shootRadial) {
 		m_shootComponent->shootRadial(pos.x, pos.y, 4.0f, 6);
 	}
@@ -345,4 +274,9 @@ void Player::gainMinions(uint newMinions)
 		float y = glm::linearRand(-2.0f, 0.0f);
 		Minion* newMinion = new Minion(b2Vec2(x, y));
 	}
+}
+
+ShootComponent* Player::getShootComponent()
+{
+	return m_shootComponent;
 }

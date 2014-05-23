@@ -24,11 +24,13 @@ public:
 	void gainLives(uint lives);
 	void gainMinions(uint newMinions);
 	b2Vec2 getPosition2d();
+	ShootComponent* getShootComponent();
 
 	uint m_lives;
 	uint m_minionCount;
 	bool m_shootRadial;
 	float m_shootRate;
+	std::pair <float, float> bulletVelocity;
 private:
 
 	void shoot();
@@ -36,5 +38,4 @@ private:
 
 	Timer* m_shootTimer;
 	ShootComponent* m_shootComponent;
-
 };

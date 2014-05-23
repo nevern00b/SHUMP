@@ -6,6 +6,7 @@
 #include "Rendering/ObjectPool.h"
 #include "EventObject.h"
 #include "StateMachine.h"
+#include "Globals.h"
 
 class Mesh;
 class Material;
@@ -17,4 +18,5 @@ class BulletPool : public ObjectPool
 public:
 	BulletPool(uint size, Mesh* mesh, Material* material, const PhysicsData& physicsData, COLOR color);
 	virtual ~BulletPool();
+
 };
