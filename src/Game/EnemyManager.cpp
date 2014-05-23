@@ -33,32 +33,10 @@ void EnemyManager::update()
 		COLOR color = getEnemyColor();
 
 		// Get type randomly
-		ENEMY_TYPE type;
-		float typeRand = glm::linearRand(0.0f, 1.0f);
-		if (typeRand < 0.6f) type = ENEMY_TYPE::MISSILE;
-		else if (typeRand < 0.8f) type = ENEMY_TYPE::MELEE;
-		else if (typeRand <= 1.0f) type = ENEMY_TYPE::EXPLOSIVE;
+		ENEMY_TYPE type = changeEnemyType();
 
 		// Get pattern, partly based on the type
-		ENEMY_PATTERN pattern = ENEMY_PATTERN::SIDE;
-
-		if (type == ENEMY_TYPE::EXPLOSIVE)
-		{
-			pattern = ENEMY_PATTERN::HOVER;
-		}
-		else if (type == ENEMY_TYPE::MELEE)
-		{
-			pattern = ENEMY_PATTERN::HOVER;
-		}
-		else if (type == ENEMY_TYPE::MISSILE)
-		{
-			float patternRand = glm::linearRand(0.0f, 1.0f);
-			if (patternRand < 0.6f) pattern = ENEMY_PATTERN::STATIONARY;
-			else if (patternRand < 0.7f) pattern = ENEMY_PATTERN::HOVER;
-			else if (patternRand < 0.8f) pattern = ENEMY_PATTERN::SIDE;
-			else if (patternRand < 0.9f) pattern = ENEMY_PATTERN::V_SHAPE;
-			else if (patternRand <= 1.0f) pattern = ENEMY_PATTERN::CLUSTER_1;
-		}
+		pattern = changeEnemyPattern();
 
 		//pattern = ENEMY_PATTERN::STATIONARY;
 
@@ -193,39 +171,12 @@ void EnemyManager::update()
 		}
 
 		//change enemy spawn rate
-		int current_score = Globals::m_stateMachine->p_score;
-
 		//score 100 = 1 second of gameplay
 		//NOTE: score is based on things other than gameplay time. Should adjust these numbers below as necessary
-		if (current_score < 1500) 
-		{
-			setSpawnRate(3.00f);
-		}
-		else if (current_score > 1500 && current_score < 2000) 
-		{
-			setSpawnRate(2.75f);
-		} 
-		else if (current_score > 2000 && current_score < 3000)
-		{
-			setSpawnRate(2.50f);
-		}
-		else if (current_score > 3000 && current_score < 6000)
-		{
-			setSpawnRate(2.25f);
-		}
-		else if (current_score > 6000 && current_score < 15000)
-		{
-			setSpawnRate(2.00f);
-		}
-		else if (current_score > 15000 && current_score < 18000)
-		{
-			setSpawnRate(1.50f);
-		}
-		else
-		{
-			setSpawnRate(1.00f);
-		}
-
+		int current_score = Globals::m_stateMachine->p_score;
+		spawn_rate = Globals::m_stateMachine->changeEnemySpawnRate(current_score);
+		setSpawnRate(spawn_rate);
+	
 		//std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
 	}
 }
@@ -241,6 +192,38 @@ COLOR EnemyManager::getEnemyColor()
 	else if (rand <= 1.0f) return COLOR::YELLOW;
 	else return COLOR::RED;
 }
+
+ENEMY_TYPE EnemyManager::changeEnemyType()
+{
+	float typeRand = glm::linearRand(0.0f, 1.0f);
+	if (typeRand < 0.6f) return ENEMY_TYPE::MISSILE;
+	else if (typeRand < 0.8f) return ENEMY_TYPE::MELEE;
+	else if (typeRand <= 1.0f) return ENEMY_TYPE::EXPLOSIVE;
+}
+
+ENEMY_PATTERN EnemyManager::changeEnemyPattern()
+{
+	ENEMY_PATTERN pattern = ENEMY_PATTERN::SIDE;
+	if (type == ENEMY_TYPE::EXPLOSIVE)
+	{
+		pattern = ENEMY_PATTERN::HOVER;
+	}
+	else if (type == ENEMY_TYPE::MELEE)
+	{
+		pattern = ENEMY_PATTERN::HOVER;
+	}
+	else if (type == ENEMY_TYPE::MISSILE)
+	{
+		float patternRand = glm::linearRand(0.0f, 1.0f);
+		if (patternRand < 0.6f) pattern = ENEMY_PATTERN::STATIONARY;
+		else if (patternRand < 0.7f) pattern = ENEMY_PATTERN::HOVER;
+		else if (patternRand < 0.8f) pattern = ENEMY_PATTERN::SIDE;
+		else if (patternRand < 0.9f) pattern = ENEMY_PATTERN::V_SHAPE;
+		else if (patternRand <= 1.0f) pattern = ENEMY_PATTERN::CLUSTER_1;
+	}
+	return pattern;
+}
+
 
 void EnemyManager::setSpawnRate(float m_interval)
 {

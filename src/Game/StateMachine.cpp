@@ -91,6 +91,40 @@ float StateMachine::changeShootRate()
 	return m_shootRate;
 }
 
+//Transition methods: Enemy
+float StateMachine::changeEnemySpawnRate(int score)
+{
+	float spawn_rate = 3.00f;
+	if (score < 1500)
+	{
+		spawn_rate = 3.00f;
+	}
+	else if (score > 1500 && score < 2000)
+	{
+		spawn_rate = 2.75f;
+	}
+	else if (score > 2000 && score < 3000)
+	{
+		spawn_rate = 2.50f;
+	}
+	else if (score > 3000 && score < 6000)
+	{
+		spawn_rate = 2.25f;
+	}
+	else if (score > 6000 && score < 15000)
+	{
+		spawn_rate = 2.00f;
+	}
+	else if (score > 15000 && score < 18000)
+	{
+		spawn_rate = 1.50f;
+	}
+	else
+	{
+		spawn_rate = 1.00f;
+	}
+	return spawn_rate;
+}
 
 //Transition methods: Bullet
 BulletPool* StateMachine::changeBulletPool(int playerState)

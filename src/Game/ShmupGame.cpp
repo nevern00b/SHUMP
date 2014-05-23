@@ -131,7 +131,6 @@ void ShmupGame::init()
 	camera->setZoom(20.0f);
 
 	// Create walls that the player can't pass
-	
 }
 
 void ShmupGame::update()
