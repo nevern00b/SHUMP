@@ -7,7 +7,7 @@
 #include "ShmupGame.h"
 #include <glm/gtc/random.hpp>
 
-
+//Make state machine more or less "state-ful"?
 class StateMachine {
 public:
 	void checkStates();
@@ -24,6 +24,7 @@ public:
 	float changeShootRate();
 
 	//Enemy state
+	//Move this elsewhere?
 	float changeEnemySpawnRate(int score);
 
 	//Bullet state

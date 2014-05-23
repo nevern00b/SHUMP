@@ -33,7 +33,7 @@ void EnemyManager::update()
 		COLOR color = getEnemyColor();
 
 		// Get type randomly
-		ENEMY_TYPE type = changeEnemyType();
+		type = changeEnemyType();
 
 		// Get pattern, partly based on the type
 		pattern = changeEnemyPattern();
@@ -45,6 +45,7 @@ void EnemyManager::update()
 		float x = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X + padding, ShmupGame::WORLD_UPPER_BOUND_X - padding);
 		float y = glm::linearRand(0.0f, ShmupGame::WORLD_UPPER_BOUND_Y-10.0f);
 
+		//Should refactor this block...
 		if (pattern == ENEMY_PATTERN::SIDE)
 		{
 			// get spawned from top and move either left,right
@@ -176,7 +177,7 @@ void EnemyManager::update()
 		int current_score = Globals::m_stateMachine->p_score;
 		spawn_rate = Globals::m_stateMachine->changeEnemySpawnRate(current_score);
 		setSpawnRate(spawn_rate);
-	
+		
 		//std::cout << "spawn rate: " << m_timer->m_interval << std::endl;
 	}
 }

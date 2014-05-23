@@ -11,7 +11,7 @@ ShootComponent::ShootComponent(Entity* entity, BulletPool* bulletPool) : Compone
 
 ShootComponent::~ShootComponent()
 {
-
+	
 }
 
 void ShootComponent::shoot(float x, float y, float vx, float vy)
