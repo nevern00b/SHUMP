@@ -12,6 +12,7 @@
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
 #include "Enemy.h"
+#include "EnemyPattern.h"
 #include <iostream>
 
 EnemyManager::EnemyManager() 
@@ -29,151 +30,64 @@ void EnemyManager::update()
 {	
 	if (m_timer->checkInterval())
 	{
-		// Get color randomly
 		COLOR color = getEnemyColor();
-
-		// Get type randomly
 		type = changeEnemyType();
-
-		// Get pattern, partly based on the type
 		pattern = changeEnemyPattern();
-
-		//pattern = ENEMY_PATTERN::STATIONARY;
 
 		// Position
 		float padding = 2.0f;
 		float x = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X + padding, ShmupGame::WORLD_UPPER_BOUND_X - padding);
 		float y = glm::linearRand(0.0f, ShmupGame::WORLD_UPPER_BOUND_Y-10.0f);
 
-		//Should refactor this block...
 		if (pattern == ENEMY_PATTERN::SIDE)
 		{
-			// get spawned from top and move either left,right
-			Enemy* enemy = new Enemy(color,pattern,type,x);
-			enemy->m_transform->setTranslation(x, y);
-			enemy->m_enemyDirection.x = glm::linearRand(-1.0f, 1.0f);
-			enemy->m_enemyDirection.y = -1.0f;
+			// get spawned from top and move either left, right 
+			// Note: side to side movement a bit slow?
+			EnemyPattern::genEnemySide(color, pattern, type, x, y);
 		}
 		else if (pattern == ENEMY_PATTERN::HOVER)
 		{
-			Enemy* enemy = new Enemy(color,pattern,type,x);
-			enemy->m_transform->setTranslation(x, y);
-			enemy->m_enemyDirection.x = glm::linearRand(-10.0f, 10.0f);
-			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
-			enemy->m_enemyDirection.y = 0;
+			//Goes side to side @ random speed
+			EnemyPattern::genEnemyHover(color, pattern, type, x, y);
+
 		}
 		else if (pattern == ENEMY_PATTERN::V_SHAPE)
 		{
+			//V-shape, side to side
 			float xV = glm::linearRand(-10.0f, 10.0f);
-			Enemy* enemy = new Enemy(color,pattern,type,x);
-			enemy->m_transform->setTranslation(x, y);
-			enemy->m_enemyDirection.x = xV;
-			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
-			enemy->m_enemyDirection.y = 0;
-
-			Enemy* enemy1 = new Enemy(color,pattern,type,x);
-			enemy1->m_transform->setTranslation(x + 2, y + 2);
-			enemy1->m_enemyDirection.x = xV;
-			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
-			enemy1->m_enemyDirection.y = 0;
-
-			Enemy* enemy2 = new Enemy(color,pattern,type,x);
-			enemy2->m_transform->setTranslation(x + 2, y - 2);
-			enemy2->m_enemyDirection.x = xV;
-			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
-			enemy2->m_enemyDirection.y = 0;
-
-			Enemy* enemy3 = new Enemy(color,pattern,type,x);
-			enemy3->m_transform->setTranslation(x + 4, y + 4);
-			enemy3->m_enemyDirection.x = xV;
-			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
-			enemy3->m_enemyDirection.y = 0;
-
-			Enemy* enemy5 = new Enemy(color,pattern,type,x);
-			enemy5->m_transform->setTranslation(x + 4, y - 4);
-			enemy5->m_enemyDirection.x = xV;
-			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
-			enemy5->m_enemyDirection.y = 0;
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x, y, xV, 0);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 2, y + 2, xV, 0);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 2, y - 2, xV, 0);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 4, y + 4, xV, 0);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 4, y - 4, xV, 0);
 		}
 		else if (pattern == ENEMY_PATTERN::CLUSTER_1) 
 		{
+			//V-shape heading towards the player
 			float xV = glm::linearRand(-10.0f, 10.0f);
-						
-			Enemy* enemy = new Enemy(color,pattern,type,x);
-			enemy->m_transform->setTranslation(x, y);
-			enemy->m_enemyDirection.x = xV;
-			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
-			enemy->m_enemyDirection.y = -10;
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x, y, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 2, y + 2, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 2, y - 2, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 4, y + 4, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 4, y - 4, xV, -10);
 
-			Enemy* enemy1 = new Enemy(color,pattern,type,x);
-			enemy1->m_transform->setTranslation(x + 2, y + 2);
-			enemy1->m_enemyDirection.x = xV;
-			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
-			enemy1->m_enemyDirection.y = -10;
-
-			Enemy* enemy2 = new Enemy(color,pattern,type,x);
-			enemy2->m_transform->setTranslation(x - 2, y + 2);
-			enemy2->m_enemyDirection.x = xV;
-			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
-			enemy2->m_enemyDirection.y = -10;
-
-			Enemy* enemy3 = new Enemy(color,pattern,type,x);
-			enemy3->m_transform->setTranslation(x + 4, y + 4);
-			enemy3->m_enemyDirection.x = xV;
-			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
-			enemy3->m_enemyDirection.y = -10;
-
-			Enemy* enemy5 = new Enemy(color,pattern,type,x);
-			enemy5->m_transform->setTranslation(x - 4, y + 4);
-			enemy5->m_enemyDirection.x = xV;
-			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
-			enemy5->m_enemyDirection.y = -10;
 		}
 		else if (pattern == ENEMY_PATTERN::CLUSTER_2)
 		{
+			//Interesting pattern. Multiple cells cluster together tightly, with one as the "nucleus" or center 
 			float xV = glm::linearRand(-10.0f, 10.0f);
-
-			Enemy* enemy = new Enemy(getEnemyColor(), pattern, type, x);
-			enemy->m_transform->setTranslation(x, y);
-			enemy->m_enemyDirection.x = xV;
-			if (enemy->m_enemyDirection.x > -1.0f && enemy->m_enemyDirection.x < 1.0f) enemy->m_enemyDirection.x = -1.5f;
-			enemy->m_enemyDirection.y = -10;
-
-			Enemy* enemy1 = new Enemy(getEnemyColor(), pattern, type, x);
-			enemy1->m_transform->setTranslation(x + 1, y);
-			enemy1->m_enemyDirection.x = xV;
-			if (enemy1->m_enemyDirection.x > -1.0f && enemy1->m_enemyDirection.x < 1.0f) enemy1->m_enemyDirection.x = -1.5f;
-			enemy1->m_enemyDirection.y = -10;
-
-			Enemy* enemy2 = new Enemy(getEnemyColor(), pattern, type, x);
-			enemy2->m_transform->setTranslation(x - 1, y);
-			enemy2->m_enemyDirection.x = xV;
-			if (enemy2->m_enemyDirection.x > -1.0f && enemy2->m_enemyDirection.x < 1.0f) enemy2->m_enemyDirection.x = -1.5f;
-			enemy2->m_enemyDirection.y = -10;
-
-			Enemy* enemy3 = new Enemy(getEnemyColor(), pattern, type, x);
-			enemy3->m_transform->setTranslation(x, y - 1);
-			enemy3->m_enemyDirection.x = xV;
-			if (enemy3->m_enemyDirection.x > -1.0f && enemy3->m_enemyDirection.x < 1.0f) enemy3->m_enemyDirection.x = -1.5f;
-			enemy3->m_enemyDirection.y = -10;
-
-			Enemy* enemy5 = new Enemy(getEnemyColor(), pattern, type, x);
-			enemy5->m_transform->setTranslation(x, y + 1);
-			enemy5->m_enemyDirection.x = xV;
-			if (enemy5->m_enemyDirection.x > -1.0f && enemy5->m_enemyDirection.x < 1.0f) enemy5->m_enemyDirection.x = -1.5f;
-			enemy5->m_enemyDirection.y = -10;
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x, y, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x + 1, y, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x - 1, y, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x, y -1, xV, -10);
+			EnemyPattern::genEnemyMultiple(color, pattern, type, x, y + 1, xV, -10);
 		}
 		else if (pattern == ENEMY_PATTERN::STATIONARY)
 		{
-			Enemy* enemy = new Enemy(color, pattern, type, x);
-			enemy->m_transform->setTranslation(x, ShmupGame::WORLD_UPPER_BOUND_Y);
-			enemy->m_enemyDirection.x = 0;
-			enemy->m_enemyDirection.y = -20;
+			EnemyPattern::genEnemyStationary(color, pattern, type, x, y);
 		}
 
-		//change enemy spawn rate
-		//score 100 = 1 second of gameplay
-		//NOTE: score is based on things other than gameplay time. Should adjust these numbers below as necessary
+		//change enemy spawn rate based on score. Should adjust these numbers as necessary
 		int current_score = Globals::m_stateMachine->p_score;
 		spawn_rate = Globals::m_stateMachine->changeEnemySpawnRate(current_score);
 		setSpawnRate(spawn_rate);
@@ -185,11 +99,10 @@ void EnemyManager::update()
 COLOR EnemyManager::getEnemyColor()
 {
 	// Get the enemy color based off percent chance
-	// Before red == 0.4, green = 0.7, blue = 0.9. Was there a reason to make them have unequal probabilities?
 	float rand = glm::linearRand(0.0f, 1.0f);
-	if (rand < 0.25f) return COLOR::RED;
-	else if (rand < 0.50f) return COLOR::GREEN;
-	else if (rand < 0.75f) return COLOR::BLUE;
+	if (rand < 0.4f) return COLOR::RED;
+	else if (rand < 0.7f) return COLOR::GREEN;
+	else if (rand < 0.9f) return COLOR::BLUE;
 	else if (rand <= 1.0f) return COLOR::YELLOW;
 	else return COLOR::RED;
 }
@@ -216,15 +129,15 @@ ENEMY_PATTERN EnemyManager::changeEnemyPattern()
 	else if (type == ENEMY_TYPE::MISSILE)
 	{
 		float patternRand = glm::linearRand(0.0f, 1.0f);
-		if (patternRand < 0.6f) pattern = ENEMY_PATTERN::STATIONARY;
-		else if (patternRand < 0.7f) pattern = ENEMY_PATTERN::HOVER;
-		else if (patternRand < 0.8f) pattern = ENEMY_PATTERN::SIDE;
-		else if (patternRand < 0.9f) pattern = ENEMY_PATTERN::V_SHAPE;
-		else if (patternRand <= 1.0f) pattern = ENEMY_PATTERN::CLUSTER_1;
+		if (patternRand < 0.5f) pattern = ENEMY_PATTERN::STATIONARY;
+		else if (patternRand < 0.6f) pattern = ENEMY_PATTERN::HOVER;
+		else if (patternRand < 0.7f) pattern = ENEMY_PATTERN::SIDE;
+		else if (patternRand < 0.8f) pattern = ENEMY_PATTERN::V_SHAPE;
+		else if (patternRand < 0.9f) pattern = ENEMY_PATTERN::CLUSTER_1;
+		else pattern = ENEMY_PATTERN::CLUSTER_2;
 	}
 	return pattern;
 }
-
 
 void EnemyManager::setSpawnRate(float m_interval)
 {
