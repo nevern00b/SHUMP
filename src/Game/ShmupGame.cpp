@@ -98,7 +98,6 @@ void ShmupGame::init()
 	m_scoreTimer = new Timer();
 	m_scoreTimer->start(0.1f, true);
 
-	
 	// Create particle system
 	m_particleSystem = new ParticleSystem(100, mesh, yellowMaterial);
 	
@@ -153,7 +152,6 @@ void ShmupGame::update()
 		{
 			m_player->gainMinions(1);
 		}
-
 	}
 
 	else if (Globals::m_uiManager->isKeyPressed(KEY_A))

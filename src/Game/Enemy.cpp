@@ -193,9 +193,6 @@ void Enemy::onCollide(EventObject* collider)
 					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
 				}
 
-				//clear bullets off screen...not working currently
-				m_shootComponent->m_bulletPool->clearPool();
-
 				destroy();
 			}
 			else
