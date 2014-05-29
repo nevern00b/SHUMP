@@ -34,3 +34,8 @@ BulletPool::~BulletPool()
 {
 	
 }
+
+void BulletPool::clearPool()
+{
+	m_objects.clear();
+}
