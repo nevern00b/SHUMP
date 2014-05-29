@@ -48,7 +48,7 @@ void Entity::destroy()
 {
 	// Object marked for deletion. Deletion happens inside GameManager update loop.
 	m_dead = true;
-
+	
 	// Destroy children
 	for (auto& child : m_children)
 	{

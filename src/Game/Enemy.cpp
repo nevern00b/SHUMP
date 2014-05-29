@@ -73,9 +73,11 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	float introTime = 0.5f;
 
 	// Rise from the floor
-	std::function<void()> callback = [&]() {m_intro = false; };
+	std::function<void()> callback = [&]() { m_intro = false; };
 	float floorDepth = Globals::m_renderManager->m_floorDepth;
 	Animation* introAnimation = new Animation(this, m_transform->m_translation.z, floorDepth - 1.0f, 0.0f, 0.5f, 0.0f, false, callback);
+
+	m_inUse = false;
 }
 
 Enemy::~Enemy()
@@ -149,7 +151,8 @@ bool Enemy::update()
 		// Destroy if it goes past the screen
 		if (pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
 		{
-			destroy();
+			//Entity::destroy();
+			Enemy::destroy();
 		}
 	}	
 
@@ -192,8 +195,8 @@ void Enemy::onCollide(EventObject* collider)
 					LifeItem* lifeItem = new LifeItem(vx, vy);
 					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
 				}
-
-				destroy();
+					
+				Enemy::destroy();
 			}
 			else
 			{
@@ -201,4 +204,23 @@ void Enemy::onCollide(EventObject* collider)
 			}
 		}
 	}
+}
+
+//Pool stuff
+
+void Enemy::create()
+{
+	m_inUse = true;
+}
+
+void Enemy::destroy()
+{
+	std::cout << "enemy destroyed" << std::endl;
+	m_inUse = false;
+}
+
+
+bool Enemy::inUse()
+{
+	return m_inUse;
 }

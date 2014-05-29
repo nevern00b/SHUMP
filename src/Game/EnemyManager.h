@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "Enemy.h"
 #include "StateMachine.h"
+#include "EnemyPool.h"
+
 class ShootComponent;
 class Timer;
 
@@ -12,7 +14,7 @@ class EnemyManager
 public:
 	EnemyManager();
 	~EnemyManager();
-	void update();
+	bool update();
 	
 	void setSpawnRate(float m_interval);
 	COLOR getEnemyColor();
@@ -22,6 +24,18 @@ public:
 private:
 	Timer* m_timer;
 	float spawn_rate;
+
+	EnemyPool* epool;
+	Enemy* currentEnemy;
+
 	ENEMY_TYPE type;
 	ENEMY_PATTERN pattern;
+
+	Enemy* genEnemySide(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y);
+	Enemy* genEnemyHover(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y);
+	Enemy* genEnemyMultiple(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y, float xV, float yV);
+	Enemy* genEnemyStationary(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y);
+
+	void processEnemySide(Enemy* enemy, float x, float y);
+
 };
