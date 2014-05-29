@@ -240,17 +240,6 @@ bool Enemy::inUse()
 	return m_inUse;
 }
 
-void Enemy::render()
-{
-	if (!m_render || !m_inUse) return;
-
-	ShaderCommon::TransformGL transform;
-	transform.modelMatrix = m_renderMatrix;
-	Globals::m_renderManager->renderTransform(transform);
-
-	m_render->render();
-}
-
 void Enemy::setEnemy(float x)
 {
 	m_x = x;

@@ -26,8 +26,11 @@ public:
     virtual bool update();
 	virtual void onCollisionEnter(EventObject* collider);
 	virtual void onCollide(EventObject* collider);
-    virtual void render();
-    glm::vec3 getPosition();
+	
+	//should make this virtual(?) because Enemy has to have its own render class
+	void render();
+    
+	glm::vec3 getPosition();
 
     Entity* m_parent;
     std::list<Entity*> m_children;

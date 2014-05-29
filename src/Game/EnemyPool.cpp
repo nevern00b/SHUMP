@@ -1,12 +1,13 @@
 #include "EnemyPool.h"
 
 
-EnemyPool::EnemyPool(uint size, float xpos)
+EnemyPool::EnemyPool(uint size)
 {
 	m_size = size;
 	for (uint i = 0; i < m_size; i++)
 	{
-		m_enemies.push_back(new Enemy(COLOR::RED, ENEMY_PATTERN::SIDE, ENEMY_TYPE::MISSILE, xpos));
+		float xpos = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X + 2.0f, ShmupGame::WORLD_UPPER_BOUND_X - 2.0f);
+		m_enemies.push_back(new Enemy(COLOR::RED, ENEMY_PATTERN::STATIONARY, ENEMY_TYPE::MISSILE, xpos));
 	}	
 }
 

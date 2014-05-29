@@ -19,11 +19,8 @@ EnemyManager::EnemyManager()
 {	
 	m_timer = new Timer();
 	m_timer->start(3.0f, true);
-	float x = glm::linearRand(ShmupGame::WORLD_LOWER_BOUND_X + 2.0f, ShmupGame::WORLD_UPPER_BOUND_X - 2.0f);
-	float y = glm::linearRand(0.0f, ShmupGame::WORLD_UPPER_BOUND_Y - 10.0f);
-
 	//Should init enemy pool here
-	epool = new EnemyPool(10, x);
+	epool = new EnemyPool(10);
 }
 
 EnemyManager::~EnemyManager()
