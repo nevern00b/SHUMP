@@ -11,7 +11,7 @@ class Enemy;
 class EnemyPool
 {
 public:
-	EnemyPool(uint size);
+	EnemyPool(uint size, float xpos);
 	~EnemyPool();
 
 	int enemyAvailable();

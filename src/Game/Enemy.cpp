@@ -78,6 +78,12 @@ Enemy::Enemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float pos_x) :
 	Animation* introAnimation = new Animation(this, m_transform->m_translation.z, floorDepth - 1.0f, 0.0f, 0.5f, 0.0f, false, callback);
 
 	m_inUse = false;
+
+	for (uint i = 0; i < 5; i++)
+	{
+		immContainer.push_back(new ImmunityItem(m_color, 0.0f, -3.0f));
+		lifeContainer.push_back(new LifeItem(glm::linearRand(-5.0f, 5.0f), -3.0f));
+	}
 }
 
 Enemy::~Enemy()
@@ -172,7 +178,7 @@ void Enemy::onCollide(EventObject* collider)
 	if (bullet != 0)
 	{
 		bullet->collide();
-		if (bullet->m_color != m_color)
+		if (bullet->m_color != m_color && m_inUse)
 		{
 			m_health -= bullet->m_damage;
 
@@ -184,16 +190,26 @@ void Enemy::onCollide(EventObject* collider)
 				//Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 
 				// Drop immunity item
-				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
-				immunityItem->m_transform->setTranslation(pos.x, pos.y);
+				if (!immContainer.empty())
+				{
+					immContainer.back()->m_transform->setTranslation(pos.x, pos.y);
+					immContainer.pop_back();
+				}
+				//ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
+				//immunityItem->m_transform->setTranslation(pos.x, pos.y);
 
 				// Randomly drop life item
 				if (glm::linearRand(0.0, 1.0) < 0.3f)
 				{
-					float vx = glm::linearRand(-5.0f, 5.0f);
-					float vy = -3.0f;
-					LifeItem* lifeItem = new LifeItem(vx, vy);
-					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
+					if (!lifeContainer.empty())
+					{
+						lifeContainer.back()->m_transform->setTranslation(pos.x, pos.y);
+						lifeContainer.pop_back();
+					}
+					//float vx = glm::linearRand(-5.0f, 5.0f);
+					//float vy = -3.0f;
+					//LifeItem* lifeItem = new LifeItem(vx, vy);
+					//lifeItem->m_transform->setTranslation(pos.x, pos.y);					
 				}
 					
 				Enemy::destroy();
@@ -207,7 +223,6 @@ void Enemy::onCollide(EventObject* collider)
 }
 
 //Pool stuff
-
 void Enemy::create()
 {
 	m_inUse = true;
@@ -223,4 +238,20 @@ void Enemy::destroy()
 bool Enemy::inUse()
 {
 	return m_inUse;
+}
+
+void Enemy::render()
+{
+	if (!m_render || !m_inUse) return;
+
+	ShaderCommon::TransformGL transform;
+	transform.modelMatrix = m_renderMatrix;
+	Globals::m_renderManager->renderTransform(transform);
+
+	m_render->render();
+}
+
+void Enemy::setEnemy(float x)
+{
+	m_x = x;
 }

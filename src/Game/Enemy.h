@@ -4,6 +4,8 @@
 #include "Entity.h"
 #include "StateMachine.h"
 #include "EnemyPool.h"
+#include <vector>
+#include "Item.h"
 
 class ShootComponent;
 class Timer;
@@ -43,7 +45,7 @@ public:
 	virtual void destroy();
 	virtual bool inUse();
 
-	//void setEnemy(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x);
+	void setEnemy(float x);
 
 private:
 
@@ -57,7 +59,14 @@ private:
 	ENEMY_TYPE m_type;
 	float m_x;
 
+	void render();
+
 	//Pool stuff
 	bool m_inUse;
 	Enemy* enemy;
+
+	//Drops
+	std::vector<ImmunityItem*> immContainer;
+	std::vector<LifeItem*> lifeContainer;
+
 };

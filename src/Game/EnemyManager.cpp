@@ -23,7 +23,7 @@ EnemyManager::EnemyManager()
 	float y = glm::linearRand(0.0f, ShmupGame::WORLD_UPPER_BOUND_Y - 10.0f);
 
 	//Should init enemy pool here
-	epool = new EnemyPool(10);
+	epool = new EnemyPool(10, x);
 }
 
 EnemyManager::~EnemyManager()
@@ -55,7 +55,6 @@ bool EnemyManager::update()
 				currentEnemy = epool->getEnemy(index);
 				processEnemySide(currentEnemy, x, y);
 			}
-			//processEnemySide(currentEnemy, COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y);
 			//genEnemySide(currentEnemy);
 			//currentEnemy = genEnemySide(color, pattern, type, x, y);
 		}
@@ -200,7 +199,8 @@ Enemy* EnemyManager::genEnemyMultiple(COLOR color, ENEMY_PATTERN pattern, ENEMY_
 
 void EnemyManager::processEnemySide(Enemy* enemy, float x, float y)
 {
-	//enemy->setEnemy(color, pattern, type, x);
+	enemy->m_render->render();
+	enemy->setEnemy(x);
 	enemy->m_transform->setTranslation(x, y);
 	enemy->m_enemyDirection.x = glm::linearRand(-1.0f, 1.0f);
 	enemy->m_enemyDirection.y = -1.0f;
