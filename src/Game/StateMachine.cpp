@@ -181,9 +181,9 @@ std::pair<float, float> StateMachine::changeBulletSpread(WEAPON wp)
 }
 
 
-void StateMachine::incEnemy()
+void StateMachine::incEnemy(int amt)
 {
-	m_enemyCounter = std::min(m_enemyCounter + 1, m_enemyMaxThreshhold);
+	m_enemyCounter = std::min(m_enemyCounter + amt, m_enemyMaxThreshold);
 }
 
 void StateMachine::decEnemy()

@@ -32,7 +32,7 @@ private:
 	Enemy* genEnemyStationary(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y);
 	Enemy* genEnemyMultiple(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y, float xV, float yV);
 
-	uint m_enemyThreshhold;
+	uint m_enemyThreshold;
 	uint m_enemyCount;
 
 };

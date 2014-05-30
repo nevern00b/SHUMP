@@ -27,7 +27,7 @@ public:
 	//Enemy state
 	//Move this elsewhere?
 	float changeEnemySpawnRate(int score);
-	void incEnemy();
+	void incEnemy(int amt);
 	void decEnemy();
 
 	//Bullet state
@@ -39,7 +39,7 @@ public:
 	uint m_lives;
 
 	// Make these private after testing...
-	int m_enemyMaxThreshhold = 10;
+	int m_enemyMaxThreshold = 10;
 	int m_enemyCounter = 0;
 
 private:

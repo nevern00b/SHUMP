@@ -27,12 +27,11 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::update()
 {	
-	//m_enemyCount = Globals::m_stateMachine->m_enemyCounter;
-	//m_enemyThreshhold = Globals::m_stateMachine->m_enemyMaxThreshhold;
-	//std::cout << "ENEMY COUNT: " << m_enemyCount << " THRESHHOLD: " << m_enemyThreshhold << std::endl;
-	if (m_timer->checkInterval() && m_enemyCount < m_enemyThreshhold)
+	m_enemyCount = Globals::m_stateMachine->m_enemyCounter;
+	m_enemyThreshold = Globals::m_stateMachine->m_enemyMaxThreshold;
+	//std::cout << "ENEMY COUNT: " << m_enemyCount << " THRESHOLD: " << m_enemyThreshold << std::endl;
+	if (m_timer->checkInterval() && m_enemyCount < m_enemyThreshold)
 	{
-		Globals::m_stateMachine->incEnemy();
 		COLOR color = getEnemyColor();
 		type = changeEnemyType();
 		pattern = changeEnemyPattern();
@@ -47,12 +46,14 @@ void EnemyManager::update()
 			// get spawned from top and move either left, right 
 			// Note: side to side movement a bit slow?
 			genEnemySide(color, pattern, type, x, y);
+			Globals::m_stateMachine->incEnemy(1);
+
 		}
 		else if (pattern == ENEMY_PATTERN::HOVER)
 		{
 			//Goes side to side @ random speed
 			genEnemyHover(color, pattern, type, x, y);
-
+			Globals::m_stateMachine->incEnemy(1);
 		}
 		else if (pattern == ENEMY_PATTERN::V_SHAPE)
 		{
@@ -63,6 +64,7 @@ void EnemyManager::update()
 			genEnemyMultiple(color, pattern, type, x + 2, y - 2, xV, 0);
 			genEnemyMultiple(color, pattern, type, x + 4, y + 4, xV, 0);
 			genEnemyMultiple(color, pattern, type, x + 4, y - 4, xV, 0);
+			Globals::m_stateMachine->incEnemy(5);
 		}
 		else if (pattern == ENEMY_PATTERN::CLUSTER_1) 
 		{
@@ -73,7 +75,7 @@ void EnemyManager::update()
 			genEnemyMultiple(color, pattern, type, x + 2, y - 2, xV, -10);
 			genEnemyMultiple(color, pattern, type, x + 4, y + 4, xV, -10);
 			genEnemyMultiple(color, pattern, type, x + 4, y - 4, xV, -10);
-
+			Globals::m_stateMachine->incEnemy(5);
 		}
 		else if (pattern == ENEMY_PATTERN::CLUSTER_2)
 		{
@@ -84,10 +86,12 @@ void EnemyManager::update()
 			genEnemyMultiple(color, pattern, type, x - 1, y, xV, -10);
 			genEnemyMultiple(color, pattern, type, x, y -1, xV, -10);
 			genEnemyMultiple(color, pattern, type, x, y + 1, xV, -10);
+			Globals::m_stateMachine->incEnemy(5);
 		}
 		else if (pattern == ENEMY_PATTERN::STATIONARY)
 		{
 			genEnemyStationary(color, pattern, type, x, y);
+			Globals::m_stateMachine->incEnemy(1);
 		}
 
 		//change enemy spawn rate based on score. Should adjust these numbers as necessary
