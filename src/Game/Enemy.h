@@ -39,9 +39,11 @@ public:
 	glm::vec2 m_enemyDirection;
 	float m_brightness; // For animation;
 
-	//ItemPool methods
-	void fillImmContainer(uint size);
-	Item* getImmItem();
+	//pool stuff
+	bool m_inUse;
+
+	void render();
+
 
 private:
 
@@ -54,10 +56,7 @@ private:
 	COLOR m_color;
 	ENEMY_PATTERN m_pattern;
 	ENEMY_TYPE m_type;
-
 	float m_x;
 
-	//Container (pool) for items
-	std::stack <Item*> immContainerA;
-	std::stack <Item*> immContainerB;
+	
 };

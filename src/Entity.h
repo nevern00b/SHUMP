@@ -26,7 +26,7 @@ public:
     virtual bool update();
 	virtual void onCollisionEnter(EventObject* collider);
 	virtual void onCollide(EventObject* collider);
-    void render();
+    virtual void render();
     glm::vec3 getPosition();
 
     Entity* m_parent;

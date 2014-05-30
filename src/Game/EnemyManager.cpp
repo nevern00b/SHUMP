@@ -12,12 +12,14 @@
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
 #include "Enemy.h"
+#include <stack>
 #include <iostream>
 
 EnemyManager::EnemyManager() 
 {	
 	m_timer = new Timer();
 	m_timer->start(3.0f, true);
+	epool = new EnemyPool();
 }
 
 EnemyManager::~EnemyManager()
@@ -27,6 +29,11 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::update()
 {	
+	if (epool->isEmpty())
+	{
+		epool->createPool(5);
+	}
+
 	if (m_timer->checkInterval())
 	{
 		COLOR color = getEnemyColor();
@@ -41,9 +48,13 @@ void EnemyManager::update()
 
 		if (pattern == ENEMY_PATTERN::SIDE)
 		{
+
 			// get spawned from top and move either left, right 
 			// Note: side to side movement a bit slow?
-			genEnemySide(color, pattern, type, x, y);
+			//genEnemySide(color, pattern, type, x, y);
+			std::cout << "I (should have) rendered!" << std::endl;
+			Enemy* en = epool->getEnemy();
+			en->m_inUse = true;
 		}
 		else if (pattern == ENEMY_PATTERN::HOVER)
 		{
@@ -145,14 +156,12 @@ void EnemyManager::setSpawnRate(float m_interval)
 }
 
 
-
 Enemy* EnemyManager::genEnemySide(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE type, float x, float y)
 {
 	Enemy* enemy = new Enemy(color, pattern, type, x);
 	enemy->m_transform->setTranslation(x, y);
 	enemy->m_enemyDirection.x = glm::linearRand(-1.0f, 1.0f);
 	enemy->m_enemyDirection.y = -1.0f;
-	enemy->fillImmContainer(5);
 	return enemy;
 }
 
