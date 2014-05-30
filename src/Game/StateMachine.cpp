@@ -5,8 +5,23 @@
 #include <string.h>
 #include "StateMachine.h"
 
+StateMachine::StateMachine()
+{
+	p_score = 0;
+	p_state = COLOR::RED;
+	p_weapon = WEAPON::STANDARD;
+	p_weaponLVL = 1;
+	m_enemyMaxThreshold = 10;
+	m_enemyCounter = 0;
+}
 
-void StateMachine::checkStates(){
+StateMachine::~StateMachine()
+{
+
+}
+
+void StateMachine::checkStates()
+{
 	printf("The player state is: %d\n", p_state);
 	printf("The score is: %d\n", p_score);
 

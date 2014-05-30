@@ -11,8 +11,10 @@
 //Make state machine more or less "state-ful"?
 class StateMachine {
 public:
-	void checkStates();
+	StateMachine();
+	~StateMachine();
 
+	void checkStates();
 	COLOR getPlayerState();
 	WEAPON getPlayerWeapon();
 	int getPlayerWeaponLVL();
@@ -35,17 +37,17 @@ public:
 	std::pair<float, float> changeBulletSpread(WEAPON wp);
 
 	void addScore(int input);
-	int p_score = 0;
+	int p_score;
 	uint m_lives;
 
 	// Make these private after testing...
-	int m_enemyMaxThreshold = 10;
-	int m_enemyCounter = 0;
+	int m_enemyMaxThreshold;
+	int m_enemyCounter;
 
 private:
 	// Player Attributes
-	COLOR p_state = COLOR::RED;
-	WEAPON p_weapon = WEAPON::STANDARD;
-	int p_weaponLVL = 1;
+	COLOR p_state;
+	WEAPON p_weapon;
+	int p_weaponLVL;
 
 };

@@ -34,5 +34,4 @@ private:
 
 	uint m_enemyThreshold;
 	uint m_enemyCount;
-
 };
