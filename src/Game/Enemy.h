@@ -3,6 +3,10 @@
 #include "Common.h"
 #include "Entity.h"
 #include "StateMachine.h"
+#include "Item.h"
+#include <iostream>
+#include <stack>
+
 
 class ShootComponent;
 class Timer;
@@ -35,6 +39,10 @@ public:
 	glm::vec2 m_enemyDirection;
 	float m_brightness; // For animation;
 
+	//ItemPool methods
+	void fillImmContainer(uint size);
+	Item* getImmItem();
+
 private:
 
 	void endIntro();
@@ -48,4 +56,8 @@ private:
 	ENEMY_TYPE m_type;
 
 	float m_x;
+
+	//Container (pool) for items
+	std::stack <Item*> immContainerA;
+	std::stack <Item*> immContainerB;
 };

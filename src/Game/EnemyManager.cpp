@@ -31,7 +31,8 @@ void EnemyManager::update()
 	{
 		COLOR color = getEnemyColor();
 		type = changeEnemyType();
-		pattern = changeEnemyPattern();
+		//pattern = changeEnemyPattern();
+		pattern = ENEMY_PATTERN::SIDE;
 
 		// Position
 		float padding = 2.0f;
@@ -151,6 +152,7 @@ Enemy* EnemyManager::genEnemySide(COLOR color, ENEMY_PATTERN pattern, ENEMY_TYPE
 	enemy->m_transform->setTranslation(x, y);
 	enemy->m_enemyDirection.x = glm::linearRand(-1.0f, 1.0f);
 	enemy->m_enemyDirection.y = -1.0f;
+	enemy->fillImmContainer(5);
 	return enemy;
 }
 

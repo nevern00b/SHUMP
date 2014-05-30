@@ -97,8 +97,8 @@ void main()
 
 	float xa=0.0;
 	float ya=0.0;
-
-    finalCol=vec4(0.0,0.0,0.0,1.0);
+    
+	finalCol=vec4(0.0,0.0,0.0,1.0);
     //finalCol=tunneliter(uv,finalCol,0.5+(xa*0.80),0.85+(ya*0.80),0.01,0.9,vec4(0.1,0.3,0.2,1.0),9.1);    
     finalCol=tunneliter(uv,vec4(0.0,0.0,0.0,1.0),0.5+(xa*0.70),0.85+(ya*0.70),0.4,0.05,vec4(1.0,1.0,1.0,1.0),9.3);   
 

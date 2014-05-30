@@ -12,7 +12,6 @@
 #include "ShootComponent.h"
 #include "UIManager.h"
 #include "Rendering/ParticleSystem.h"
-#include "Item.h"
 #include "Rendering/Material.h"
 #include "AnimationManager.h"
 #include "Rendering/RenderManager.h"
@@ -181,21 +180,32 @@ void Enemy::onCollide(EventObject* collider)
 				//Globals::m_shmupGame->m_particleSystem->createRadial(pos.x, pos.y, 10);
 
 				// Drop immunity item
-				ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
-				immunityItem->m_transform->setTranslation(pos.x, pos.y);
+				//
+				if (!immContainerA.empty())
+				{
+					std::cout << "immunity dropped" << std::endl;
+					ImmunityItem* immItem = (ImmunityItem*)getImmItem();
+					immItem->m_transform->setTranslation(pos.x, pos.y);
+				}
+				
+				//ImmunityItem* immunityItem = new ImmunityItem(m_color, 0.0f, -3.0f);
+				//immunityItem->m_transform->setTranslation(pos.x, pos.y);
 
 				// Randomly drop life item
 				if (glm::linearRand(0.0, 1.0) < 0.3f)
 				{
 					float vx = glm::linearRand(-5.0f, 5.0f);
 					float vy = -3.0f;
-					LifeItem* lifeItem = new LifeItem(vx, vy);
-					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
+					//LifeItem* lifeItem = new LifeItem(vx, vy);
+					//lifeItem->m_transform->setTranslation(pos.x, pos.y);					
 				}
 
 				//clear bullets off screen...not working currently
 				m_shootComponent->m_bulletPool->clearPool();
-
+				
+				if (immContainerA.empty()){
+					immContainerA.swap(immContainerB);
+				}
 				destroy();
 			}
 			else
@@ -204,4 +214,20 @@ void Enemy::onCollide(EventObject* collider)
 			}
 		}
 	}
+}
+
+void Enemy::fillImmContainer(uint size)
+{
+	for (uint i = 0; i < size; i++)
+	{
+		immContainerA.push(new ImmunityItem(m_color, 0.0f, -3.0f));
+	}
+}
+
+Item* Enemy::getImmItem()
+{
+	Item* item = immContainerA.top();
+	immContainerA.pop();
+	immContainerB.push(item);
+	return item;
 }
