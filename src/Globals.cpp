@@ -28,7 +28,6 @@ void Globals::init(float time, uint screenWidth, uint screenHeight)
 	m_animationManager = new AnimationManager();
 	m_shmupGame = new ShmupGame();
 	m_shmupGame->init();
-
 }
 
 void Globals::update(float time)

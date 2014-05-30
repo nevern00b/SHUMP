@@ -6,6 +6,7 @@
 #include "Globals.h"
 #include "ShmupGame.h"
 #include <glm/gtc/random.hpp>
+#include <cmath>
 
 //Make state machine more or less "state-ful"?
 class StateMachine {
@@ -26,6 +27,8 @@ public:
 	//Enemy state
 	//Move this elsewhere?
 	float changeEnemySpawnRate(int score);
+	void incEnemy();
+	void decEnemy();
 
 	//Bullet state
 	BulletPool* changeBulletPool(int playerState);
@@ -33,10 +36,16 @@ public:
 
 	void addScore(int input);
 	int p_score = 0;
+	uint m_lives;
+
+	// Make these private after testing...
+	int m_enemyMaxThreshhold = 10;
+	int m_enemyCounter = 0;
 
 private:
-	//Player Attributes
+	// Player Attributes
 	COLOR p_state = COLOR::RED;
 	WEAPON p_weapon = WEAPON::STANDARD;
 	int p_weaponLVL = 1;
+
 };

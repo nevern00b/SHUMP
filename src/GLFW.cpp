@@ -186,6 +186,8 @@ GLFW::GLFW()
 			iss << fpsAvg;
 			iss << " Score: ";
 			iss << Globals::m_stateMachine->p_score;
+			iss << " Lives: ";
+			iss << Globals::m_stateMachine->m_lives;
 			glfwSetWindowTitle(window, iss.str().c_str());
 			fpsAvg = 0.0f;
 		}

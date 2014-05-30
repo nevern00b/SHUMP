@@ -27,8 +27,12 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::update()
 {	
-	if (m_timer->checkInterval())
+	//m_enemyCount = Globals::m_stateMachine->m_enemyCounter;
+	//m_enemyThreshhold = Globals::m_stateMachine->m_enemyMaxThreshhold;
+	//std::cout << "ENEMY COUNT: " << m_enemyCount << " THRESHHOLD: " << m_enemyThreshhold << std::endl;
+	if (m_timer->checkInterval() && m_enemyCount < m_enemyThreshhold)
 	{
+		Globals::m_stateMachine->incEnemy();
 		COLOR color = getEnemyColor();
 		type = changeEnemyType();
 		pattern = changeEnemyPattern();
@@ -111,7 +115,7 @@ ENEMY_TYPE EnemyManager::changeEnemyType()
 	float typeRand = glm::linearRand(0.0f, 1.0f);
 	if (typeRand < 0.6f) return ENEMY_TYPE::MISSILE;
 	else if (typeRand < 0.8f) return ENEMY_TYPE::MELEE;
-	else if (typeRand <= 1.0f) return ENEMY_TYPE::EXPLOSIVE;
+	else return ENEMY_TYPE::EXPLOSIVE;
 }
 
 ENEMY_PATTERN EnemyManager::changeEnemyPattern()

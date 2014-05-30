@@ -149,6 +149,7 @@ bool Enemy::update()
 		// Destroy if it goes past the screen
 		if (pos.y < ShmupGame::WORLD_LOWER_BOUND_Y || pos.y > ShmupGame::WORLD_UPPER_BOUND_Y)
 		{
+			Globals::m_stateMachine->decEnemy();
 			destroy();
 		}
 	}	
@@ -192,10 +193,7 @@ void Enemy::onCollide(EventObject* collider)
 					LifeItem* lifeItem = new LifeItem(vx, vy);
 					lifeItem->m_transform->setTranslation(pos.x, pos.y);					
 				}
-
-				//clear bullets off screen...not working currently
-				m_shootComponent->m_bulletPool->clearPool();
-
+				Globals::m_stateMachine->decEnemy();
 				destroy();
 			}
 			else

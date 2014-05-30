@@ -9,6 +9,7 @@
 void StateMachine::checkStates(){
 	printf("The player state is: %d\n", p_state);
 	printf("The score is: %d\n", p_score);
+
 }
 
 //Return Methods
@@ -45,18 +46,19 @@ void StateMachine::upgradeWeapon(int score)
 	{
 		p_weaponLVL = 1;
 	}
-	else if (score > 5000 && score < 10000)
+	else if (score >= 5000 && score < 10000)
 	{
 		p_weaponLVL = 2;
 	}
-	else if (score > 10000 && score < 20000)
+	else if (score >= 10000 && score < 20000)
 	{
 		p_weaponLVL = 3;
 	}
-	else
+	else if (score >= 20000 && score < 30000)
 	{
 		p_weaponLVL = 4;
 	}
+	else p_weaponLVL = 5;
 }
 
 void StateMachine::resetWeapon()
@@ -66,28 +68,28 @@ void StateMachine::resetWeapon()
 
 float StateMachine::changeShootRate()
 {
-	float m_shootRate = 0.5f;
-	if (p_weaponLVL == 1)
+	float m_shootRate;
+	switch (p_weaponLVL)
 	{
-		m_shootRate = 0.5f;
+		case 1:
+			m_shootRate = 0.5f;
+			break;
+		case 2:
+			m_shootRate = 0.4f;
+			break;
+		case 3:
+			m_shootRate = 0.3f;
+			break;
+		case 4:
+			m_shootRate = 0.2f;
+			break;
+		case 5:
+			m_shootRate = 0.1f;
+			break;
+		default:
+			m_shootRate = 0.5f;
 	}
-	else if (p_weaponLVL == 2)
-	{
-		m_shootRate = 0.25f;
-	}
-	else if (p_weaponLVL == 3)
-	{
-		m_shootRate = 0.1f;
-	}
-	else if (p_weaponLVL == 4)
-	{
-		m_shootRate = 0.1f;
 		///m_shootRadial = true;
-	}
-	else
-	{
-		m_shootRate = 0.5f;
-	}
 	return m_shootRate;
 }
 
@@ -123,6 +125,7 @@ float StateMachine::changeEnemySpawnRate(int score)
 	{
 		spawn_rate = 1.00f;
 	}
+	std::cout << "spawn rate is: " << spawn_rate << std::endl;
 	return spawn_rate;
 }
 
@@ -175,4 +178,15 @@ std::pair<float, float> StateMachine::changeBulletSpread(WEAPON wp)
 	}
 	std::pair<float, float> vel(b2x, b3x);
 	return vel;
+}
+
+
+void StateMachine::incEnemy()
+{
+	m_enemyCounter = std::min(m_enemyCounter + 1, m_enemyMaxThreshhold);
+}
+
+void StateMachine::decEnemy()
+{
+	m_enemyCounter = std::max(m_enemyCounter - 1, 0);
 }

@@ -44,6 +44,8 @@ Player::Player() : Entity(0), m_lives(3), m_minionCount(0)
 	m_shootTimer->start(0.25f, true);
 
 	changeColor(); // Sets color to default immunity state color	
+	m_lives = 3;
+	Globals::m_stateMachine->m_lives = m_lives;
 }
 
 Player::~Player()
@@ -198,7 +200,10 @@ void Player::onCollide(EventObject* collider)
 
 		if (bullet->m_color != Globals::m_stateMachine->getPlayerState())
 		{
+			Globals::m_stateMachine->resetWeapon();
+			Globals::m_stateMachine->p_score = 0;
 			m_lives--;
+			Globals::m_stateMachine->m_lives = m_lives;
 			if (m_lives == 0)
 			{
 				destroy();
@@ -211,14 +216,14 @@ void Player::onCollide(EventObject* collider)
 	}
 	else if (immunityItem != 0)
 	{
-		Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 250;
+		Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 100;
 		COLOR color = immunityItem->m_color;
 		Globals::m_stateMachine->changePlayerState(color);
 		immunityItem->destroy();
 	}
 	else if (lifeItem != 0)
 	{
-		Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 1000;
+		Globals::m_stateMachine->p_score = Globals::m_stateMachine->p_score + 500;
 		m_lives++;
 		lifeItem->destroy();
 	}
@@ -261,6 +266,7 @@ void Player::shoot()
 void Player::gainLives(uint lives)
 {
 	m_lives += lives;
+	Globals::m_stateMachine->m_lives = m_lives;
 }
 
 void Player::gainMinions(uint newMinions)
